@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de venta</title>
+    <!-- CDN DE BOOTSTRAP CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">REGISTRO DE VENTAS HUEVOS</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="mb-3 col-3">
+                              <label for="buscarmatricula" class="form-label">Cliente:</label>
+                              <input type="text" class="form-control" id="buscarmatricula" placeholder="Escriba aqui">
+                            </div>
+                            <div class="mb-3 col-2">
+                                <label for="buscarmatricula" class="form-label">Fecha:</label>
+                                <input type="date" class="form-control" id="" placeholder="Escriba aqui">
+                            </div>
+                            <div class="mb-3 col-2">
+                                <label for="cantidad" class="form-label">Número de paquetes:</label>
+                                <input type="number" class="form-control" id="cantidad" min="1" max="10">
+                            </div>
+                             <div class="mb-2 col-2">
+                              <!-- <div class="d-grid gap-2 col-6 mx-auto"> -->
+                                <button class="btn btn-primary" type="button" onclick="crearCajas()">Crear paquetes</button>
+                                <button class="btn btn-secondary" type="button">Reiniciar</button>
+                              <!-- </div> -->
+                             </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <div class="col-12 mt-5" >
+            <!-- Aquí se mostrarán las cajas de texto dinámicas -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-body">
+                        <div class="mb-3 colg-6" id="contenedorCajas" >
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">DETALLES</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="mb-3 col-2">
+                              <label for="totalValores" class="form-label">Total kg:</label>
+                              <input type="number" class="form-control" id="totalValores" disabled >
+                            </div>
+                            <div class="mb-3 col-2">
+                                <label for="factor" class="form-label">Precio:</label>
+                                <input type="number" class="form-control" id="factor" step="0.001" oninput="actualizarTotal()">
+                            </div>
+                            <div class="mb-3 col-2">
+                                <label for="resultadoMultiplicacion" class="form-label">Monto:</label>
+                                <input type="text" class="form-control" id="resultadoMultiplicacion" disabled>
+                            </div>
+                            <div class="mb-3 col-2">
+                                <label for="flete" class="form-label">Flete:</label>
+                                <input type="number" class="form-control" id="flete" step="0.01" oninput="actualizarTotal()">
+                            </div>
+                            <div class="mb-3 col-4">
+                                <label for="resultadoResta" class="form-label">Total a pagar:</label>
+                                <input type="text" class="form-control" id="resultadoResta" disabled>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function crearCajas() {
+            var cantidad = parseInt(document.getElementById("cantidad").value);
+
+            if (isNaN(cantidad) || cantidad < 1 || cantidad > 500) {
+                alert("Ingrese un número válido entre 1 y 500.");
+                return;
+            }
+
+            var contenedorCajas = document.getElementById("contenedorCajas");
+            contenedorCajas.innerHTML = ""; // Limpiamos el contenido previo
+
+            for (var i = 0; i < cantidad; i++) {
+                var nuevaCaja = document.createElement("input");
+                nuevaCaja.type = "number";
+                nuevaCaja.className = "col-2";
+                nuevaCaja.placeholder = "Paquete " + (i + 1);
+                nuevaCaja.addEventListener("input", actualizarTotal);
+                contenedorCajas.appendChild(nuevaCaja);
+            }
+
+            actualizarTotal();
+        }
+
+        function actualizarTotal() {
+            var cajas = document.getElementById("contenedorCajas").getElementsByTagName("input");
+            var sumaValoresCajas = 0;
+
+            for (var i = 0; i < cajas.length; i++) {
+                sumaValoresCajas += parseFloat(cajas[i].value) || 0; // Si el valor no es un número, se sumará 0.
+            }
+
+            var factor = parseFloat(document.getElementById("factor").value) || 0;
+            var flete = parseFloat(document.getElementById("flete").value) || 0;
+
+            var totalMultiplicacion = sumaValoresCajas * factor;
+            var totalConFlete = totalMultiplicacion - (flete * sumaValoresCajas);
+            totalConFlete = totalConFlete.toFixed(2);
+
+            document.getElementById("totalValores").value = sumaValoresCajas.toFixed(2);
+            document.getElementById("resultadoMultiplicacion").value = totalMultiplicacion.toFixed(2);
+            document.getElementById("resultadoResta").value = totalConFlete;
+        }
+    </script>
+</body>
+</html>

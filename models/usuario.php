@@ -2,7 +2,7 @@
 
 require_once 'conexion.php';
 
-class User extends Connection{
+class User extends Conexion{
 
     private $access;
 

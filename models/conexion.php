@@ -14,6 +14,20 @@ class Connection{
         }
     }
 
+    public function getConnect(){
+        try{
+
+            $pdo = $this->Connect();
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            return $pdo;
+
+        }
+        catch(Exception $err){
+            die($err->getMessage());
+        }
+    }
+
 
 
 }

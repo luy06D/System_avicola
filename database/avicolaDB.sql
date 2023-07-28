@@ -15,6 +15,9 @@ CONSTRAINT uk_dni_per UNIQUE (dni)
 )
 ENGINE = INNODB;
 
+INSERT INTO personas (nombres, apellidos, dni, telefono) VALUES
+('Alex Edú', 'Quiroz Ccaulla', 72680725, 959282307);
+
 CREATE TABLE usuarios
 (
 idusuario	INT AUTO_INCREMENT PRIMARY KEY,
@@ -25,6 +28,9 @@ CONSTRAINT fk_idp_usu FOREIGN KEY (idpersona) REFERENCES personas (idpersona),
 CONSTRAINT uk_nom_usu UNIQUE (nombreusuario)
 )
 ENGINE = INNODB;
+
+INSERT INTO usuarios(idpersona, nombreusuario, claveacceso)VALUES
+('1', 'Eduqcc08', '123456');
 
 CREATE TABLE productos
 (
@@ -38,6 +44,8 @@ CONSTRAINT ck_pre_pro CHECK (precio > 0)
 )
 ENGINE = INNODB;
 
+INSERT INTO productos (nombre, cantidad, precio)VALUES
+('huevos', '5000', 8.30)
 
 CREATE TABLE detalle_ventas
 (
@@ -48,6 +56,9 @@ CONSTRAINT fk_idp_det FOREIGN KEY (idproducto)	REFERENCES productos(idproducto),
 CONSTRAINT ck_can_det CHECK (cantidad > 0 )
 )
 ENGINE = INNODB;
+
+INSERT INTO detalle_ventas(idproducto, cantidad)VALUES
+(1, 500)
 
 CREATE TABLE ventas
 (
@@ -65,15 +76,34 @@ ENGINE = INNODB;
 
 
 
+			   /*Procedimientos*/
+
+				/*LOGIN*/
+DELIMITER$$ 
+CREATE PROCEDURE spu_user_login(IN _nombreusuario VARCHAR(40))
+BEGIN 
+	SELECT *
+	FROM usuarios
+	WHERE nombreusuario = _nombreusuario;
+END$$
+
+CALL spu_user_login('Eduqcc08')
 
 
+				/* REGISTRAR VENTA*/
+				
+DELIMITER $$
+CREATE PROCEDURE spu_ventas_register(
+IN _iddetalle_venta INT ,
+IN _idusuario INT,
+IN _idcliente INT )	
+BEGIN 
+	INSERT INTO ventas (iddetalle_venta, idusuario, idcliente)VALUES
+	(_iddetalle_venta, _idusuario, _idcliente);
+END$$
+
+CALL spu_ventas_register(1,1,1)
 
 
-
-
-
-
-
-
-
-
+				/*LISTAR VENTAS*/
+				

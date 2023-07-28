@@ -1,22 +1,30 @@
 <?php
 
-class Connection{
+class Conexion{
 
-    protected $pdo;
-
-    private function Connect(){
+    private function Conectar(){
         try{
-            $connection = new PDO("mysql:host=localhost; port=3306; dbname=avicola ; charset=utf8", "root", "");
-            return $connection;
+            $pdo = new PDO("mysql:host=localhost; port=3306; dbname=avicola; charset=UTF8", "root", "");
+            return $pdo;
         }
-        catch(Exception $err){
-            die($err->getMessage());
+        catch(Exception $e){
+            die($e->getMessage());
         }
+    }
+
+    public function getConexion(){
+        try{
+            $pdo = $this->Conectar();
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
+            return $pdo;
+        }
+        catch(Exception $e){
+            die($e->getMessage());
     }
 
 
 
 }
 
-
+}
 ?>

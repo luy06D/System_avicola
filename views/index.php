@@ -4,14 +4,13 @@
 <head>
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-   <link rel="stylesheet" href="css/bootstrap.css">
+   
    <link rel="stylesheet" type="text/css" href="../styles/login.css">
    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
    <!-- <link rel="stylesheet" href="css/all.min.css"> -->
-   <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
-   <link href="https://tresplazas.com/web/img/big_punto_de_venta.png" rel="shortcut icon">
+   <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> --> 
    <title>Inicio de sesión</title>
+   <link rel="icon" href="../img/vania_logo.ico">
 </head>
 
 <body>
@@ -54,8 +53,8 @@
                <div class="fas fa-eye verPassword" onclick="vista()" id="verPassword"></div>
             </div>
 
-            <div class="text-center">            
-               <a class="font-italic isai5" href="">Registrarse</a>
+            <div class="text-center register">            
+               <a class="font-italic isai5" href="./newusuario.php">Registrarse</a>
             </div>
             <button id="btniniciar" class="btn" type="button">INICIAR SESION</button>
          </form>
@@ -65,17 +64,13 @@
    <script src="../js/fontawesome.js"></script>
    <script src="../js/verpassword.js"></script>
    <script src="../js/tagfloat.js"></script>
-
+   <!-- CDN jquery -->
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
    <!-- CDN sweetAlert2 -->
    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
    <script>
       $(document).ready(function(){
-
-         function prueba (){
-            alert("Probando")
-         }
 
          function login(){
             const data = {
@@ -90,18 +85,52 @@
                data: data,
                dataType: 'JSON',
                success: function(result){
-                  
-               }
+                  if(result.login){
+                     Swal.fire({
+                        title: 'Inicio correctamente',
+                        text: 'Bienvenido: ' + `${result.apellidos} ${result.nombres}`,
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1200
 
-            })
+                     }).then((result) => {
+                        if(result){
+                           window.location.href = `./demo.html`;
+                        }
+                     })
+                  }
+                  else if(result.mensaje == "Contraseña"){
+                     Swal.fire({
+                        title: 'Contraseña incorrecta',
+                        icon: 'error',
+                        confirmButtonText: `OK`,
+                        confirmButtonColor: '#E43D2C'
+
+                     })
+                  }else{
+                     Swal.fire({
+                        title: 'El usuario ingresado es incorrecto',
+                        icon: 'error',
+                        confirmButtonText: `OK`,
+                        confirmButtonColor: '#E43D2C'
+                      })
+                  }                  
+               }
+            });
 
 
          }
 
 
-         $("#btniniciar").click(prueba);
+         $("#btniniciar").click(login);
 
-      })
+         $("#password").keypress(function (evt){
+            if(evt.keyCode == 13){
+               login();
+            }
+         })
+
+      });
    </script>
 
 </body>

@@ -9,8 +9,8 @@
 body{
     font-family: 'Poppins', sans-serif;
     overflow: hidden;
-}
 
+}
 
 .wave{
 	position: fixed;
@@ -27,6 +27,13 @@ body{
     grid-template-columns: repeat(2, 1fr);
     grid-gap :7rem;
     padding: 0 2rem;
+	position: absolute;
+	left: 40%;
+
+
+
+
+
 }
 
 .img{
@@ -56,7 +63,7 @@ form{
 
 .login-content h2{
 	margin: 15px 0;
-	color: #333333;
+	color: #333;
 	text-transform: uppercase;
 	font-size: 2.9rem;
 }
@@ -106,7 +113,7 @@ form{
 	bottom: -2px;
 	width: 0%;
 	height: 2px;
-	background-color: #E43D2C;
+	background-color: #d11905;
 	transition: .4s;
 }
 
@@ -128,7 +135,7 @@ form{
 }
 
 .input-div.focus > .i > i{
-	color: #E43D2C;
+	color: #ca5050;
 }
 
 .input-div > div > input{
@@ -184,7 +191,7 @@ a:hover{
 	border-radius: 25px;
 	outline: none;
 	border: none;
-	background: #E43D2C;
+	background: #e62610;
 	background-size: 200%;
 	font-size: 1.2rem;
 	color: #ffffff;
@@ -204,10 +211,19 @@ a:hover{
 @media screen and (max-width: 1050px){
 	.container{
 		grid-gap: 5rem;
+		position: absolute;
+		left: 30%;
 	}
 }
 
 @media screen and (max-width: 1000px){
+	.container{
+		grid-template-columns: 2fr;
+		position: absolute;
+		left: 27%;
+		
+		
+	}
 	form{
 		width: 290px;
 	}
@@ -224,7 +240,10 @@ a:hover{
 
 @media screen and (max-width: 900px){
 	.container{
-		grid-template-columns: 1fr;
+		grid-template-columns: 2fr;
+		position: absolute;
+		left: 1%;
+
 	}
 
 	.img{
@@ -261,26 +280,4 @@ a:hover{
     justify-content: flex-end;
     
     
-}
-
-
-.custom-shape-divider-bottom-1690413515 {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-    transform: rotate(180deg);
-}
-
-.custom-shape-divider-bottom-1690413515 svg {
-    position: relative;
-    display: block;
-    width: calc(181% + 1.3px);
-    height: 309px;
-}
-
-.custom-shape-divider-bottom-1690413515 .shape-fill {
-    fill: #85CD32;
 }

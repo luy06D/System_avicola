@@ -1,16 +1,20 @@
 <?php
 
+session_start();
+
 require_once '../models/usuario.php';
 
 if(isset($_GET['operation'])){
 
     $user = new User();
 
+
     if($_GET['operation'] == 'destroy'){
         session_destroy();
         session_unset();
         header('Location:../index.php');
     }
+
 
     if($_GET['operation'] == 'log_in'){
 
@@ -19,10 +23,11 @@ if(isset($_GET['operation'])){
             "apellidos"     => "",
             "nombres"       => "",
             "nombreusuario" => "",
+            "idusuario"     => "",         
             "mensaje"       => ""
         ];
 
-        $data = $user->login($_GET['user']);
+        $data = $user->login($_GET['nombreusuario']);
         $keyIngresada = $_GET['claveacceso'];
 
         if($data){
@@ -33,6 +38,8 @@ if(isset($_GET['operation'])){
                 $access["apellidos"] = $data["apellidos"];
                 $access["nombres"] = $data["nombres"];
                 $access["nombreusuario"] = $data["nombreusuario"];
+                $access["idusuario"] = $data["idusuario"];
+
             }else{
                 $access["mensaje"] = "Contraseña";
             }
@@ -44,7 +51,6 @@ if(isset($_GET['operation'])){
 
         echo json_encode($access);
     }
-
 
 }
 

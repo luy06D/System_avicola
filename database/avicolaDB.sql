@@ -18,6 +18,10 @@ ENGINE = INNODB;
 INSERT INTO personas (nombres, apellidos, dni, telefono) VALUES
 ('Alex Edú', 'Quiroz Ccaulla', 72680725, 959282307);
 
+-- Actualizando restriccion not null (dni)
+ALTER TABLE personas MODIFY COLUMN dni CHAR(8) NULL;
+
+
 CREATE TABLE usuarios
 (
 idusuario	INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,6 +35,12 @@ ENGINE = INNODB;
 
 INSERT INTO usuarios(idpersona, nombreusuario, claveacceso)VALUES
 ('1', 'Eduqcc08', '123456');
+
+
+-- Encriptamos la contraseña
+UPDATE usuarios SET claveacceso = '$2y$10$G/Rcks0WXGZslmcfaOXxGODGrK2IaseWCjcA028UrTHyO2n7ptFYq'
+WHERE idusuario = 1;
+
 
 CREATE TABLE productos
 (
@@ -57,9 +67,12 @@ CONSTRAINT ck_can_det CHECK (cantidad > 0 )
 )
 ENGINE = INNODB;
 
+-- Npaquetes 
+-- Nkilos
+
 INSERT INTO detalle_ventas(idproducto, cantidad)VALUES
 (1, 500)
-
+	
 CREATE TABLE ventas
 (
 idventa		INT AUTO_INCREMENT PRIMARY KEY,
@@ -79,11 +92,16 @@ ENGINE = INNODB;
 			   /*Procedimientos*/
 
 				/*LOGIN*/
+				
+		
 DELIMITER$$ 
 CREATE PROCEDURE spu_user_login(IN _nombreusuario VARCHAR(40))
 BEGIN 
-	SELECT *
+	SELECT 	usuarios.idusuario, 
+		personas.apellidos, personas.nombres,
+		usuarios.nombreusuario, usuarios.claveacceso
 	FROM usuarios
+	INNER JOIN personas ON personas.idpersona = usuarios.idpersona
 	WHERE nombreusuario = _nombreusuario;
 END$$
 
@@ -106,4 +124,86 @@ CALL spu_ventas_register(1,1,1)
 
 
 				/*LISTAR VENTAS*/
+				
+				
+				
+										
+				
+				-- REGISTRAR USUARIO 			
+			
+DELIMITER $$
+CREATE PROCEDURE spu_usuario_registar 
+(
+
+IN _nombres 	VARCHAR(30),
+IN _apellidos 	VARCHAR(30),
+IN _dni		CHAR(8),
+IN _telefono 	CHAR(9),
+IN _nombreusuario VARCHAR(40),
+IN _claveacceso	  VARCHAR(100)
+
+)
+BEGIN 
+	DECLARE g_idpersona INT;
+	
+	
+	IF _telefono = '' THEN SET _telefono = NULL;	
+	END IF;
+	
+	IF _dni = '' THEN SET _dni = NULL;
+	END IF;
+		
+	
+	INSERT INTO personas (nombres, apellidos, dni, telefono) VALUES 
+			(_nombres, _apellidos, _dni, _telefono);
+	
+	SELECT LAST_INSERT_ID() INTO g_idpersona;
+	
+	INSERT INTO usuarios (idpersona , nombreusuario, claveacceso) VALUES
+			(g_idpersona, _nombreusuario, _claveacceso);	
+
+END$$
+
+
+CALL spu_usuario_registar('Luis David','Cusi Gonzales','','','Luy06','12345');
+
+
+UPDATE usuarios SET claveacceso = '$2y$10$XmYFrIUyGm2mxxkdSaB6A.QHUNp9qB9cLUACpJroNOBhDDasiDU2S'
+WHERE idusuario = 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
 				

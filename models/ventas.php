@@ -30,4 +30,14 @@ class Ventas extends Conexion{
         return $respuesta;
 }
 
+    public function getVentasResume(){
+        try{
+            $consulta = $this->conexion->prepare("CALL spu_ventas_resume()");
+            $consulta->execute();
+            return $consulta->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
 }

@@ -15,8 +15,7 @@ CONSTRAINT uk_dni_per UNIQUE (dni)
 )
 ENGINE = INNODB;
 
-INSERT INTO personas (nombres, apellidos, dni, telefono) VALUES
-('Alex Edú', 'Quiroz Ccaulla', 72680725, 959282307);
+
 
 CREATE TABLE usuarios
 (
@@ -29,8 +28,8 @@ CONSTRAINT uk_nom_usu UNIQUE (nombreusuario)
 )
 ENGINE = INNODB;
 
-INSERT INTO usuarios(idpersona, nombreusuario, claveacceso)VALUES
-('1', 'Eduqcc08', '123456');
+
+
 
 CREATE TABLE productos
 (
@@ -44,8 +43,7 @@ CONSTRAINT ck_pre_pro CHECK (precio > 0)
 )
 ENGINE = INNODB;
 
-INSERT INTO productos (nombre, cantidad, precio)VALUES
-('huevos', '5000', 8.30)
+
 
 CREATE TABLE detalle_ventas
 (
@@ -57,8 +55,8 @@ CONSTRAINT ck_can_det CHECK (cantidad > 0 )
 )
 ENGINE = INNODB;
 
-INSERT INTO detalle_ventas(idproducto, cantidad)VALUES
-(1, 500)
+
+
 
 CREATE TABLE ventas
 (
@@ -82,12 +80,13 @@ ENGINE = INNODB;
 DELIMITER$$ 
 CREATE PROCEDURE spu_user_login(IN _nombreusuario VARCHAR(40))
 BEGIN 
-	SELECT *
+	SELECT personas.nombres, personas.apellidos, usuarios.nombreusuario, usuarios.claveacceso
 	FROM usuarios
+	INNER JOIN personas ON personas.idpersona = usuarios.idpersona
 	WHERE nombreusuario = _nombreusuario;
 END$$
 
-CALL spu_user_login('Eduqcc08')
+
 
 
 				/* REGISTRAR VENTA*/
@@ -102,8 +101,30 @@ BEGIN
 	(_iddetalle_venta, _idusuario, _idcliente);
 END$$
 
-CALL spu_ventas_register(1,1,1)
+
 
 
 				/*LISTAR VENTAS*/
-				
+	
+DELIMITER$$			
+
+CREATE PROCEDURE spu_ventas_resume()
+SELECT LEFT (DAYNAME(fechaventa),1 ) AS Dia, SUM(detalle_ventas.cantidad)AS total
+FROM ventas
+INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
+WHERE fechaventa >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+GROUP BY fechaventa
+ORDER BY fechaventa;
+ END $$
+ 
+
+ 
+ 
+ 
+ CREATE PROCEDURE spu_ventas_listar()
+ SELECT idventa, CONCAT(personas.nombres, ' ',  personas.apellidos)AS Cliente, productos.nombre AS producto, detalle_ventas.cantidad, productos.precio * productos.cantidad AS total, ventas.fechaventa
+ FROM ventas
+ INNER JOIN personas ON personas.idpersona = ventas.idcliente
+ INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
+ INNER JOIN productos ON detalle_ventas.idproducto = productos.idproducto;
+ 

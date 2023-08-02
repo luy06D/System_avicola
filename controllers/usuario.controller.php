@@ -23,6 +23,7 @@ if(isset($_GET['operation'])){
             "apellidos"     => "",
             "nombres"       => "",
             "nombreusuario" => "",
+            "idusuario"     => "",         
             "mensaje"       => ""
         ];
 
@@ -37,6 +38,8 @@ if(isset($_GET['operation'])){
                 $access["apellidos"] = $data["apellidos"];
                 $access["nombres"] = $data["nombres"];
                 $access["nombreusuario"] = $data["nombreusuario"];
+                $access["idusuario"] = $data["idusuario"];
+
             }else{
                 $access["mensaje"] = "Contraseña";
             }

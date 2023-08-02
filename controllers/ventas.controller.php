@@ -9,8 +9,8 @@ if (isset($_POST['operacion'])){
     if($_POST['operacion'] == 'registrar'){
         $datosGuardar = [
             "iddetalle_venta"      => $_POST['iddetalle_venta'],   
-            "idusuario"      => $_POST['idusuario'],
-            "idcliente"      => $_POST['idcliente']
+            "idusuario"            => $_POST['idusuario'],
+            "idcliente"            => $_POST['idcliente']
         ];
         $respuesta = $ventas->RegistrarVentas($datosGuardar);
         echo json_encode($respuesta);

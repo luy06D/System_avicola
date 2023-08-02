@@ -24,7 +24,7 @@
 
   <header>
     <div class="navbar">
-      <div class="logo"><a href="#">Avicola Vania</a></div>
+      <div class="logo"> <img src="../img/remove.png" alt=""><a href="#">Avicola </a></div>
       <ul class="links">
         <li><a href="ventas.html">Ventas</a></li>
         <li><a href="productos">Productos</a></li>
@@ -48,8 +48,8 @@
     </div>
   </header>
 
-  <main class="mb-5">
-    <div class="container mt-3 col-12">
+  <main class="opacity-85 mb-5">
+    <div class="container mt-5 col-12">
       <div class="card">
         <div class="card-header bg-warning-subtle text-black">
             <h4 class="text-center">REGISTRO DE VENTAS</h4>
@@ -58,12 +58,43 @@
             <form action="" id="form-venta">
               <div class="row">
                 <div class="col-lg-4" >
-                    <!-- <label for="nombres" class="form-label">Cliente:</label> -->
-                    <div class="input-group mb-3 ">
-                      <input type="text" class="form-control" placeholder="Cliente" aria-label="Recipient's username" aria-describedby="button-addon2" id="cliente">
-                      <button class="btn btn-outline-secondary" type="button" id="button-addon1" data-bs-toggle="modal" data-bs-target="#modalId"><i class='bx bx-search' ></i></button>
-                    </div>
+                  <!-- <label for="nombres" class="form-label">Cliente:</label> -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="addon-wrapping"><i class='bx bxs-user-detail' ></i></span>
+                    <input type="text" class="form-control" placeholder="Buscar cliente" aria-label="Recipient's username" aria-describedby="button-addon2" id="cliente">
+                    <button class="btn btn-outline-success" type="button" id="button-addon1" data-bs-toggle="modal" data-bs-target="#modalId"><i class='bx bx-search' ></i></button>
+                  </div>
                 </div>
+              </div>
+              <div class="row">
+
+                <div class="mb-3 col-lg-4">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
+                    <input type="text" class="form-control" placeholder="Nombres" maxlength="50" id="nombres">
+                  </div>
+                </div>
+
+                <div class="mb-3 col-lg-4">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
+                    <input type="text" class="form-control" placeholder="Apellidos" maxlength="50" id="apellidos">
+                  </div>
+                </div>
+
+                <div class="mb-3 col-lg-4">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-id-card'></i></span>
+                    <input type="text" class="form-control" placeholder="Número DNI" maxlength="8" id="dni">
+                  </div>  
+                </div>
+                <div class="mb-3 col-lg-4">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-phone' ></i></span>
+                    <input type="tel" class="form-control" placeholder="900-000-00" maxlength="9" id="telefono">
+                  </div>  
+                </div>
+                
                 <div class="col-lg-4">
                     <!-- <label for="fecha" class="form-label">Fecha:</label> -->
                     <div class="input-group mb-3 ">
@@ -75,7 +106,7 @@
                   <!-- <label for="cantidad" class="form-label">N° Paquetes:</label> -->
                     <div class="input-group mb-3">
                       <input type="number" placeholder="Digité cantidad paquetes" class="form-control" id="cantidad" min="1" max="500">
-                      <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="crearCajas()"><i class='bx bx-package' ></i></button>
+                      <button class="btn btn-outline-warning" type="button" id="button-addon2" onclick="crearCajas()"><i class='bx bx-package' ></i></button>
                     </div>
                 </div>   
               </div>
@@ -88,7 +119,7 @@
             </form>
 
             <form action="" id="form-detalle">
-              <hr>
+
               <h4 class="text-center">DETALLES</h4>
               <hr>
               <div class="row">
@@ -138,48 +169,185 @@
       <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="modalTitleId">REGISTRAR CLIENTE</h5>
+            <h5 class="modal-title" id="modalTitleId">CLIENTES</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form action="" id="registro-cursos">
               <div class="row">
-                <div class="mb-3 col-lg-12">
+                <div class="mb-3 col-lg-10">
                   <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-search' ></i></span>
+                    <span class="input-group-text" id="basic-addon1"><i class='bx bxs-user-detail' ></i></span>
                     <input type="text" class="form-control" placeholder="Buscar cliente" maxlength="50" id="nombres">
                   </div>
                 </div>
+                
+                <div class="mb-3 col-lg-2">
+                  <div class="input-group mb-3">
+                    <button type="button" class="btn btn-success"><i class='bx bx-search'></i></button>
+                  </div>
+                </div>
 
-                <div class="mb-3 col-lg-6">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
-                    <input type="text" class="form-control" placeholder="Nombres" maxlength="50" id="nombres">
-                  </div>
+                <div class="table-responsive">
+                  <form action="">
+                      <table class="table table-striped" id="tabla-clientes">
+                          <thead>
+                              <tr>
+                                  <th>ID</th>
+                                  <th>Nombres</th>
+                                  <th>Apellidos</th>
+                                  <th>DNI</th>
+                                  <th>Teléfono</th>
+                                  <th>Operación</th>
+                              </tr>
+                          </thead>
+                          <tbody class="table-group-divider">
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>@mdo</td>
+                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
+                          </tr>
+                          </tbody>
+                      </table>
+                  </form>
                 </div>
-                <div class="mb-3 col-lg-6">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
-                    <input type="text" class="form-control" placeholder="Apellidos" maxlength="50" id="apellidos">
-                  </div>
-                </div>
-                <div class="mb-3 col-lg-6">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-id-card'></i></span>
-                    <input type="text" class="form-control" placeholder="Número DNI" maxlength="50" id="dni">
-                  </div>  
-                </div>
-                <div class="mb-3 col-lg-6">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-phone' ></i></span>
-                    <input type="tel" class="form-control" placeholder="900-000-00" maxlength="9" id="telefono">
-                  </div>  
-                </div>
+              </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Registrar</button>
-            <button type="button" class="btn btn-success">Buscar</button>
+            <!-- <button type="button" class="btn btn-primary">Registrar</button> -->
+            
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
           </div>
         </div>
@@ -243,6 +411,10 @@
     const input6 = document.getElementById("resultadoMultiplicacion");
     const input7 = document.getElementById("flete");
     const input8 = document.getElementById("resultadoResta");
+    const input9 = document.getElementById("nombres");
+    const input10 = document.getElementById("apellidos");
+    const input11 = document.getElementById("dni");
+    const input12 = document.getElementById("telefono");
 
     if (input1) input1.value = ""; // Verificar si existe y limpiar el input
     if (input2) input2.value = "";
@@ -252,6 +424,10 @@
     if (input6) input6.value = "";
     if (input7) input7.value = ""; 
     if (input8) input8.value = "";
+    if (input9) input9.value = "";
+    if (input10) input10.value = "";
+    if (input11) input11.value = "";
+    if (input12) input12.value = "";
 
   }
 

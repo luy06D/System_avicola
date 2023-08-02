@@ -8,7 +8,7 @@
 body{
     height: 100vh;
     /* background-color: beige; */
-    /* background: url(img/chicken.jpg) no-repeat; */
+    /* background: url(../img/chicken.jpg) no-repeat; */
     background-size: cover;
     background-position: center center;
     height: calc(100vh - 80px)
@@ -16,6 +16,11 @@ body{
 
 li{
     list-style: none;
+}
+
+.logo img{
+    width: 50px;
+    /* opacity: 75%; */
 }
 
 .logo a{
@@ -30,13 +35,15 @@ a{
 }
 
 a:hover{
-    color: #85CD32;
+    color: #85CD32;;
 }
 
 /* HEADER */
 header{
     position: relative;
     padding: 0 2rem;
+    /* background: #85CD32; */
+    background: #ddc019;
 }
 
 .navbar{

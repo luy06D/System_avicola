@@ -10,7 +10,7 @@ idpersona	INT AUTO_INCREMENT PRIMARY KEY,
 nombres		VARCHAR(30)	NOT NULL,
 apellidos	VARCHAR(30)	NOT NULL,
 dni		CHAR(8)		NOT NULL,
-telefono	CHAR(9)		NULL,
+telefono	CHAR(9)		NULL,		
 CONSTRAINT uk_dni_per UNIQUE (dni)
 )
 ENGINE = INNODB;
@@ -22,7 +22,7 @@ INSERT INTO personas (nombres, apellidos) VALUES
 
 -- Actualizando restriccion not null (dni)
 ALTER TABLE personas MODIFY COLUMN dni CHAR(8) NULL;
-
+ALTER TABLE personas ADD estado CHAR (1) NOT NULL DEFAULT '1';
 
 CREATE TABLE usuarios
 (
@@ -42,6 +42,7 @@ idproducto	INT AUTO_INCREMENT PRIMARY KEY,
 nombre		VARCHAR(30)	NOT NULL,
 descripcion	VARCHAR(100)	NULL,
 cantidad	SMALLINT	NOT NULL,
+estado		CHAR(1)		NOT NULL DEFAULT '1',
 CONSTRAINT ck_can_pro CHECK (cantidad > 0 )
 )
 ENGINE = INNODB;
@@ -168,6 +169,7 @@ CALL spu_clientes_recuperar;
 	
 DELIMITER$$			
 CREATE PROCEDURE spu_ventas_resume()
+BEGIN
 SELECT LEFT (DAYNAME(fechaventa),1 ) AS Dia, SUM(detalle_ventas.cantidad)AS total
 FROM ventas
 INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
@@ -179,14 +181,15 @@ ORDER BY fechaventa;
 
  
  
- 
+ DELIMITER $$
  CREATE PROCEDURE spu_ventas_listar()
+ BEGIN
  SELECT idventa, CONCAT(personas.nombres, ' ',  personas.apellidos)AS Cliente, productos.nombre AS producto, detalle_ventas.cantidad, productos.precio * productos.cantidad AS total, ventas.fechaventa
  FROM ventas
  INNER JOIN personas ON personas.idpersona = ventas.idcliente
  INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
  INNER JOIN productos ON detalle_ventas.idproducto = productos.idproducto;
- 
+ END $$
 
 				
 				
@@ -259,36 +262,162 @@ CALL spu_filtro_ventas('2023-08-04','2023-08-06')
 
 
 
+				-- SPU PRODUCTO	
 
 
+DELIMITER $$ 
+CREATE PROCEDURE spu_producto_list()
+BEGIN
+SELECT
+	productos.`idproducto`,
+	productos.`nombre`,
+	productos.`descripcion`,
+	productos.`cantidad`
+
+FROM productos
+	WHERE productos.estado = '1'
+	ORDER BY idproducto DESC;
+END $$
+
+CALL spu_producto_list();
+SELECT * FROM productos
 
 
+DELIMITER $$
+CREATE PROCEDURE spu_producto_register
+(
+	IN _producto	VARCHAR(30),
+	IN _descripcion VARCHAR(100),
+	IN _cantidad 	SMALLINT
+)	
+	
+BEGIN
+INSERT INTO productos (nombre, descripcion, cantidad) VALUES 
+	(_producto, _descripcion, _cantidad);  
+END $$
+
+CALL spu_producto_register ('huevos doble','50g',70);
 
 
+DELIMITER $$
+CREATE PROCEDURE spu_producto_update
+(
+	IN _idproducto		INT,
+	IN _producto		VARCHAR(30),
+	IN _descripcion 	VARCHAR(100),
+	IN _cantidad		SMALLINT
+)
+BEGIN	
+	UPDATE productos SET
+		nombre 		= _producto,
+		descripcion	= _descripcion,
+		cantidad 	= _cantidad
+
+	WHERE idproducto = _idproducto;
+END $$
+
+CALL spu_producto_update (3,'Huevos quiñados','60g',150);
+
+DELIMITER $$
+CREATE PROCEDURE spu_producto_obtener
+(
+	IN _idproducto INT
+)
+BEGIN
+	SELECT * FROM productos WHERE idproducto = _idproducto;
+END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_producto_delete
+(
+	IN _idproducto INT
+)
+BEGIN
+	UPDATE productos SET estado = '0'
+	WHERE idproducto = _idproducto;
+END $$
+
+CALL spu_producto_obtener(1);
 
 
+					-- SPU CLIENTES
 
 
+DELIMITER $$ 
+CREATE PROCEDURE spu_cliente_list()
+BEGIN
+SELECT
+	personas.`idpersona`,
+	personas.`nombres`,
+	personas.`apellidos`,
+	personas.`dni`,
+	personas.`telefono`
+
+FROM personas
+	WHERE personas.estado = '1'
+	ORDER BY idpersona DESC;
+END $$
+
+CALL spu_cliente_list();
+SELECT * FROM personas
+
+DELIMITER $$
+CREATE PROCEDURE spu_cliente_register
+(
+	IN _nombres	VARCHAR(30),
+	IN _apellidos 	VARCHAR(30),
+	IN _dni	 	CHAR(8),
+	IN _telefono	CHAR(9)
+)	
+	
+BEGIN
+INSERT INTO personas (nombres, apellidos, dni, telefono) VALUES 
+	(_nombres, _apellidos, _dni, _telefono);  
+END $$
+
+CALL spu_cliente_register ('Nombre','Prueba',79461369,956847123);
 
 
+DELIMITER $$
+CREATE PROCEDURE spu_cliente_update
+(
+	IN _idpersona	INT,
+	IN _nombres	VARCHAR(30),
+	IN _apellidos 	VARCHAR(30),
+	IN _dni	 	CHAR(8),
+	IN _telefono	CHAR(9)
+)
+BEGIN	
+	UPDATE personas SET
+		nombres	  = _nombres,
+		apellidos = _apellidos,
+		dni 	  = _dni,
+		telefono  = _telefono
+
+	WHERE idpersona = _idpersona;
+END $$
 
 
+CALL spu_cliente_update (3,'Nombre','Pruebas',78451239,954683219);
 
+DELIMITER $$
+CREATE PROCEDURE spu_cliente_obtener
+(
+	IN _idpersona INT
+)
+BEGIN
+	SELECT * FROM personas WHERE idpersona = _idpersona;
+END $$
 
+DELIMITER $$
+CREATE PROCEDURE spu_cliente_delete
+(
+	IN _idpersona INT
+)
+BEGIN
+	UPDATE personas SET estado = '0'
+	WHERE idpersona = _idpersona;
+END $$
 
-
-
-
-		
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
+CALL spu_cliente_obtener(1);
 

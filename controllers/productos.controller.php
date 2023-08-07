@@ -1,63 +1,63 @@
 <?php
+
 require_once '../models/productos.php';
 
-if (isset($_POST['operacion'])){
+if(isset($_GET['operacion'])){
 
-    $producto = new Productos();
+    $producto = new Producto();
 
-    if($_POST['operacion'] == 'listar'){
-        $datos = $producto->ListarProducto();
-        
-        if($datos){
-          foreach($datos as $registro){
-            echo "
-                <tr>
-                    <td>{$registro['idproducto']}</td>
-                    <td>{$registro['nombre']}</td>
-                    <td>{$registro['descripcion']}</td>
-                    <td>{$registro['cantidad']}</td>
-                    <td>{$registro['precio']}</td>
-                    <td >
-                      <a href='#' class='eliminar btn btn-outline-danger btn-sm' data-idproducto='{$registro['idproducto']}'>Eliminar</a> 
-                      <a href='#' class='editar btn btn-outline-info btn-sm' data-bs-toggle='modal' data-bs-target='#modal-producto' data-idproducto ='{$registro['idproducto']}'>Editar</a>
-                    </td>
-                </tr>
-            ";
-          }
+    if($_GET['operacion'] == 'listar'){
+        $data = $producto->ListarProducto();
+        sleep(0.5);
+        if($data){
+            foreach($data as $registro){
+                echo "
+                    <tr>
+                        <td>{$registro['idproducto']}</td>
+                        <td>{$registro['nombre']}</td>
+                        <td>{$registro['descripcion']}</td>
+                        <td>{$registro['cantidad']}</td>
+                        <td>
+                            <a href='#' class='editar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idproducto ='{$registro['idproducto']}'><i class='bi bi-pencil-square'></i></a>
+                            <a href='#' class='eliminar btn btn-outline-danger btn-sm' data-idproducto='{$registro['idproducto']}'><i class='bi bi-trash'></i></a> 
+                        </td>
+                    </tr>
+                ";
+            }
         }
     }
 
-    if($_POST['operacion'] == 'registrar'){
-        $datosGuardar = [
-            "nombre"        => $_POST['nombre'],   
-            "descripcion"   => $_POST['descripcion'],
-            "cantidad"      => $_POST['cantidad'],
-            "precio"        => $_POST['precio']
-        ];
-        $respuesta = $producto->RegistrarProducto($datosGuardar);
-        echo json_encode($respuesta);
-    }
-
-    if($_POST['operacion'] == 'obtener'){
-        $respuesta = $producto->ObtenerProducto($_POST['idproducto']);
-        echo json_encode($respuesta);
-    }
-
-    if($_POST['operacion'] == 'actualizar'){
-        $datosActualizar = [
-          "idproducto"       => $_POST['idproducto'],
-          "nombre"           => $_POST['nombre'],
-          "descripcion"      => $_POST['descripcion'],
-          "cantidad"         => $_POST['cantidad'],
-          "precio"           => $_POST['precio']
+    if($_GET['operacion'] == 'registrar'){
+    
+        $datos = [
+          "nombre"      => $_GET['nombre'],     
+          "descripcion" => $_GET['descripcion'],
+          "cantidad"    => $_GET['cantidad']
         ];
     
-        $respuesta = $producto->ActualizarProducto($datosActualizar);
-        echo json_encode($respuesta);
+        $producto->RegistrarProducto($datos);
     }
 
-    if($_POST['operacion'] == 'eliminar'){
-        $respuesta = $producto->EliminarProducto($_POST['idproducto']);
-        echo json_encode($respuesta);
-      } 
+    if ($_GET['operacion'] == 'obtener'){
+        $data = $producto->ObetenerProducto($_GET['idproducto']);
+
+        echo json_encode($data);
+    }
+
+    if ($_GET['operacion'] == 'actualizar'){   
+        $datos = [
+            "idproducto"  => $_GET['idproducto'],
+            "nombre"      => $_GET['nombre'],     
+            "descripcion" => $_GET['descripcion'],
+            "cantidad"    => $_GET['cantidad']
+        ];
+
+        $producto->ActualizarProducto($datos);
+    }
+
+    if ($_GET['operacion'] == 'eliminar'){
+        $producto->EliminarProducto($_GET['idproducto']);
+    }
+
 }
+?>

@@ -222,8 +222,18 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             }
 
             function eliminar(id){
-                if (confirm("¿Está seguro de eliminar el registro?")){
-                    $.ajax({
+                Swal.fire({
+                    title: '¿Está seguro de eliminar el registro?',
+                    text: "Esta acción no se puede deshacer.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) =>{
+                    if(result.isConfirmed) {
+                        $.ajax({
                         url: '../controllers/clientes.controller.php',
                         type: 'GET',
                         data: {
@@ -234,7 +244,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             mostrar();
                         }
                     });
-                }
+                
+                    }
+                });
             }
 
             function mostrarDatos (id){

@@ -345,12 +345,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
           showCancelButton: true,
           confirmButtonText: "Sí",
           cancelButtonText: "Cancelar",
-          confirmButtonColor: '#03643a',
-          customClass: {
-              confirmButton: "spacing",
-              cancelButton: "spacing"
-          }
-
+          confirmButtonColor: '#65BB3B',
 
       }).then((result)=>{
         if(result.isConfirmed){

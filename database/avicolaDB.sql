@@ -51,7 +51,6 @@ INSERT INTO productos (nombre, cantidad) VALUES
 		('Huevos', '1000');
 
 
-
 CREATE TABLE detalle_ventas
 (
 iddetalle_venta		INT AUTO_INCREMENT PRIMARY KEY,
@@ -253,10 +252,6 @@ BEGIN
 END $$
 
 CALL spu_filtro_ventas('2023-08-04','2023-08-06')
-
-
-
-
 
 
 

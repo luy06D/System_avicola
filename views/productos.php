@@ -182,53 +182,95 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 });
             }
 
-            function registrar(){
-                let datosEnviar = {
 
-                'operacion'   : 'registrar',
-                'nombre'      : $("#producto").val(),
-                'descripcion' : $("#descripcion").val(),
-                'cantidad'    : $("#cantidad").val(),
+            function registrar() {
+                const nombre = document.querySelector("#producto").value.trim();            
+                const cantidad = document.querySelector("#cantidad").value.trim();
+
+                let datosEnviar = {
+                    'operacion': 'registrar',
+                    'nombre': $("#producto").val(),
+                    'descripcion': $("#descripcion").val(),
+                    'cantidad': $("#cantidad").val(),
                 };
 
-                if(!datosNuevos){
-                
+                if (!datosNuevos) {
                     datosEnviar['operacion'] = "actualizar";
                     datosEnviar['idproducto'] = idproducto;
-                }
+                }                
+            
+                Swal.fire({
+                    title: '¿Está seguro de realizar la operación?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#65BB3B',
 
-                if(confirm("¿Está seguro de realizar la operación?")){
-                    $.ajax({
-                        url:'../controllers/productos.controller.php',
-                        type: 'GET',
-                        data: datosEnviar,
-                        success: function(result){
-                        
-                            $("#form-productos")[0].reset();
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if(nombre === '' || cantidad === ''){
+                            Swal.fire({
+                                title: "Por favor, complete los campos",
+                                icon: "warning",
+                                confirmButtonColor: "#E43D2C",
+                            });
 
-                            mostrar();
+                        }else{
+                            Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'El producto se registro correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
 
-                            $("#modal-registrar").modal('hide');
+                        $.ajax({
+                            url: '../controllers/productos.controller.php',
+                            type: 'GET',
+                            data: datosEnviar,
+                            success: function (result) {
+                                $("#form-productos")[0].reset();
+                                mostrar();
+                                $("#modal-registrar").modal('hide');
+                            }
+                        });
+
                         }
-                    });
-                }
+                
+                    }
+                });
             }
 
-            function eliminar(id){
-                if (confirm("¿Está seguro de eliminar el registro?")){
-                    $.ajax({
-                        url: '../controllers/productos.controller.php',
-                        type: 'GET',
-                        data: {
-                            'operacion' : 'eliminar',
-                            'idproducto' : id
-                        },
-                        success: function(){
-                            mostrar();
-                        }
-                    });
-                }
+
+
+            function eliminar(id) {
+                Swal.fire({
+                    title: '¿Está seguro de eliminar el registro?',
+                    text: "Esta acción no se puede deshacer.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '../controllers/productos.controller.php',
+                            type: 'GET',
+                            data: {
+                                'operacion': 'eliminar',
+                                'idproducto': id
+                            },
+                            success: function () {
+                                mostrar();
+                            }
+                        });
+                    }
+                });
             }
+
 
             function mostrarDatos (id){
 

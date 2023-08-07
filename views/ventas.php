@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
+  header('Location:../index.php');
+}
+
+$idusuario = $_SESSION['segurity']['idusuario'];
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,25 +16,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <title>Inicio</title>
+  <link rel="icon" href="../img/remove.ico">
+
   <!-- BOOTSTRAP -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <!-- Boxicons CSS -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <!-- estilos de select2   -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles/venta.css">
+  
 </head>
 <body>
 
   <header>
-    <nav class="navbar navbar-light bg-warning-subtle fixed-top">
+    <nav class="navbar navbar-light bg-warning-subtle  fixed-top">
         <div class="container-fluid ">
-        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 50px;" alt=""></a>
+        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 50px;" alt=""></a>          
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
-            aria-labelledby="offcanvasNavbarLabel">
-            <div class="offcanvas-header bg-success-subtle">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
+            aria-labelledby="offcanvasNavbarLabel">            
+            <div class="offcanvas-header bg-warning-subtle">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>            
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
@@ -38,10 +55,10 @@
                 <a class="nav-link" href="clientes.php">Clientes</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="reportes.php">Reportes</a>
+                <a class="nav-link" href="./reportes.php">Reportes</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link" href="#">Cerrar sesión</a>
+                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy">Cerrar sesión</a>
                 </li>
             </ul>
             
@@ -54,60 +71,35 @@
   <main class="opacity-85 mb-5">
     <div class="container mt-5 col-12">
       <div class="card">
-        <div class="card-header bg-warning-subtle text-black">
+        <div class="card-header bg-warning text-white" >
             <h4 class="text-center">REGISTRO DE VENTAS</h4>
         </div>
         <div class="card-body" >
-            <form action="" id="form-venta">
+            <form action="" id="form-venta">             
               <div class="row">
-                <div class="col-lg-4" >
-                  <!-- <label for="nombres" class="form-label">Cliente:</label> -->
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="addon-wrapping"><i class='bx bxs-user-detail' ></i></span>
-                    <input type="text" class="form-control" placeholder="Buscar cliente" aria-label="Recipient's username" aria-describedby="button-addon2" id="cliente">
-                    <button class="btn btn-outline-success" type="button" id="button-addon1" data-bs-toggle="modal" data-bs-target="#modalId"><i class='bx bx-search' ></i></button>
+
+              <div class="col-lg-4">
+                  <div class="mb-3">   
+                    <label for="cliente" class="form-label">Cliente:</label>                                 
+                    <select  id="cliente" class="js-example-responsive" style="width: 100%;" >
+                      <option value=""></option>
+                    </select>
                   </div>
                 </div>
+
+              <div class="col-lg-4">
+              <div class="input-group mt-4">
+                <select class="form-select" id="producto">
+                  <option selected>Seleccione</option>                 
+                </select>                
+                <label class="input-group-text" for="inputGroupSelect02"><i class='bx bx-cart-add' ></i></label>
               </div>
-              <div class="row">
 
-                <div class="mb-3 col-lg-4">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
-                    <input type="text" class="form-control" placeholder="Nombres" maxlength="50" id="nombres">
-                  </div>
-                </div>
+              </div>
 
-                <div class="mb-3 col-lg-4">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
-                    <input type="text" class="form-control" placeholder="Apellidos" maxlength="50" id="apellidos">
-                  </div>
-                </div>
-
-                <div class="mb-3 col-lg-4">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-id-card'></i></span>
-                    <input type="text" class="form-control" placeholder="Número DNI" maxlength="8" id="dni">
-                  </div>  
-                </div>
-                <div class="mb-3 col-lg-4">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bx-phone' ></i></span>
-                    <input type="tel" class="form-control" placeholder="900-000-00" maxlength="9" id="telefono">
-                  </div>  
-                </div>
-                
-                <div class="col-lg-4">
-                    <!-- <label for="fecha" class="form-label">Fecha:</label> -->
-                    <div class="input-group mb-3 ">
-                        <span class="input-group-text" id="basic-addon1"><i class='bx bxs-calendar' ></i></span>
-                        <input type="date" class="form-control" aria-label="Username" id="fecha">
-                    </div>
-                </div>
                 <div class="col-lg-4">
                   <!-- <label for="cantidad" class="form-label">N° Paquetes:</label> -->
-                    <div class="input-group mb-3">
+                    <div class="input-group mt-4">
                       <input type="number" placeholder="Digité cantidad paquetes" class="form-control" id="cantidad" min="1" max="500">
                       <button class="btn btn-outline-warning" type="button" id="button-addon2" onclick="crearCajas()"><i class='bx bx-package' ></i></button>
                     </div>
@@ -122,7 +114,6 @@
             </form>
 
             <form action="" id="form-detalle">
-
               
               <hr>
               <div class="row">
@@ -152,9 +143,8 @@
         <div class="card-footer text-muted">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <!-- <button class="btn btn-primary " type="button" onclick="crearCajas()">Crear paquetes</button> -->
-                <button type="button" class="btn btn-primary">Guardar</button>
-                <button class="btn btn-secondary bg-danger"  onclick="limpiarCajas()" >Limpiar</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
+                <button type="button" class="btn btn" style="background-color: #F7DC6F;" id="btnRegistrar">Registrar</button>
+                <button class="btn btn-secondary "  onclick="limpiarCajas()" >Limpiar</button>                
             </div>
         </div>
       </div>
@@ -166,202 +156,11 @@
     <h6 style="text-align: center;">Copyright - 2023</h6>
   </footer>
 
-  <!-- Modal Body -->
-    <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-    <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="modalTitleId">CLIENTES</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form action="" id="registro-cursos">
-              <div class="row">
-                <div class="mb-3 col-lg-10">
-                  <div class="input-group mb-3">
-                    <span class="input-group-text" id="basic-addon1"><i class='bx bxs-user-detail' ></i></span>
-                    <input type="text" class="form-control" placeholder="Buscar cliente" maxlength="50" id="nombres">
-                  </div>
-                </div>
-                
-                <div class="mb-3 col-lg-2">
-                  <div class="input-group mb-3">
-                    <button type="button" class="btn btn-success"><i class='bx bx-search'></i></button>
-                  </div>
-                </div>
-
-                <div class="table-responsive">
-                  <form action="">
-                      <table class="table table-striped" id="tabla-clientes">
-                          <thead>
-                              <tr>
-                                  <th>ID</th>
-                                  <th>Nombres</th>
-                                  <th>Apellidos</th>
-                                  <th>DNI</th>
-                                  <th>Teléfono</th>
-                                  <th>Operación</th>
-                              </tr>
-                          </thead>
-                          <tbody class="table-group-divider">
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>@mdo</td>
-                            <td><a href='#' class='eliminar btn btn-warning btn-sm'>Seleccionar</a></td>
-                          </tr>
-                          </tbody>
-                      </table>
-                  </form>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <!-- <button type="button" class="btn btn-primary">Registrar</button> -->
-            
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Salir</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  <!-- Optional: Place to the bottom of scripts -->
-  <script>
-    const myModal = new bootstrap.Modal(document.getElementById('modalId'), options)
-  
-  </script>
+        <!-- CDN sweetAlert2 -->
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>              
+        <!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        
   <script>
     const toggleBtn = document.querySelector('.toggle_btn')
     const toggleBtnIcon = document.querySelector('.toggle_btn i')
@@ -382,7 +181,11 @@
       var cantidad = parseInt(document.getElementById("cantidad").value);
 
       if (isNaN(cantidad) || cantidad < 1 || cantidad > 500) {
-          alert("Ingrese un número válido entre 1 y 500.");
+        Swal.fire({
+            title: "Por favor, ingrese un numero entre 1 y 500",
+            icon: "warning",
+            confirmButtonColor: "#E43D2C",
+                  });
           return;
       }
 
@@ -470,6 +273,159 @@
   const fechaInput = document.getElementById('fecha');
   fechaInput.value = obtenerFechaActual();
 </script>
+
+      <!-- select2 -->
+      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+
+  document.addEventListener("DOMContentLoaded", () => {
+
+    //Activa el select2 en clientes
+    $("#cliente").select2();
+    
+    const lsProducto = document.querySelector("#producto");
+    const lsCliente = document.querySelector("#cliente");
+    const btnRegistrar = document.querySelector("#btnRegistrar");
+
+    function mostrarProductos(){
+      const parameters = new URLSearchParams();
+      parameters.append("operacion", "recuperarProduct");
+
+      fetch("../controllers/ventas.controller.php", {
+        method: 'POST',
+        body: parameters
+      })
+      .then(response => response.json())
+      .then(data => {
+        lsProducto.innerHTML = "<option value=''>Seleccione</option>";
+        data.forEach(element => {
+          const optionTag = document.createElement("option");
+          optionTag.value = element.idproducto
+          optionTag.text = element.nombre;
+          lsProducto.appendChild(optionTag);
+          
+        });
+      });
+    }
+
+    function mostrarClientes(){
+      const parameters = new URLSearchParams();
+      parameters.append("operacion", "recuperarClient");
+
+      fetch("../controllers/ventas.controller.php", {
+        method: 'POST',
+        body: parameters
+      })
+      .then(response => response.json())
+      .then(data => {
+        lsCliente.innerHTML = "<option value=''>Seleccione</option>";
+        data.forEach(element => {
+          const optionTag = document.createElement("option");
+          optionTag.value = element.idpersona
+          optionTag.text = element.clientes;
+          lsCliente.appendChild(optionTag);
+          
+        });
+      });
+    }
+
+    function ventasRegistrar(){
+
+      const producto = document.querySelector("#producto").value.trim();
+      const cliente = document.querySelector("#cliente").value.trim();
+      const cantidad = document.querySelector("#cantidad").value.trim();
+      const precio = document.querySelector("#factor").value.trim();
+      const flete = document.querySelector("#flete").value.trim();
+      let idUsuario = <?php echo json_encode($idusuario) ?>;
+
+      Swal.fire({
+          title: "¿Está seguro de registrar?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Sí",
+          cancelButtonText: "Cancelar",
+          confirmButtonColor: '#03643a',
+          customClass: {
+              confirmButton: "spacing",
+              cancelButton: "spacing"
+          }
+
+
+      }).then((result)=>{
+        if(result.isConfirmed){
+          if(cliente === '' || producto === '' ||
+            cantidad === '' || precio === '' || flete === ''){
+
+                  Swal.fire({
+                        title: "Por favor, complete los campos",
+                        icon: "warning",
+                        confirmButtonColor: "#E43D2C",
+                     });
+            }else{
+
+
+              const parameters = new URLSearchParams();
+              parameters.append("operacion", "ventasRegistrar");
+              parameters.append("idproducto", document.querySelector("#producto").value);
+              parameters.append("cantidad", document.querySelector("#cantidad").value);
+              parameters.append("idusuario", idUsuario);
+              parameters.append("idcliente", document.querySelector("#cliente").value);
+              parameters.append("kilos", document.querySelector("#totalValores").value);
+              parameters.append("precio", document.querySelector("#factor").value);
+              parameters.append("flete", document.querySelector("#flete").value);
+
+              fetch("../controllers/ventas.controller.php",{
+                method: 'POST',
+                body: parameters
+              })
+              .then(response => response.json())
+              .then(data => {
+                if(data.status){
+                  Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'La venta se registro correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+                    document.querySelector("#form-venta").reset();
+                    document.querySelector("#form-detalle").reset();
+                    document.querySelector("#form-paquete").reset();
+                    $("#cliente").val(null).trigger('change');
+                  
+                }else{
+                  Swal.fire("Error", data.message, "error");  
+
+                }
+
+              });
+
+            }
+          
+       
+        }
+
+
+      });
+
+
+    }
+
+    mostrarProductos();
+    mostrarClientes();
+
+    btnRegistrar.addEventListener("click", ventasRegistrar);
+
+
+
+  });
+
+
+  
+</script>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>

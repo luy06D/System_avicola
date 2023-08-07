@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
+  header('Location:../index.php');
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -41,7 +51,7 @@
                     <a class="nav-link" href="reportes.php">Reportes</a>
                     </li>
                     <li class="nav-item">
-                    <a class="nav-link" href="#">Cerrar sesión</a>
+                    <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy">Cerrar sesión</a>
                     </li>
                 </ul>
                 

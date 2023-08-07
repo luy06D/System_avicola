@@ -15,7 +15,10 @@ CONSTRAINT uk_dni_per UNIQUE (dni)
 )
 ENGINE = INNODB;
 
-
+INSERT INTO personas (nombres, apellidos) VALUES
+		('Juan Moises','Gonzales Salazar');
+INSERT INTO personas (nombres, apellidos) VALUES
+		('Lidia Leonor','Cusi Gonzales');
 
 -- Actualizando restriccion not null (dni)
 ALTER TABLE personas MODIFY COLUMN dni CHAR(8) NULL;
@@ -33,25 +36,18 @@ CONSTRAINT uk_nom_usu UNIQUE (nombreusuario)
 ENGINE = INNODB;
 
 
-
-
-
--- Encriptamos la contraseña
-UPDATE usuarios SET claveacceso = '$2y$10$G/Rcks0WXGZslmcfaOXxGODGrK2IaseWCjcA028UrTHyO2n7ptFYq'
-WHERE idusuario = 1;
-
-
 CREATE TABLE productos
 (
 idproducto	INT AUTO_INCREMENT PRIMARY KEY,
 nombre		VARCHAR(30)	NOT NULL,
 descripcion	VARCHAR(100)	NULL,
 cantidad	SMALLINT	NOT NULL,
-precio		DECIMAL(5,2)	NOT NULL,
-CONSTRAINT ck_can_pro CHECK (cantidad > 0 ),
-CONSTRAINT ck_pre_pro CHECK (precio > 0)
+CONSTRAINT ck_can_pro CHECK (cantidad > 0 )
 )
 ENGINE = INNODB;
+
+INSERT INTO productos (nombre, cantidad) VALUES 
+		('Huevos', '1000');
 
 
 
@@ -66,30 +62,29 @@ CONSTRAINT ck_can_det CHECK (cantidad > 0 )
 ENGINE = INNODB;
 
 
-
-
-
-
--- Npaquetes 
--- Nkilos
-
-INSERT INTO detalle_ventas(idproducto, cantidad)VALUES
-(1, 500)
 	
-
 CREATE TABLE ventas
 (
 idventa		INT AUTO_INCREMENT PRIMARY KEY,
-iddetalle_venta	INT NOT NULL,
-idusuario	INT NOT NULL,
-idcliente	INT NOT NULL,
-fechaventa	DATE	NOT NULL DEFAULT NOW(),
+iddetalle_venta	INT 		NOT NULL,
+idusuario	INT 		NOT NULL,
+idcliente	INT 		NOT NULL,
+kilos		SMALLINT 	NOT NULL,
+precio		DECIMAL(4,2) 	NOT NULL,
+flete		TINYINT		NULL,
+fechaventa	DATE		NOT NULL DEFAULT NOW(),
 estado		CHAR(1)		NOT NULL DEFAULT '1',
 CONSTRAINT fk_idd_ven FOREIGN KEY (iddetalle_venta) REFERENCES detalle_ventas (iddetalle_venta),
 CONSTRAINT fk_idu_ven FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario),
-CONSTRAINT fk_idc_ven FOREIGN KEY (idcliente) REFERENCES personas (idpersona)
+CONSTRAINT fk_idc_ven FOREIGN KEY (idcliente) REFERENCES personas (idpersona),
+CONSTRAINT ck_pre_ven CHECK (precio > 0),
+CONSTRAINT ck_kil_ven CHECK (kilos > 0)
 )
 ENGINE = INNODB;
+
+-- Actualizando el tipo de dato (tinyint)
+ALTER TABLE ventas MODIFY COLUMN flete DECIMAL(2,1) NULL;
+
 
 
 
@@ -115,17 +110,56 @@ END$$
 
 
 				/* REGISTRAR VENTA*/
-				
+		
 DELIMITER $$
-CREATE PROCEDURE spu_ventas_register(
-IN _iddetalle_venta INT ,
-IN _idusuario INT,
-IN _idcliente INT )	
+CREATE PROCEDURE spu_ventas_register
+(
+IN _idproducto	INT,
+IN _cantidad 	SMALLINT,
+
+IN _idusuario 	INT,
+IN _idcliente 	INT,
+IN _kilos	SMALLINT,
+IN _precio	DECIMAL(4,2),
+IN _flete	DECIMAL(2,1)
+)	
 BEGIN 
-	INSERT INTO ventas (iddetalle_venta, idusuario, idcliente)VALUES
-	(_iddetalle_venta, _idusuario, _idcliente);
+	DECLARE g_iddetalle INT;
+	
+	INSERT INTO detalle_ventas (idproducto, cantidad) VALUES
+				(_idproducto, _cantidad);
+	
+	SELECT LAST_INSERT_ID() INTO g_iddetalle;
+	
+	
+	INSERT INTO ventas (iddetalle_venta, idusuario, idcliente, kilos, precio, flete)VALUES
+		(g_iddetalle, _idusuario, _idcliente, _kilos , _precio , _flete);
 END$$
 
+CALL spu_ventas_register (1, 13, 1, 2, 123, 12, 0.2 );
+
+SELECT * FROM detalle_ventas;
+SELECT * FROM ventas;
+
+				-- RECUPERAR PRODUCTOS
+DELIMITER $$ 
+CREATE PROCEDURE spu_productos_recuperar()
+BEGIN
+	SELECT idproducto , nombre
+	FROM  productos;
+END $$
+
+CALL spu_productos_recuperar()
+
+				-- RECUPERAR CLIENTES			
+DELIMITER $$ 
+CREATE PROCEDURE spu_clientes_recuperar()
+BEGIN
+	SELECT idpersona , CONCAT(nombres,' ', apellidos) AS clientes
+	FROM  personas;
+END $$				
+
+CALL spu_clientes_recuperar;
 
 
 
@@ -133,7 +167,6 @@ END$$
 
 	
 DELIMITER$$			
-
 CREATE PROCEDURE spu_ventas_resume()
 SELECT LEFT (DAYNAME(fechaventa),1 ) AS Dia, SUM(detalle_ventas.cantidad)AS total
 FROM ventas
@@ -199,8 +232,29 @@ END$$
 CALL spu_usuario_registar('Luis David','Cusi Gonzales','','','Luy06','12345');
 
 
-UPDATE usuarios SET claveacceso = '$2y$10$XmYFrIUyGm2mxxkdSaB6A.QHUNp9qB9cLUACpJroNOBhDDasiDU2S'
-WHERE idusuario = 2
+DELIMITER $$
+CREATE PROCEDURE spu_filtro_ventas
+(
+IN _fechainicio DATE,
+IN _fechafin	DATE
+)
+BEGIN
+
+	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
+		VE.kilos, VE.precio, VE.flete, VE.fechaventa,
+		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
+	FROM ventas VE
+	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
+	WHERE VE.fechaventa BETWEEN _fechainicio AND _fechafin;
+	
+END $$
+
+CALL spu_filtro_ventas('2023-08-04','2023-08-06')
+
+
+
+
+
 
 
 
@@ -237,5 +291,4 @@ WHERE idusuario = 2
 				
 				
 				
-				
->>>>>>> c561b0decd4d8e93b8ea72fb05cf1a37d4214035
+

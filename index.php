@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+//Si el usuario ya tiene una sesión activa ... entonces NO DEBE ESTAR AQUI 
+if(isset($_SESSION['segurity']) && $_SESSION['segurity']['login']){
+   header('Location:views/ventas.php');
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,12 +16,12 @@
    <meta charset="utf-8">
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    
-   <link rel="stylesheet" type="text/css" href="../styles/login.css">
+   <link rel="stylesheet" type="text/css" href="./styles/login.css">
    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
    <!-- <link rel="stylesheet" href="css/all.min.css"> -->
    <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> --> 
    <title>Inicio de sesión</title>
-   <link rel="icon" href="../img/vania_logo.ico">
+   <link rel="icon" href="./img/remove.ico">
 </head>
 
 <body>
@@ -25,11 +36,11 @@
   
    <div class="container">
       <div class="img">
-         <img src="../img/vania_logo.jpeg">
+         <img src="./img/vania_logo.jpeg">
       </div>
       <div class="login-content">
          <form method="post" action="">
-            <img src="../img/usuario (3).png">
+            <img src="./img/usuario (3).png">
             <h2 class="title">BIENVENIDO</h2>
             <div class="input-div one">
                <div class="i">
@@ -54,16 +65,16 @@
             </div>
 
             <div class="text-center register">            
-               <a class="font-italic isai5" href="./newusuario.php">Registrarse</a>
+               <a class="font-italic isai5" href="./views/newusuario.php">Registrarse</a>
             </div>
             <button id="btniniciar" class="btn" type="button">INICIAR SESION</button>
          </form>
       </div>
    </div>
    
-   <script src="../js/fontawesome.js"></script>
-   <script src="../js/verpassword.js"></script>
-   <script src="../js/tagfloat.js"></script>
+   <script src="./js/fontawesome.js"></script>
+   <script src="./js/verpassword.js"></script>
+   <script src="./js/tagfloat.js"></script>
    <!-- CDN jquery -->
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
    <!-- CDN sweetAlert2 -->
@@ -80,7 +91,7 @@
             };
 
             $.ajax({
-               url:'../controllers/usuario.controller.php',
+               url:'./controllers/usuario.controller.php',
                type: 'GET',
                data: data,
                dataType: 'JSON',
@@ -95,7 +106,7 @@
 
                      }).then((result) => {
                         if(result){
-                           window.location.href = `./demo.html`;
+                           window.location.href = `./views/ventas.php`;
                         }
                      })
                   }

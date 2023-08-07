@@ -11,6 +11,7 @@
    <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
    
    <title>REGISTRO</title>
+   <link rel="icon" href="../img/remove.ico">
 </head>
 
 <body>

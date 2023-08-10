@@ -147,6 +147,7 @@
                            });
 
                            $("#form_newusuario")[0].reset();
+                           window.location.href = `../index.php`;
                         }
                      });
                   

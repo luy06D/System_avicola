@@ -10,9 +10,9 @@ class Reporte extends Conexion{
         $this->conexion = parent::getConnect();        
     }
 
-    public function filtroVentas($fechaInicio = "", $fechaFin = ""){
+    public function filtro2Ventas($fechaInicio = "", $fechaFin = ""){
         try{
-        $query = $this->conexion->prepare("CALL spu_filtro_ventas (?,?)");
+        $query = $this->conexion->prepare("CALL spu_filtro2_ventas (?,?)");
             $query->execute(array($fechaInicio, $fechaFin));
 
             return $query->fetchAll(PDO::FETCH_ASSOC);
@@ -22,6 +22,46 @@ class Reporte extends Conexion{
             die($err->getMessage());
         }
 
+    }
+
+    public function filtro3Ventas($fechaInicio = "", $fechaFin = "", $idcliente = 0){
+        try{
+        $query = $this->conexion->prepare("CALL spu_filtro3_ventas (?,?,?)");
+            $query->execute(array($fechaInicio, $fechaFin, $idcliente));
+
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+
+        }
+        catch(Exception $err){
+            die($err->getMessage());
+        }
+
+    }
+
+    public function filtro1Ventas($idcliente = 0){
+        try{
+        $query = $this->conexion->prepare("CALL spu_filtro1_ventas (?)");
+            $query->execute(array($idcliente));
+
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+
+        }
+        catch(Exception $err){
+            die($err->getMessage());
+        }
+
+    }
+
+    public function recuperarClientes(){
+        try{
+            $query = $this->conexion->prepare("CALL spu_clientes_recuperar()");
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+
+        }
+        catch(Exception $err){
+            die($err->getMessage());
+        }
     }
 }
 

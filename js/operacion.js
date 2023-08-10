@@ -1,27 +1,48 @@
 
-function crearCajas() {
+function crearCajas(event) {
     var cantidad = parseInt(document.getElementById("cantidad").value);
 
     if (isNaN(cantidad) || cantidad < 1 || cantidad > 500) {
-        alert("Ingrese un número válido entre 1 y 500.");
+        Swal.fire({
+            title: "Por favor, ingrese un número del 1 al 500",
+            icon: "warning",
+            confirmButtonColor: "#E43D2C",
+        });
         return;
     }
-
+    
     var contenedorCajas = document.getElementById("contenedorCajas");
     contenedorCajas.innerHTML = ""; // Limpiamos el contenido previo
 
     for (var i = 0; i < cantidad; i++) {
         var nuevaCaja = document.createElement("input");
         nuevaCaja.type = "number";
-        nuevaCaja.id = "caja";
-        nuevaCaja.className = "col-2";
-        nuevaCaja.placeholder = "Paquete " + (i + 1);
+        nuevaCaja.id = "caja" + (i + 1);
+        nuevaCaja.className = "cajasinput";
+        // nuevaCaja.placeholder = "Paquete " + (i + 1);        
         nuevaCaja.addEventListener("input", actualizarTotal);
+        nuevaCaja.addEventListener("keydown", limiter);
         contenedorCajas.appendChild(nuevaCaja);
     }
 
-    actualizarTotal();
+    actualizarTotal()
 }
+
+
+function limiter(event){
+    const cajax = document.querySelector("#caja2");
+    if(event.target.value.length > 2){
+        Swal.fire({
+            title: "Por favor, ingrese un número de dos cifras",
+            icon: "warning",
+            confirmButtonColor: "#E43D2C",
+        });
+        cajax.value = "";
+
+    }
+ 
+}
+
 
 function limpiarCajas() {
   const cajasContainer = document.getElementById("contenedorCajas");

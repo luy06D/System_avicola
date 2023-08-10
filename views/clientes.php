@@ -24,8 +24,19 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <!-- DataTable -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
     <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<style>
+       body{
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+          }
+  </style>
+
+
     <header>
         <!-- Menu -->
         <nav class="navbar navbar-light bg-warning-subtle fixed-top">
@@ -189,6 +200,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             }
 
             function registrar(){
+                const nombres = document.querySelector("#nombres").value.trim();
+                const apellidos = document.querySelector("#apellidos").value.trim();
+                const dni = document.querySelector("#dni").value.trim();
+                const telefono = document.querySelector("#telefono").value.trim();
+
                 let datosEnviar = {
 
                 'operacion'   : 'registrar',
@@ -198,27 +214,56 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 'telefono'    : $('#telefono').val()
                 };
 
-                if(!datosNuevos){
-                
+                if(!datosNuevos){            
                     datosEnviar['operacion'] = "actualizar";
                     datosEnviar['idpersona'] = idpersona;
                 }
 
-                if(confirm("¿Está seguro de realizar la operación?")){
-                    $.ajax({
-                        url:'../controllers/clientes.controller.php',
-                        type: 'GET',
-                        data: datosEnviar,
-                        success: function(result){
-                        
-                            $("#form-clientes")[0].reset();
+                Swal.fire({
+                    title: '¿Está seguro de realizar la operación?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#65BB3B',
 
-                            mostrar();
+                }).then((result) => {
+                    if(result.isConfirmed) {
+                        if(nombres === '' || apellidos === '' ||
+                            dni === '' || telefono === ''){
+                                Swal.fire({
+                                title: "Por favor, complete los campos",
+                                icon: "warning",
+                                confirmButtonColor: "#E43D2C",
+                            });
 
-                            $("#modal-registrar").modal('hide');
-                        }
-                    });
-                }
+                         }else{
+                            Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Operación exitosa',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
+
+                            $.ajax({
+                                url:'../controllers/clientes.controller.php',
+                                type: 'GET',
+                                data: datosEnviar,
+                                success: function(result){
+                                
+                                    $("#form-clientes")[0].reset();
+
+                                    mostrar();
+
+                                    $("#modal-registrar").modal('hide');
+                                }
+                            });
+
+                         }
+                    }
+                });
+                                     
             }
 
             function eliminar(id){
@@ -283,6 +328,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 $("#modal-registro-header").removeClass("bg-primary");
                 $("#modal-registro-header").addClass("bg-info-subtle");
                 $("#guardar").html("Guardar");
+                $("#form-clientes")[0].reset();
                 datosNuevos =true;
             }
 

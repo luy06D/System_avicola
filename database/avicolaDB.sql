@@ -82,6 +82,8 @@ CONSTRAINT ck_kil_ven CHECK (kilos > 0)
 )
 ENGINE = INNODB;
 
+
+
 -- Actualizando el tipo de dato (tinyint)
 ALTER TABLE ventas MODIFY COLUMN flete DECIMAL(2,1) NULL;
 
@@ -146,10 +148,12 @@ DELIMITER $$
 CREATE PROCEDURE spu_productos_recuperar()
 BEGIN
 	SELECT idproducto , nombre
-	FROM  productos;
+	FROM  productos
+	WHERE estado = 1;
 END $$
 
 CALL spu_productos_recuperar()
+
 
 				-- RECUPERAR CLIENTES			
 DELIMITER $$ 
@@ -233,9 +237,10 @@ END$$
 
 CALL spu_usuario_registar('Luis David','Cusi Gonzales','','','Luy06','12345');
 
+			-- FILTRO FECHAS
 
 DELIMITER $$
-CREATE PROCEDURE spu_filtro_ventas
+CREATE PROCEDURE spu_filtro2_ventas
 (
 IN _fechainicio DATE,
 IN _fechafin	DATE
@@ -251,9 +256,48 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro_ventas('2023-08-04','2023-08-06')
+CALL spu_filtro2_ventas('2023-08-04','2023-08-06')
+
+			-- FILTRO FECHAS Y CLIENTE
+
+DELIMITER $$
+CREATE PROCEDURE spu_filtro3_ventas
+(
+IN _fechainicio DATE,
+IN _fechafin	DATE,
+IN _idcliente	INT
+)
+BEGIN
+
+	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
+		VE.kilos, VE.precio, VE.flete, VE.fechaventa,
+		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
+	FROM ventas VE
+	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
+	WHERE VE.fechaventa BETWEEN _fechainicio AND _fechafin AND VE.idcliente = _idcliente;
+	
+END $$
+
+CALL spu_filtro3_ventas('2023-08-01','2023-08-03',2)
 
 
+
+			-- FILTRO CLIENTE
+
+DELIMITER $$
+CREATE PROCEDURE spu_filtro1_ventas(IN _idcliente INT)
+BEGIN
+
+	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
+		VE.kilos, VE.precio, VE.flete, VE.fechaventa,
+		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
+	FROM ventas VE
+	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
+	WHERE VE.idcliente = _idcliente;
+	
+END $$
+
+CALL spu_filtro1_ventas(3)
 
 
 

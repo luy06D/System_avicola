@@ -27,8 +27,19 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<style>
+       body{
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+          }
+  </style>
+
+
     <header>
         <!-- Menu -->
         <nav class="navbar navbar-light bg-warning-subtle fixed-top" >
@@ -220,7 +231,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             Swal.fire({
                         position: 'top-end',
                         icon: 'success',
-                        title: 'El producto se registro correctamente',
+                        title: 'Operación exitosa',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -305,6 +316,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 $("#modal-registro-header").removeClass("bg-primary");
                 $("#modal-registro-header").addClass("bg-info-subtle");
                 $("#guardar").html("Guardar");
+                $("#form-productos")[0].reset();
                 datosNuevos =true;
             }
 

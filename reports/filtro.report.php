@@ -11,10 +11,24 @@ use Spipu\Html2Pdf\Exception\ExceptionFormatter;
 try {
 
     $reporte = new Reporte();
-    $data = $reporte->filtroVentas($_GET['fechainicio'], $_GET['fechafin']);
+
+    $idcliente = isset($_GET['idcliente']) && is_numeric($_GET['idcliente']) ? intval($_GET['idcliente']) : null;
+    $fechainicio    = $_GET['fechainicio'] ?? null;
+    $fechafin       = $_GET['fechafin'] ?? null;
+
+
+    if(!empty($fechainicio) && !empty($fechafin) && !empty($idcliente)){
+        $data = $reporte->filtro3Ventas($fechainicio, $fechafin , $idcliente);
+
+    }elseif (!empty($fechainicio) && !empty($fechafin)){
+        $data = $reporte->filtro2Ventas($fechainicio, $fechafin);
+
+    }elseif(!empty($idcliente)){
+        $data = $reporte->filtro1Ventas($idcliente);
+    }
+
     $fechaI = $_GET['fechaI'];
     $fechaF = $_GET['fechaF'];
-
 
     ob_start();
 

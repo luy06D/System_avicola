@@ -25,9 +25,23 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-1.13.6/b-2.4.1/b-html5-2.4.1/b-print-2.4.1/datatables.css" rel="stylesheet">
+        <!-- Icons Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+      <!-- estilos de select2   -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+  <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
 </head>
 
 <body>
+<style>
+       body{
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+          }
+  </style>
 
     <header>
         <nav class="navbar navbar-light bg-warning-subtle fixed-top">
@@ -77,32 +91,37 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <h4 class="text-center">FILTRADO</h4>
                 </div>
                 <div class="card-body" >
-                    <form action="" id="form-venta">
+                    <form action="" id="form-filtro">
                         <div class="row">
-                            <div class="mb-3 col-lg-3">
-                                <div class="input-group mb-3">
+
+                            <div class=" col-lg-3">
+                                <div>   
+                                    <label for="cliente" class="form-label">Cliente:</label>                                 
+                                    <select  id="cliente" class="js-example-responsive" style="width: 100%;" >
+                                    <option value=""></option>
+                                    </select>
+                                </div>                               
+                            </div>
+                            <div class=" col-lg-3">
+                                <div class="input-group mt-4">
                                     <span class="input-group-text" id="basic-addon1"><i class='bx bx-calendar' ></i></span>
                                     <input type="date" class="form-control"  id="fechainicio">
                                 </div>
                             </div>
 
-                            <div class="mb-3 col-lg-3">
-                                <div class="input-group mb-3">
+                            <div class="col-lg-3">
+                                <div class="input-group  mt-4">
                                     <span class="input-group-text" id="basic-addon1"><i class='bx bx-calendar' ></i></span>
                                     <input type="date" class="form-control"  id="fechafin">
                                 </div>
                             </div>
-                            <div class="col-md-3 mb-2">
-                                <div class="d-grid">
-                                    <button id="btnfiltro" class="btn btn-success btn-md " type="button">Filtrar</button>
+                            <div class="col-md-3 mt-4">
+                                <div class="">
+                                    <button id="btnfiltro" class="btn btn-success btn-md " type="button"><i class="bi bi-funnel-fill"></i></button>
+                                    <button id="exportar" class="btn btn-danger" type="button"><i class="bi bi-file-earmark-pdf"></i></button>
                                 </div>
-                            </div>
-                            <div class="col-md-3 mb-2">
-                                <div class="d-grid">
-                                    <button id="exportar" class="btn btn-danger btn-md " type="button">Exportar</button>
-                                </div>
-                            </div>
-        
+                            </div>                     
+                               
                             <!-- <div class="mb-3 col-lg-2">
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <button type="button" class="btn btn-primary"><i class='bx bx-filter-alt' ></i></button>
@@ -157,19 +176,59 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-   
+
+       <!-- select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+      <!-- Datatable for BS5 - Para los botones se debe agregar nuevas librerías -->
+    <script src="https://cdn.datatables.net/buttons/2.3.5/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.5/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.3.5/js/buttons.print.min.js"></script>
+
+
 
 
     <script>
         document.addEventListener("DOMContentLoaded", () =>{
 
+              //Activa el select2 en clientes
+             $("#cliente").select2();
+
             const cuerpoTabla = document.querySelector("#table-report tbody");
             const btnfiltro = document.querySelector("#btnfiltro");
             const btnExportar = document.querySelector("#exportar");
+            const lsCliente = document.querySelector("#cliente");
 
-            function filtroVentas(){
+            
+            function recuperarCliente(){
+            const parameters = new URLSearchParams();
+            parameters.append("operacion", "recuperarCliente");
+
+            fetch("../controllers/reportes.controller.php", {
+                method: 'POST',
+                body: parameters
+            })
+            .then(response => response.json())
+            .then(data => {
+                lsCliente.innerHTML = "<option value=''>Seleccione</option>";
+                data.forEach(element => {
+                const optionTag = document.createElement("option");
+                optionTag.value = element.idpersona
+                optionTag.text = element.clientes;
+                lsCliente.appendChild(optionTag);
+                
+                });
+            });
+            }
+
+
+
+            function filtro2Ventas(){
                 const parameters = new URLSearchParams();
-                parameters.append("operacion", "filtraVentas");
+                parameters.append("operacion", "filtra2Ventas");
                 parameters.append("fechainicio", document.querySelector("#fechainicio").value);
                 parameters.append("fechafin", document.querySelector("#fechafin").value);
 
@@ -203,13 +262,33 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         cuerpoTabla.innerHTML += rows;                        
                     });
 
-                    $(document).ready(function(){
+                    $(document).ready(function(){                                   
                         $('#table-report').DataTable({
                             responsive: true ,
                             lengthMenu:[10,5],
                             language: {
                                 url: '../js/Spanish.json'
-                            }
+                            },
+                            dom: 'Bfrtip',
+                            buttons: [
+                                {
+                                    extend: 'excel',
+                                    text: '<i class="bi bi-file-excel"></i>',
+                                    titleAttr:'Exportar a excel',
+                                    title:'Productos',
+                                    className:'btn btn-success',
+                                    exportOptions:{ columns: [0,1,2,3] }
+                                },                            
+                                {
+                                    extend: 'print',
+                                    text: '<i class="bi bi-printer"></i>',
+                                    titleAttr:'imprimir',
+                                    title:'Productos',
+                                    className:'btn btn-secondary',
+                                    exportOptions:{ columns: [0,1,2,3] }
+                                }
+                            ],
+                            
                         });
                     })
 
@@ -218,23 +297,196 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 })                            
             }
 
+            function filtro3Ventas(){
+                const parameters = new URLSearchParams();
+                parameters.append("operacion", "filtra3Ventas");
+                parameters.append("fechainicio", document.querySelector("#fechainicio").value);
+                parameters.append("fechafin", document.querySelector("#fechafin").value);
+                parameters.append("idcliente", parseInt(lsCliente.value));
+
+                fetch(`../controllers/reportes.controller.php`, {
+                    method: 'POST',
+                    body: parameters
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.length === 0){                        
+                    Swal.fire({
+                        title: "No hay registros",
+                        icon: "warning",
+                        confirmButtonColor: "#E43D2C",
+                     });
+                    
+                    }else{
+                        cuerpoTabla.innerHTML = ``;
+                        data.forEach(element =>{
+                            const rows = `
+                            <tr>
+                                <td>${element.clientes}</td>
+                                <td>${element.kilos}</td>
+                                <td>${element.precio}</td>
+                                <td>${element.flete}</td>
+                                <td>${element.fechaventa}</td>
+                                <td>${element.totalPago}</td>                        
+                            </tr>                            
+                            `;
+                            cuerpoTabla.innerHTML += rows;
+                        });
+                        $(document).ready(function(){                                    
+                        $('#table-report').DataTable({
+                            responsive: true ,
+                            lengthMenu:[10,5],
+                            language: {
+                                url: '../js/Spanish.json'
+                            },
+                            dom: 'Bfrtip',
+                            buttons: [
+                                {
+                                    extend: 'excel',
+                                    text: '<i class="bi bi-file-excel"></i>',
+                                    titleAttr:'Exportar a excel',
+                                    title:'Productos',
+                                    className:'btn btn-success',
+                                    exportOptions:{ columns: [0,1,2,3] }
+                                },                            
+                                {
+                                    extend: 'print',
+                                    text: '<i class="bi bi-printer"></i>',
+                                    titleAttr:'imprimir',
+                                    title:'Productos',
+                                    className:'btn btn-secondary',
+                                    exportOptions:{ columns: [0,1,2,3] }
+                                }
+                            ],
+                        });
+                    })
+                    }
+                    
+                })
+            }
+
+            
+            function filtro1Ventas(){
+                const parameters = new URLSearchParams();
+                parameters.append("operacion", "filtra1Ventas");              
+                parameters.append("idcliente", parseInt(lsCliente.value));
+
+                fetch(`../controllers/reportes.controller.php`, {
+                    method: 'POST',
+                    body: parameters
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.length === 0){                        
+                    Swal.fire({
+                        title: "No hay registros",
+                        icon: "warning",
+                        confirmButtonColor: "#E43D2C",
+                     });
+                    
+                    }else{
+                        cuerpoTabla.innerHTML = ``;
+                        data.forEach(element =>{
+                            const rows = `
+                            <tr>
+                                <td>${element.clientes}</td>
+                                <td>${element.kilos}</td>
+                                <td>${element.precio}</td>
+                                <td>${element.flete}</td>
+                                <td>${element.fechaventa}</td>
+                                <td>${element.totalPago}</td>                        
+                            </tr>                            
+                            `;
+                            cuerpoTabla.innerHTML += rows;
+                        });
+                        $(document).ready(function(){                      
+                                       
+                        $('#table-report').DataTable({
+                            responsive: true ,
+                            lengthMenu:[10,5],
+                            language: {
+                                url: '../js/Spanish.json'
+                            },
+                            dom: 'Bfrtip',
+                            buttons: [
+                                {
+                                    extend: 'excel',
+                                    text: '<i class="bi bi-file-excel"></i>',
+                                    titleAttr:'Exportar a excel',
+                                    title:'Productos',
+                                    className:'btn btn-success',
+                                    exportOptions:{ columns: [0,1,2,3] }
+                                },                            
+                                {
+                                    extend: 'print',
+                                    text: '<i class="bi bi-printer"></i>',
+                                    titleAttr:'imprimir',
+                                    title:'Productos',
+                                    className:'btn btn-secondary',
+                                    exportOptions:{ columns: [0,1,2,3] }
+                                }
+                            ],
+                        });
+                    })
+                    }
+                    
+                })
+            }
+
+
+            
             function createPDF(){
+                const fechaI = document.querySelector("#fechainicio").value;
+                const fechaF = document.querySelector("#fechafin").value;
+                const cliente = document.querySelector("#cliente").value;
+
                 const parameters = new URLSearchParams();
                 parameters.append("fechainicio", document.querySelector("#fechainicio").value);
                 parameters.append("fechafin", document.querySelector("#fechafin").value);
+                parameters.append("idcliente", parseInt(lsCliente.value));
+
                 parameters.append("fechaI", document.querySelector("#fechainicio").value);
                 parameters.append("fechaF", document.querySelector("#fechafin").value);
-                            
-                window.open(`../reports/filtro.report.php?${parameters}`,`_blank`);
+                
+                if(fechaI === '' && fechaF === '' && cliente === ''){
+                    Swal.fire({
+                        title: "No hay datos para exportar",
+                        icon: "warning",
+                        confirmButtonColor: "#E43D2C",
+                     });
+
+                // }else if(fechaI === '' || fechaF === ''){
+                    
+
+                
+                }else{
+                    window.open(`../reports/filtro.report.php?${parameters}`,`_blank`);
+                }
+                
 
             }
 
 
 
-   
+            recuperarCliente();
+            
+            btnfiltro.addEventListener("click", function(){
+                const fechaI = document.querySelector("#fechainicio").value;
+                const fechaF = document.querySelector("#fechafin").value;
+                const idcliente = parseInt(lsCliente.value);
 
+                if(!isNaN(idcliente) && idcliente !== 0 && fechaI && fechaF){
+                    filtro3Ventas(idcliente, fechaI, fechaF);
+                    
 
-            btnfiltro.addEventListener("click", filtroVentas);
+                }else if(fechaI && fechaF){
+                    filtro2Ventas(fechaI, fechaF);
+
+                }else if(!isNaN(idcliente) && idcliente !==0){
+                    filtro1Ventas(idcliente)
+                }
+
+            });
             btnExportar.addEventListener("click",createPDF);
         });
     </script>

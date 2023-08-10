@@ -56,6 +56,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                       <a class="nav-link" href="reportes.php">Reportes</a>
                     </li>
                     <li class="nav-item">
+                    <a class="nav-link" href="./graficos.php">Graficos</a>
+                    </li>
+                    <li class="nav-item">
                     <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy">Cerrar sesión</a>
 
                     </li>

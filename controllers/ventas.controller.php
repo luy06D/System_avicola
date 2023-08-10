@@ -44,4 +44,8 @@ if (isset($_POST['operacion'])){
         $datos = $ventas->getVentasResume();
         renderJSON($datos);
     }
+    if($_POST['operacion'] == 'grafico2'){
+        $datos = $ventas->Grafico2();
+        renderJSON($datos);
+    }
 }

@@ -58,6 +58,9 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 <a class="nav-link" href="./reportes.php">Reportes</a>
                 </li>
                 <li class="nav-item">
+                <a class="nav-link" href="./graficos.php">Graficos</a>
+                </li>
+                <li class="nav-item">
                 <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy">Cerrar sesión</a>
                 </li>
             </ul>

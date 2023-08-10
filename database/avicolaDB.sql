@@ -166,19 +166,35 @@ CALL spu_clientes_recuperar;
 				/*LISTAR VENTAS*/
 
 	
+
+ 
+DELIMITER $$
+ 
+ CREATE PROCEDURE spu_resume_ventas()
+ BEGIN
+ SELECT COUNT(*) AS Ventas, MONTHNAME(fechaventa) AS MONTH, SUM(ventas.kilos) AS Kilos_Vendidos2
+ FROM ventas
+ WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+ ORDER BY fechaventa;
+ END$$
+ 
+ CALL spu_resume_ventas
+	
+			/*Grafico N2*/
+
 DELIMITER$$			
 CREATE PROCEDURE spu_ventas_resume()
 BEGIN
-SELECT LEFT (DAYNAME(fechaventa),1 ) AS Dia, SUM(detalle_ventas.cantidad)AS total
+SELECT LEFT(DAYNAME(fechaventa),10 ) AS Dia, COUNT(ventas.idventa)AS Ventas_Diarias, SUM(ventas.kilos) AS Kilos_Vendidos
 FROM ventas
 INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
-WHERE fechaventa >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 7 DAY)
 GROUP BY fechaventa
 ORDER BY fechaventa;
  END $$
  
-
  
+		
  
  DELIMITER $$
  CREATE PROCEDURE spu_ventas_listar()
@@ -189,6 +205,8 @@ ORDER BY fechaventa;
  INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
  INNER JOIN productos ON detalle_ventas.idproducto = productos.idproducto;
  END $$
+ 
+ 
 
 				
 				

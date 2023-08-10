@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
+  header('Location:../index.php');
+}
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -192,11 +204,11 @@ function renderGraphic2(coleccion = []){
   leyenda2.innerHTML = ``;
 
   coleccion.forEach(element =>{
-    etiquetas.push(element.month);
+    etiquetas.push(element.MONTH);
               datos.push(element.Kilos_Vendidos2);
 
               const  tag = document.createElement('li');
-              tag.innerHTML = `${element.month}: <strong>${element.Ventas}`;
+              tag.innerHTML = `${element.MONTH}: <strong>${element.Ventas}`;
               leyenda2.appendChild(tag);
   });
   graficoBarras2.data.labels = etiquetas;

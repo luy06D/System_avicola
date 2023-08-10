@@ -198,6 +198,8 @@ ORDER BY fechaventa;
  END $$
  
  
+ 
+ 
 		
  
  DELIMITER $$

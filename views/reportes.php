@@ -14,7 +14,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <title>Reportes</title>
+    <link rel="icon" href="../img/remove.ico">
     <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <!-- Boxicons CSS -->
@@ -123,6 +124,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <div class="">
                                     <button id="btnfiltro" class="btn btn-success btn-md " type="button"><i class="bi bi-funnel-fill"></i></button>
                                     <button id="exportar" class="btn btn-danger" type="button"><i class="bi bi-file-earmark-pdf"></i></button>
+                                    <button id="reset" class="btn btn-secondary" type="button"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
                                 </div>
                             </div>                     
                                
@@ -146,6 +148,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <tr>
                                 <th>Cliente</th>
                                 <th>Kilos</th>
+                                <th>Paquetes</th>
                                 <th>Precio</th>
                                 <th>Flete</th>
                                 <th>Fecha Venta</th>
@@ -205,6 +208,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             const btnfiltro = document.querySelector("#btnfiltro");
             const btnExportar = document.querySelector("#exportar");
             const lsCliente = document.querySelector("#cliente");
+            const btnReset = document.querySelector("#reset");
 
             
             function recuperarCliente(){
@@ -257,6 +261,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <tr>
                             <td>${element.clientes}</td>
                             <td>${element.kilos}</td>
+                            <td>${element.cantidad}</td>
                             <td>${element.precio}</td>
                             <td>${element.flete}</td>
                             <td>${element.fechaventa}</td>
@@ -333,6 +338,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <tr>
                                 <td>${element.clientes}</td>
                                 <td>${element.kilos}</td>
+                                <td>${element.cantidad}</td>
                                 <td>${element.precio}</td>
                                 <td>${element.flete}</td>
                                 <td>${element.fechaventa}</td>
@@ -392,7 +398,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if(data.length === 0){                        
+                    if(data.length === 0){                                      
                     Swal.fire({
                         title: "No hay registros",
                         icon: "warning",
@@ -406,6 +412,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <tr>
                                 <td>${element.clientes}</td>
                                 <td>${element.kilos}</td>
+                                <td>${element.cantidad}</td>
                                 <td>${element.precio}</td>
                                 <td>${element.flete}</td>
                                 <td>${element.fechaventa}</td>
@@ -509,6 +516,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
             });
             btnExportar.addEventListener("click",createPDF);
+            btnReset.addEventListener("click", function(){
+                location.reload();                
+            });
+            
         });
     </script>
 </body>

@@ -86,6 +86,8 @@ ENGINE = INNODB;
 
 -- Actualizando el tipo de dato (tinyint)
 ALTER TABLE ventas MODIFY COLUMN flete DECIMAL(2,1) NULL;
+ALTER TABLE ventas MODIFY COLUMN paquetes JSON NOT NULL;
+
 
 
 
@@ -268,10 +270,11 @@ IN _fechafin	DATE
 BEGIN
 
 	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
-		VE.kilos, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
+	INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
 	WHERE VE.fechaventa BETWEEN _fechainicio AND _fechafin;
 	
 END $$
@@ -290,10 +293,11 @@ IN _idcliente	INT
 BEGIN
 
 	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
-		VE.kilos, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
+	INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
 	WHERE VE.fechaventa BETWEEN _fechainicio AND _fechafin AND VE.idcliente = _idcliente;
 	
 END $$
@@ -309,10 +313,11 @@ CREATE PROCEDURE spu_filtro1_ventas(IN _idcliente INT)
 BEGIN
 
 	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
-		VE.kilos, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
+	INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
 	WHERE VE.idcliente = _idcliente;
 	
 END $$

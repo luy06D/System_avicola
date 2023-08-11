@@ -7,15 +7,17 @@
     <colgroup>
         <col style="width: 31%;">
         <col style="width: 10% ;">
-        <col style="width: 13%;">
+        <col style="width: 11% ;">
+        <col style="width: 12%;">
         <col style="width: 10%;">
-        <col style="width: 16%;">
-        <col style="width: 16%;">
+        <col style="width: 13%;">
+        <col style="width: 13%;">
     </colgroup>
     <thead class="table-cabez">
         <tr>
         <th>Cliente</th>
         <th>Kilo</th>
+        <th>Paquetes</th>
         <th>Precio</th>
         <th>Flete</th>
         <th>Fecha venta</th>
@@ -29,6 +31,7 @@
       
             <td><?=$registro['clientes']?></td>
             <td><?=$registro['kilos']?></td>
+            <td><?=$registro['cantidad']?></td>
             <td><?=$registro['precio']?></td>
             <td><?=$registro['flete']?></td>
             <td><?=$registro['fechaventa']?></td>

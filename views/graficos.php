@@ -13,9 +13,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Graficos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <title>Inicio</title>
   <link rel="icon" href="../img/remove.ico">
 
   <!-- BOOTSTRAP -->
@@ -27,8 +26,16 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
   <!-- estilos de select2   -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles/venta.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<style>
+       body{
+        font-family: 'Poppins', sans-serif;
+        overflow: hidden;
+          }
+  </style>
 
 <header>
     <nav class="navbar navbar-light bg-warning-subtle  fixed-top">

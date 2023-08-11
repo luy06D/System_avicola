@@ -10,7 +10,7 @@
    <!-- <link rel="stylesheet" href="css/all.min.css"> -->
    <!-- <link rel="stylesheet" href="css/fontawesome.min.css"> -->
    
-   <title>REGISTRO</title>
+   <title>Registro</title>
    <link rel="icon" href="../img/remove.ico">
 </head>
 

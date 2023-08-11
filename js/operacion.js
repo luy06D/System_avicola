@@ -40,7 +40,7 @@ function validarNumero(input) {
             icon: 'error',  
             title: 'Por favor!, ingrese número valido entre 1 a 10',
             showConfirmButton: false,
-            timer: 2000
+            timer: 1000
         })
         input.value = ""; // Borra el contenido del input
     }
@@ -58,6 +58,7 @@ function limpiarCajas() {
   const input6 = document.getElementById("resultadoMultiplicacion");
   const input7 = document.getElementById("flete");
   const input8 = document.getElementById("resultadoResta");
+  $("#cliente").val(null).trigger('change');
 
   if (input1) input1.value = ""; // Verificar si existe y limpiar el input
   if (input2) input2.value = "";

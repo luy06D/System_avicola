@@ -25,6 +25,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
     <link href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
+    <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -37,51 +40,50 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
   </style>
 
 
-    <header>
-        <!-- Menu -->
-        <nav class="navbar navbar-light bg-warning-subtle fixed-top">
-            <div class="container-fluid ">
-            <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 50px;" alt=""></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-                aria-controls="offcanvasNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
-              aria-labelledby="offcanvasNavbarLabel">
-              <div class="offcanvas-header bg-success-subtle">
-                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-              </div>
-              <div class="offcanvas-body">
-                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                    <li class="nav-item">
-                      <a class="nav-link active" aria-current="page" href="ventas.php">Ventas</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="productos.php">Productos</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="clientes.php">Clientes</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="reportes.php">Reportes</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="./graficos.php">Graficos</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy">Cerrar sesión</a>
-
-                    </li>
-                </ul>
-                
-                </div>
+<header>
+    <nav class="navbar navbar-light bg-warning-subtle  fixed-top">
+        <div class="container-fluid ">
+        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 80px;" alt=""></a>     
+        <div style="margin-inline-start: auto;"><i class="bi bi-person-fill"></i> <span style="margin-right: 1rem;"><?= $_SESSION['segurity']['nombres']?> <?= $_SESSION['segurity']['apellidos']?></span></div>         
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel">            
+            <div class="offcanvas-header bg-warning-subtle">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú</h5>            
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
+            <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item mt-2">
+                <a class="nav-link" aria-current="page" href="ventas.php"><h4><i class="bi bi-cart4"></i> Ventas</h4></a>
+                </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
+                </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
+                </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes</h4></a>
+                </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
+                </li>
+                <li class="nav-item mt-5">
+                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
+                </li>
+            </ul>
+            
             </div>
-        </nav>
-    </header>
+        </div>
+        </div>
+    </nav>
+  </header>
       
-    <br><br><br><br>
+    <br><br><br><br><br>
 
     <!-- Tabla-Clientes -->
     <div class="container-lg table-responsive ">
@@ -173,7 +175,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
 
-
+    <!-- opcional-->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     
     <script>
         $(document).ready(function (){

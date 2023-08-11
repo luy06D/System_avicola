@@ -22,6 +22,8 @@ $idusuario = $_SESSION['segurity']['idusuario'];
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <!-- Boxicons CSS -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <!-- Icons Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <!-- estilos de select2   -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles/venta.css">
@@ -30,16 +32,26 @@ $idusuario = $_SESSION['segurity']['idusuario'];
 </head>
 <body>
   <style>
-       body{
-        font-family: 'Poppins', sans-serif;
-        overflow: hidden;
-          }
+    .cajastyle{
+      margin: 4px;
+      width: 130px;
+    }
+    body{
+    font-family: 'Poppins', sans-serif;
+    /* overflow: hidden; */
+    position: relative;
+    padding-bottom: 3em;
+    min-height: 100vh;
+    }
+
+
   </style>
 
-  <header>
-    <nav class="navbar navbar-light bg-warning-subtle  fixed-top">
+  <header >
+    <nav class="navbar navbar-light bg-warning-subtle fixed-top">
         <div class="container-fluid ">
-        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 50px;" alt=""></a>          
+        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 80px;" alt=""></a>
+        <div style="margin-inline-start: auto;"><i class="bi bi-person-fill"></i> <span style="margin-right: 1rem;"><?= $_SESSION['segurity']['nombres']?> <?= $_SESSION['segurity']['apellidos']?></span></div>    
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -52,23 +64,23 @@ $idusuario = $_SESSION['segurity']['idusuario'];
             </div>
             <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="ventas.php">Ventas</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link " aria-current="page" href="ventas.php"><h4><i class="bi bi-cart4"></i> Ventas</h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="productos.php">Productos</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="clientes.php">Clientes</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./reportes.php">Reportes</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes</h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./graficos.php">Graficos</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy">Cerrar sesión</a>
+                <li class="nav-item mt-5">
+                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>
             </ul>
             
@@ -77,11 +89,12 @@ $idusuario = $_SESSION['segurity']['idusuario'];
         </div>
     </nav>
   </header>
-   <br><br>
+   <br><br><br><br><br>
+   
   <main class="opacity-85 mb-5">
     <div class="container mt-5 col-12">
       <div class="card">
-        <div class="card-header bg-warning text-white" >
+        <div class="card-header text-white" style="background-color: #9ACD32;" >
             <h4 class="text-center">REGISTRO DE VENTAS</h4>
         </div>
         <div class="card-body" >
@@ -90,8 +103,8 @@ $idusuario = $_SESSION['segurity']['idusuario'];
 
               <div class="col-lg-4">
                   <div class="mb-3">   
-                    <label for="cliente" class="form-label">Cliente:</label>                                 
-                    <select  id="cliente" class="js-example-responsive" style="width: 100%;" >
+                    <label for="" class="form-label">Cliente:</label>                                 
+                    <select  class="js-example-responsive"  id="cliente" style="width: 100%;" >
                       <option value=""></option>
                     </select>
                   </div>
@@ -163,160 +176,168 @@ $idusuario = $_SESSION['segurity']['idusuario'];
   </main>
 
   <footer>
-    <h6 style="text-align: center;">Copyright - 2023</h6>
+    <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0;">Copyright - 2023</h6>
   </footer>
 
-        <!-- CDN sweetAlert2 -->
-        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>              
-        <!-- jQuery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-        <script src="../js/operacion.js"></script>
-        
-      <!-- select2 -->
-      <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-
-  document.addEventListener("DOMContentLoaded", () => {
-
-    //Activa el select2 en clientes
-    $("#cliente").select2();
-    
-    const lsProducto = document.querySelector("#producto");
-    const lsCliente = document.querySelector("#cliente");
-    const btnRegistrar = document.querySelector("#btnRegistrar");
-
-    function mostrarProductos(){
-      const parameters = new URLSearchParams();
-      parameters.append("operacion", "recuperarProduct");
-
-      fetch("../controllers/ventas.controller.php", {
-        method: 'POST',
-        body: parameters
-      })
-      .then(response => response.json())
-      .then(data => {
-        lsProducto.innerHTML = "<option value=''>Seleccione</option>";
-        data.forEach(element => {
-          const optionTag = document.createElement("option");
-          optionTag.value = element.idproducto
-          optionTag.text = element.nombre;
-          lsProducto.appendChild(optionTag);
-          
-        });
-      });
-    }
-
-    function mostrarClientes(){
-      const parameters = new URLSearchParams();
-      parameters.append("operacion", "recuperarClient");
-
-      fetch("../controllers/ventas.controller.php", {
-        method: 'POST',
-        body: parameters
-      })
-      .then(response => response.json())
-      .then(data => {
-        lsCliente.innerHTML = "<option value=''>Seleccione</option>";
-        data.forEach(element => {
-          const optionTag = document.createElement("option");
-          optionTag.value = element.idpersona
-          optionTag.text = element.clientes;
-          lsCliente.appendChild(optionTag);
-          
-        });
-      });
-    }
-
-    function ventasRegistrar(){
-
-      const producto = document.querySelector("#producto").value.trim();
-      const cliente = document.querySelector("#cliente").value.trim();
-      const cantidad = document.querySelector("#cantidad").value.trim();
-      const precio = document.querySelector("#factor").value.trim();
-      const flete = document.querySelector("#flete").value.trim();
-      let idUsuario = <?php echo json_encode($idusuario) ?>;
-
-      Swal.fire({
-          title: "¿Está seguro de registrar?",
-          icon: "question",
-          showCancelButton: true,
-          confirmButtonText: "Sí",
-          cancelButtonText: "Cancelar",
-          confirmButtonColor: '#65BB3B',
-
-      }).then((result)=>{
-        if(result.isConfirmed){
-          if(cliente === '' || producto === '' ||
-            cantidad === '' || precio === '' || flete === ''){
-
-                  Swal.fire({
-                        title: "Por favor, complete los campos",
-                        icon: "warning",
-                        confirmButtonColor: "#E43D2C",
-                     });
-            }else{
-
-
-              const parameters = new URLSearchParams();
-              parameters.append("operacion", "ventasRegistrar");
-              parameters.append("idproducto", document.querySelector("#producto").value);
-              parameters.append("cantidad", document.querySelector("#cantidad").value);
-              parameters.append("idusuario", idUsuario);
-              parameters.append("idcliente", document.querySelector("#cliente").value);
-              parameters.append("kilos", document.querySelector("#totalValores").value);
-              parameters.append("precio", document.querySelector("#factor").value);
-              parameters.append("flete", document.querySelector("#flete").value);
-
-              fetch("../controllers/ventas.controller.php",{
-                method: 'POST',
-                body: parameters
-              })
-              .then(response => response.json())
-              .then(data => {
-                if(data.status){
-                  Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'La venta se registro correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                    })
-                    document.querySelector("#form-venta").reset();
-                    document.querySelector("#form-detalle").reset();
-                    document.querySelector("#form-paquete").reset();
-                    $("#cliente").val(null).trigger('change');
-                  
-                }else{
-                  Swal.fire("Error", data.message, "error");  
-
-                }
-
-              });
-
-            }
-          
-       
-        }
-
-
-      });
-
-
-    }
-
-    mostrarProductos();
-    mostrarClientes();
-
-    btnRegistrar.addEventListener("click", ventasRegistrar);
-
-
-
-  });
-
-
   
-</script>
+
+  <!-- CDN sweetAlert2 -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>              
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <script src="../js/operacion.js"></script>
+  
+  <!-- select2 -->
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="../js//operacion.js"></script>
+  
+  <script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+      //Activa el select2 en clientes
+      $("#cliente").select2();
+      
+      const lsProducto = document.querySelector("#producto");
+      const lsCliente = document.querySelector("#cliente");
+      const btnRegistrar = document.querySelector("#btnRegistrar");
+
+      function mostrarProductos(){
+        const parameters = new URLSearchParams();
+        parameters.append("operacion", "recuperarProduct");
+
+        fetch("../controllers/ventas.controller.php", {
+          method: 'POST',
+          body: parameters
+        })
+        .then(response => response.json())
+        .then(data => {
+          lsProducto.innerHTML = "<option value=''>Seleccione</option>";
+          data.forEach(element => {
+            const optionTag = document.createElement("option");
+            optionTag.value = element.idproducto
+            optionTag.text = element.nombre;
+            lsProducto.appendChild(optionTag);
+            
+          });
+        });
+      }
+
+      function mostrarClientes(){
+        const parameters = new URLSearchParams();
+        parameters.append("operacion", "recuperarClient");
+
+        fetch("../controllers/ventas.controller.php", {
+          method: 'POST',
+          body: parameters
+        })
+        .then(response => response.json())
+        .then(data => {
+          lsCliente.innerHTML = "<option value=''>Seleccione</option>";
+          data.forEach(element => {
+            const optionTag = document.createElement("option");
+            optionTag.value = element.idpersona
+            optionTag.text = element.clientes;
+            lsCliente.appendChild(optionTag);
+            
+          });
+        });
+      }
+
+      function ventasRegistrar(){
+
+        const producto = document.querySelector("#producto").value.trim();
+        const cliente = document.querySelector("#cliente").value.trim();
+        const cantidad = document.querySelector("#cantidad").value.trim();
+        const precio = document.querySelector("#factor").value.trim();
+        const flete = document.querySelector("#flete").value.trim();
+        let idUsuario = <?php echo json_encode($idusuario) ?>;
+
+        Swal.fire({
+            title: "¿Está seguro de registrar?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Sí",
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: '#65BB3B',
+
+        }).then((result)=>{
+          if(result.isConfirmed){
+            if(cliente === '' || producto === '' ||
+              cantidad === '' || precio === '' || flete === ''){
+
+                    Swal.fire({
+                          title: "Por favor, complete los campos",
+                          icon: "warning",
+                          confirmButtonColor: "#E43D2C",
+                      });
+              }else{
+
+
+                const parameters = new URLSearchParams();
+                parameters.append("operacion", "ventasRegistrar");
+                parameters.append("idproducto", document.querySelector("#producto").value);
+                parameters.append("cantidad", document.querySelector("#cantidad").value);
+                parameters.append("idusuario", idUsuario);
+                parameters.append("idcliente", document.querySelector("#cliente").value);
+                parameters.append("kilos", document.querySelector("#totalValores").value);
+                parameters.append("precio", document.querySelector("#factor").value);
+                parameters.append("flete", document.querySelector("#flete").value);
+
+                fetch("../controllers/ventas.controller.php",{
+                  method: 'POST',
+                  body: parameters
+                })
+                .then(response => response.json())
+                .then(data => {
+                  if(data.status){
+                    Swal.fire({
+                      position: 'top-end',
+                      icon: 'success',
+                      title: 'La venta se registro correctamente',
+                      showConfirmButton: false,
+                      timer: 1500
+                      })
+                      document.querySelector("#form-venta").reset();
+                      document.querySelector("#form-detalle").reset();
+                      // document.querySelector("#form-paquete").reset();
+                      limpiarCajas();
+                      $("#cliente").val(null).trigger('change');
+                    
+                  }else{
+                    Swal.fire("Error", data.message, "error");  
+
+                  }
+
+                });
+
+              }
+            
+        
+          }
+
+
+        });
+
+
+      }
+  
+      var cantidadInput = document.getElementById("cantidad");
+      cantidadInput.addEventListener("keydown", function(event) {
+          if (event.keyCode === 13) {
+              event.preventDefault(); // Prevenir el comportamiento predeterminado del Enter (enviar formulario)
+              crearCajas();
+          }
+      });
+
+      mostrarProductos();
+      mostrarClientes();
+
+      btnRegistrar.addEventListener("click", ventasRegistrar);
+
+    });
+
+  </script>
 
 
 

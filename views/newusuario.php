@@ -28,7 +28,7 @@
                </div>
                <div class="div">
                   <h5>Nombres</h5>
-                  <input id="nombre" type="text" class="input" name="nombre" autocomplete="off">
+                  <input id="nombre" type="text" class="input" name="nombre" autocomplete="off" maxlength="30">
                </div>
             </div>
             <div class="input-div pass">
@@ -37,7 +37,7 @@
                </div>
                <div class="div">
                   <h5>Apellidos</h5>
-                  <input type="text" id="apellido" class="input" name="apellido">
+                  <input type="text" id="apellido" class="input" name="apellido" maxlength="30">
                </div>
             </div>
             <div class="input-div pass">
@@ -46,7 +46,7 @@
                </div>
                <div class="div">
                   <h5>Dni (Opcional)</h5>
-                  <input type="number" id="dni" class="input" name="dni" >
+                  <input type="text" id="dni" class="input" name="dni" maxlength="8">
                </div>
             </div>
             <div class="input-div pass">
@@ -55,7 +55,7 @@
                </div>
                <div class="div">
                   <h5>Teléfono (Opcional)</h5>
-                  <input type="number" id="telefono" class="input" name="telefono" >
+                  <input type="tel" id="telefono" class="input" name="telefono" maxlength="9">
                </div>
             </div>
             <div class="input-div pass">
@@ -64,7 +64,7 @@
                </div>
                <div class="div">
                   <h5>Usuario</h5>
-                  <input type="text" id="usuario" class="input" name="usuario" autocomplete="off">
+                  <input type="text" id="usuario" class="input" name="usuario" autocomplete="off" maxlength="30">
                </div>
             </div>   
             <div class="input-div pass">
@@ -73,7 +73,7 @@
                </div>
                <div class="div">
                   <h5>Contraseña</h5>
-                  <input type="text" id="contraseña" class="input" name="contraseña">
+                  <input type="password" id="contraseña" class="input" name="contraseña" maxlength="50">
                </div>
             </div>           
             <button id="btnRegistrar" class="btn" type="button">REGISTRAR</button>

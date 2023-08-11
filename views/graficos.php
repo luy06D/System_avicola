@@ -8,8 +8,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 ?>
 
 
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,6 +22,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <!-- Boxicons CSS -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <!-- Icons Bootstrap -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <!-- estilos de select2   -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="../styles/venta.css">
@@ -33,7 +33,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <header>
     <nav class="navbar navbar-light bg-warning-subtle  fixed-top">
         <div class="container-fluid ">
-        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 50px;" alt=""></a>          
+        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 80px;" alt=""></a>      
+        <div style="margin-inline-start: auto;"><i class="bi bi-person-fill"></i> <span style="margin-right: 1rem;"><?= $_SESSION['segurity']['nombres']?> <?= $_SESSION['segurity']['apellidos']?></span></div>        
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -46,25 +47,24 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             </div>
             <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="ventas.php">Ventas</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" aria-current="page" href="ventas.php"><h4><i class="bi bi-cart4"></i> Ventas</h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="productos.php">Productos</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="clientes.php">Clientes</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./reportes.php">Reportes</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes</h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="./graficos.php">Graficos</a>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy">Cerrar sesión</a>
+                <li class="nav-item mt-5">
+                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>
- 
             </ul>
             
             </div>
@@ -73,7 +73,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     </nav>
   </header>
 
-<br>
+<br><br><br><br><br>
 
 <div class="container mt-5">
     <div class="col-12">
@@ -113,16 +113,18 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <br>
 
 
-   
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Incluye moment.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<!-- Incluye Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <script>
+
     document.addEventListener("DOMContentLoaded", () =>{
-
-
+      
       const btActualizar = document.querySelector("#actualizar");
       const lienzo = document.getElementById("grafico");
       const leyenda = document.querySelector("#lista-leyenda");
-
 
 const graficoBarras = new Chart(lienzo, {
         type: "bar",
@@ -146,12 +148,12 @@ const graficoBarras = new Chart(lienzo, {
 
         coleccion.forEach(element =>{
           etiquetas.push(element.Dia);
-                    datos.push(element.Kilos_Vendidos);
+            datos.push(element.Kilos_Vendidos);
 
-                    const  tagLI = document.createElement('li');
-                    tagLI.innerHTML = `${element.Dia}: <strong>${element.Kilos_Vendidos}</strong`;
-                    leyenda.appendChild(tagLI);
-        });
+            const  tagLI = document.createElement('li');
+            tagLI.innerHTML = `${element.Dia}: <strong>${element.Kilos_Vendidos}</strong`;
+            leyenda.appendChild(tagLI);
+          });
         graficoBarras.data.labels = etiquetas;
         graficoBarras.data.datasets[0].data = datos;
         graficoBarras.update();

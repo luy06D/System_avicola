@@ -1,65 +1,63 @@
 
-function crearCajas(event) {
+function crearCajas() {
     var cantidad = parseInt(document.getElementById("cantidad").value);
 
     if (isNaN(cantidad) || cantidad < 1 || cantidad > 500) {
         Swal.fire({
-            title: "Por favor, ingrese un número del 1 al 500",
-            icon: "warning",
-            confirmButtonColor: "#E43D2C",
-        });
+            icon: 'error',
+            title: 'Ingrese un número válido entre 1 y 500',
+            showConfirmButton: false,
+            timer: 2000
+        })
         return;
     }
-    
+
     var contenedorCajas = document.getElementById("contenedorCajas");
     contenedorCajas.innerHTML = ""; // Limpiamos el contenido previo
 
     for (var i = 0; i < cantidad; i++) {
         var nuevaCaja = document.createElement("input");
         nuevaCaja.type = "number";
-        nuevaCaja.id = "caja" + (i + 1);
-        nuevaCaja.className = "cajasinput";
-        // nuevaCaja.placeholder = "Paquete " + (i + 1);        
-        nuevaCaja.addEventListener("input", actualizarTotal);
-        nuevaCaja.addEventListener("keydown", limiter);
+        nuevaCaja.id = "caja" + (i + 1); // Añadir un identificador único para cada input
+        nuevaCaja.className = "cajastyle";
+        nuevaCaja.addEventListener("input", function() {
+            validarNumero(this);
+            actualizarTotal();
+        });
         contenedorCajas.appendChild(nuevaCaja);
     }
 
-    actualizarTotal()
+    actualizarTotal();
 }
 
 
-function limiter(event){
-    const cajax = document.querySelector("#caja2");
-    if(event.target.value.length > 2){
+
+function validarNumero(input) {
+    var valor = parseFloat(input.value);
+    
+    if (isNaN(valor) || valor < 1 || valor > 10) {
         Swal.fire({
-            title: "Por favor, ingrese un número de dos cifras",
-            icon: "warning",
-            confirmButtonColor: "#E43D2C",
-        });
-        cajax.value = "";
-
+            icon: 'error',  
+            title: 'Por favor!, ingrese número valido entre 1 a 10',
+            showConfirmButton: false,
+            timer: 2000
+        })
+        input.value = ""; // Borra el contenido del input
     }
- 
 }
-
 
 function limpiarCajas() {
   const cajasContainer = document.getElementById("contenedorCajas");
   cajasContainer.innerHTML = ""; // Elimina el contenido del contenedor
   
   const input1 = document.getElementById("cliente");
-  const input2 = document.getElementById("fecha");
+  const input2 = document.querySelector("#producto");
   const input3 = document.getElementById("cantidad");
   const input4 = document.getElementById("totalValores");
   const input5 = document.getElementById("factor");
   const input6 = document.getElementById("resultadoMultiplicacion");
   const input7 = document.getElementById("flete");
   const input8 = document.getElementById("resultadoResta");
-  const input9 = document.getElementById("nombres");
-  const input10 = document.getElementById("apellidos");
-  const input11 = document.getElementById("dni");
-  const input12 = document.getElementById("telefono");
 
   if (input1) input1.value = ""; // Verificar si existe y limpiar el input
   if (input2) input2.value = "";
@@ -69,10 +67,6 @@ function limpiarCajas() {
   if (input6) input6.value = "";
   if (input7) input7.value = ""; 
   if (input8) input8.value = "";
-  if (input9) input9.value = "";
-  if (input10) input10.value = "";
-  if (input11) input11.value = "";
-  if (input12) input12.value = "";
 
 }
 

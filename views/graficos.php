@@ -31,10 +31,16 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <body>
 
 <style>
-       body{
-        font-family: 'Poppins', sans-serif;
-        overflow: hidden;
-          }
+    body{
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      position: relative;
+      padding-bottom: 3em;
+      min-height: 100vh;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed; 
+    }
   </style>
 
 <header>
@@ -70,7 +76,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
                 <li class="nav-item mt-5">
-                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
+                <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>
             </ul>
             
@@ -82,42 +88,36 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
 <br><br><br><br><br>
 
-<div class="container mt-5">
+  <div class="container mt-5">
     <div class="col-12">
-    <div class="row">
+      <div class="row">
 
-      <div class=" mt-5 col-6">
-        <div class="card">
-          <div class="card-header bg-warning text-center text-black"> Cantidad de Ventas en cada dia</div>
-          <div class="card-body">
-            <canvas id="grafico"></canvas>
-            <ul id="lista-leyenda"></ul> 
+        <div class=" mt-5 col-6">
+          <div class="card">
+            <div class="card-header bg-warning text-center text-black"> Cantidad de Ventas en cada dia</div>
+            <div class="card-body">
+              <canvas id="grafico"></canvas>
+              <ul id="lista-leyenda"></ul> 
+            </div>
           </div>
-
-      </div>
         </div>
-
-
-
-
 
         <div class="mt-5 col-6">
           <div class="card">
             <div class="card-header  bg-success text-center text-white" >Huevos vendidos en un mes</div>
             <div class="card-body">
-
               <canvas id="grafico2"></canvas>
               <ul id="lista-leyenda2">  </ul>   
-
             </div>
-
-
-
+          </div>
         </div>
       </div>
-      </div>
     </div>
+  </div>
     <br>
+    <footer>
+        <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0; background: #B6B9B9  ; opacity:90%"><img src="../img/3plogo.png" style="width: 40px;" alt=""><a href="https://www.facebook.com/3p.ingenieriaytecnologia"> <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/><a href="https://wa.me/962734821"><img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/></a></h6>
+    </footer>
 
 
   <!-- Incluye moment.js -->

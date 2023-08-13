@@ -40,7 +40,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <style>
        body{
         font-family: 'Poppins', sans-serif;
-        
+        position: relative;
+        padding-bottom: 3em;
+        min-height: 100vh;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-attachment: fixed; 
         }
   </style>
 
@@ -77,7 +82,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
                 <li class="nav-item mt-5">
-                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
+                    <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>
             </ul>
             
@@ -146,6 +151,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <table class="table display nowrap" style="width: 100%;"  id="table-report">
                         <thead class="table-success text-center">
                             <tr>
+                                <th>Código</th>
                                 <th>Cliente</th>
                                 <th>Kilos</th>
                                 <th>Paquetes</th>
@@ -170,25 +176,29 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <!-- Modal Body -->
     <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
     <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm" role="document">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitleId">Modal title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="modalTitleId">Paquetes</h5>
                 </div>
                 <div class="modal-body">
-                    Body
+                    <form action="" id="formulariopaquetes">
+                        <div id="mostrapa">
+
+                        </div>
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
     
 
-
+    <footer>
+        <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0; background: #B6B9B9  ; opacity:80%"><img src="../img/3plogo.png" style="width: 40px;" alt=""><a href="https://www.facebook.com/3p.ingenieriaytecnologia"> <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/><a href="https://wa.me/962734821"><img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/></a></h6>
+    </footer>
     
    
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
@@ -233,6 +243,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             const btnExportar = document.querySelector("#exportar");
             const lsCliente = document.querySelector("#cliente");
             const btnReset = document.querySelector("#reset");
+            const formupa = document.querySelector("#formulariopaquetes");
+
+            const modal = new bootstrap.Modal(document.querySelector("#modalId"));
 
             
             function recuperarCliente(){
@@ -283,13 +296,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     data.forEach(element => {
                         const rows = `
                         <tr>
+                            <td>${element.idventa}</td>
                             <td>${element.clientes}</td>
                             <td>${element.kilos}</td>
                             <td>
                                  ${element.cantidad} 
-                                 <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalId">
-                                    paquetes
-                                    </button>
+                                 <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modalId" data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
                             </td>
                             <td>${element.precio}</td>
                             <td>${element.flete}</td>
@@ -318,17 +330,17 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'excel',
                                     text: '<i class="bi bi-file-excel"></i>',
                                     titleAttr:'Exportar a excel',
-                                    title:'Productos',
+                                    title:'REPORTES VENTAS',
                                     className:'btn btn-success',
-                                    exportOptions:{ columns: [0,1,2,3] }
+                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 },                            
                                 {
                                     extend: 'print',
                                     text: '<i class="bi bi-printer"></i>',
                                     titleAttr:'imprimir',
-                                    title:'Productos',
+                                    title:'REPORTES VENTAS',
                                     className:'btn btn-secondary',
-                                    exportOptions:{ columns: [0,1,2,3] }
+                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 }
                             ],
                             
@@ -365,9 +377,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
+                                <td>${element.idventa}</td>
                                 <td>${element.clientes}</td>
                                 <td>${element.kilos}</td>
-                                <td>${element.cantidad}</td>
+                                <td>${element.cantidad}
+                                <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modalId" data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
+                                </td>
                                 <td>${element.precio}</td>
                                 <td>${element.flete}</td>
                                 <td>${element.fechaventa}</td>
@@ -395,17 +410,17 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'excel',
                                     text: '<i class="bi bi-file-excel"></i>',
                                     titleAttr:'Exportar a excel',
-                                    title:'Productos',
+                                    title:'REPORTES VENTAS',
                                     className:'btn btn-success',
-                                    exportOptions:{ columns: [0,1,2,3] }
+                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 },                            
                                 {
                                     extend: 'print',
                                     text: '<i class="bi bi-printer"></i>',
                                     titleAttr:'imprimir',
-                                    title:'Productos',
+                                    title:'REPORTES VENTAS',
                                     className:'btn btn-secondary',
-                                    exportOptions:{ columns: [0,1,2,3] }
+                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 }
                             ],
                         });
@@ -439,9 +454,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
+                                <td>${element.idventa}</td>
                                 <td>${element.clientes}</td>
                                 <td>${element.kilos}</td>
-                                <td>${element.cantidad}</td>
+                                <td>${element.cantidad}
+                                <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modalId" data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
+                                
+                                </td>
                                 <td>${element.precio}</td>
                                 <td>${element.flete}</td>
                                 <td>${element.fechaventa}</td>
@@ -470,17 +489,17 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'excel',
                                     text: '<i class="bi bi-file-excel"></i>',
                                     titleAttr:'Exportar a excel',
-                                    title:'Productos',
+                                    title:'REPORTES VENTAS',
                                     className:'btn btn-success',
-                                    exportOptions:{ columns: [0,1,2,3] }
+                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 },                            
                                 {
                                     extend: 'print',
                                     text: '<i class="bi bi-printer"></i>',
                                     titleAttr:'imprimir',
-                                    title:'Productos',
+                                    title:'REPORTES VENTAS',
                                     className:'btn btn-secondary',
-                                    exportOptions:{ columns: [0,1,2,3] }
+                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 }
                             ],
                         });
@@ -488,6 +507,26 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     }
                     
                 })
+
+                cuerpoTabla.addEventListener("click", (event) => {
+                if(event.target.classList[0] === 'mostrar'){
+                    idventa = parseInt(event.target.dataset.idventa);
+
+                    const parametros = new URLSearchParams();
+                    parametros.append("operacion", "obtener");
+                    parametros.append("idventa",idventa);
+
+                    fetch("../controllers/reportes.controller.php",{
+                        method: 'POST',
+                        body: parametros
+                    })
+                    .then(response => response.json())
+                    .then(datos => {
+                        document.querySelector("#mostrapa").value = datos.paquetes;
+                    modal.toggle();
+                    });
+                }
+            })
             }
 
 

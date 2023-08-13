@@ -28,8 +28,6 @@ if(isset($_POST['operacion'])){
     if($_POST['operacion'] == 'mostrarJson'){
         echo json_encode($reporte->jsonMostrar());
     }
-
-
 }
 
 ?>

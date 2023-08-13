@@ -36,18 +36,22 @@ $idusuario = $_SESSION['segurity']['idusuario'];
       width: 130px;
     }
     body{
-    font-family: 'Poppins', sans-serif;
-    /* overflow: hidden; */
-    position: relative;
-    padding-bottom: 3em;
-    min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      /* overflow: hidden; */
+      background-image: url(../img/eggs-3281585_1280.jpg);
+      position: relative;
+      padding-bottom: 3em;
+      min-height: 100vh;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed; 
     }
 
 
   </style>
 
   <header >
-    <nav class="navbar navbar-light bg-warning-subtle fixed-top">
+    <nav class="navbar navbar-light bg-warning-subtle fixed-top opacity-75">
         <div class="container-fluid ">
         <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 80px;" alt=""></a>
         <div style="margin-inline-start: auto;"><i class="bi bi-person-fill"></i> <span style="margin-right: 1rem;"><?= $_SESSION['segurity']['nombres']?> <?= $_SESSION['segurity']['apellidos']?></span></div>    
@@ -79,7 +83,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
                 <li class="nav-item mt-5">
-                <a class="nav-link" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
+                <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>
             </ul>
             
@@ -175,7 +179,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
   </main>
 
   <footer>
-    <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0;">Copyright - 2023</h6>
+    <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0; background: #B6B9B9  ; opacity:90%"><img src="../img/3plogo.png" style="width: 40px;" alt=""><a href="https://www.facebook.com/3p.ingenieriaytecnologia"> <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/><a href="https://wa.me/962734821"><img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/></a></h6>
   </footer>
 
   
@@ -200,6 +204,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
       const lsProducto = document.querySelector("#producto");
       const lsCliente = document.querySelector("#cliente");
       const btnRegistrar = document.querySelector("#btnRegistrar");
+      const caja = document.querySelector("#caja");
 
       function mostrarProductos(){
         const parameters = new URLSearchParams();
@@ -326,10 +331,10 @@ $idusuario = $_SESSION['segurity']['idusuario'];
   
       var cantidadInput = document.getElementById("cantidad");
       cantidadInput.addEventListener("keydown", function(event) {
-          if (event.keyCode === 13) {
-              event.preventDefault(); // Prevenir el comportamiento predeterminado del Enter (enviar formulario)
-              crearCajas();
-          }
+        if (event.keyCode === 13) {
+          event.preventDefault(); // Prevenir el comportamiento predeterminado del Enter (enviar formulario)
+          crearCajas();
+        }
       });
 
       mostrarProductos();

@@ -86,9 +86,7 @@ ENGINE = INNODB;
 
 -- Actualizando el tipo de dato (tinyint)
 ALTER TABLE ventas MODIFY COLUMN flete DECIMAL(2,1) NULL;
-ALTER TABLE ventas MODIFY COLUMN paquetes JSON NOT NULL;
-
-
+ALTER TABLE ventas ADD paquetes JSON NOT NULL;
 
 
 
@@ -125,7 +123,8 @@ IN _idusuario 	INT,
 IN _idcliente 	INT,
 IN _kilos	SMALLINT,
 IN _precio	DECIMAL(4,2),
-IN _flete	DECIMAL(2,1)
+IN _flete	DECIMAL(2,1),
+IN _paquetes 	JSON 
 )	
 BEGIN 
 	DECLARE g_iddetalle INT;
@@ -136,14 +135,23 @@ BEGIN
 	SELECT LAST_INSERT_ID() INTO g_iddetalle;
 	
 	
-	INSERT INTO ventas (iddetalle_venta, idusuario, idcliente, kilos, precio, flete)VALUES
-		(g_iddetalle, _idusuario, _idcliente, _kilos , _precio , _flete);
+	INSERT INTO ventas (iddetalle_venta, idusuario, idcliente, kilos, precio, flete, paquetes)VALUES
+		(g_iddetalle, _idusuario, _idcliente, _kilos , _precio , _flete, _paquetes);
 END$$
 
-CALL spu_ventas_register (1, 13, 1, 2, 123, 12, 0.2 );
+CALL spu_ventas_register (1, 4, 1, 4, 123, 12, 0.2 , '{"caja1": 10,"caja2": 10,"caja3": 10,"caja4": 10}');
+			
+			-- MOSTRAR PAQUETES
 
-SELECT * FROM detalle_ventas;
-SELECT * FROM ventas;
+DELIMITER $$
+CREATE PROCEDURE spu_jsonMostrar()
+BEGIN 
+	SELECT	idventa, paquetes
+	FROM ventas;
+
+END $$
+
+CALL spu_jsonMostrar()
 
 				-- RECUPERAR PRODUCTOS
 DELIMITER $$ 

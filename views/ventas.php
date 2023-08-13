@@ -26,7 +26,6 @@ $idusuario = $_SESSION['segurity']['idusuario'];
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <!-- estilos de select2   -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="../styles/venta.css">
   <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
   
 </head>
@@ -252,6 +251,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
         const precio = document.querySelector("#factor").value.trim();
         const flete = document.querySelector("#flete").value.trim();
         let idUsuario = <?php echo json_encode($idusuario) ?>;
+        const valoresCajas = crearCajas();
 
         Swal.fire({
             title: "¿Está seguro de registrar?",
@@ -283,6 +283,8 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 parameters.append("kilos", document.querySelector("#totalValores").value);
                 parameters.append("precio", document.querySelector("#factor").value);
                 parameters.append("flete", document.querySelector("#flete").value);
+                parameters.append("paquetes", JSON.stringify(valoresCajas));
+                
 
                 fetch("../controllers/ventas.controller.php",{
                   method: 'POST',

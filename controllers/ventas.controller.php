@@ -22,7 +22,8 @@ if (isset($_POST['operacion'])){
             "idcliente"       => $_POST['idcliente'],
             "kilos"           => $_POST['kilos'],
             "precio"          => $_POST['precio'],
-            "flete"           => $_POST['flete']
+            "flete"           => $_POST['flete'],
+            "paquetes"        => $_POST['paquetes']
 
         ];
 

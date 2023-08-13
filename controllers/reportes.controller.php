@@ -25,6 +25,10 @@ if(isset($_POST['operacion'])){
         echo json_encode($reporte->recuperarClientes());
     }
 
+    if($_POST['operacion'] == 'mostrarJson'){
+        echo json_encode($reporte->jsonMostrar());
+    }
+
 
 }
 

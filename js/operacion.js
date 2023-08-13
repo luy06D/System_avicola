@@ -1,4 +1,6 @@
 
+var valoresJson = {};
+
 function crearCajas() {
     var cantidad = parseInt(document.getElementById("cantidad").value);
 
@@ -13,7 +15,8 @@ function crearCajas() {
     }
 
     var contenedorCajas = document.getElementById("contenedorCajas");
-    contenedorCajas.innerHTML = ""; // Limpiamos el contenido previo
+     // Limpiamos el contenido previo
+
 
     for (var i = 0; i < cantidad; i++) {
         var nuevaCaja = document.createElement("input");
@@ -23,12 +26,20 @@ function crearCajas() {
         nuevaCaja.addEventListener("input", function() {
             validarNumero(this);
             actualizarTotal();
+
+            valoresJson[this.id] = this.value;
+            console.log(valoresJson);
+            
         });
         contenedorCajas.appendChild(nuevaCaja);
+
     }
 
     actualizarTotal();
+
+    return valoresJson;
 }
+
 
 
 

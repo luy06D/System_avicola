@@ -40,7 +40,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <style>
        body{
         font-family: 'Poppins', sans-serif;
-        overflow: hidden;
+        
         }
   </style>
 
@@ -152,7 +152,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <th>Precio</th>
                                 <th>Flete</th>
                                 <th>Fecha Venta</th>
-                                <th>Total Venta</th>
+                                <th>Total Venta</th>               
                             </tr>
                         </thead>
                         <tbody>
@@ -164,6 +164,30 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
       
         </div>
     </main>
+
+
+    
+    <!-- Modal Body -->
+    <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+    <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitleId">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Body
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
 
     
    
@@ -261,11 +285,16 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <tr>
                             <td>${element.clientes}</td>
                             <td>${element.kilos}</td>
-                            <td>${element.cantidad}</td>
+                            <td>
+                                 ${element.cantidad} 
+                                 <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalId">
+                                    paquetes
+                                    </button>
+                            </td>
                             <td>${element.precio}</td>
                             <td>${element.flete}</td>
                             <td>${element.fechaventa}</td>
-                            <td>${element.totalPago}</td>                        
+                            <td>${element.totalPago}</td>                                               
                         </tr>
                         `;
                         cuerpoTabla.innerHTML += rows;                        

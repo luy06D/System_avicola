@@ -63,6 +63,18 @@ class Reporte extends Conexion{
             die($err->getMessage());
         }
     }
+
+    public function jsonMostrar(){
+        try{
+            $query = $this->conexion->prepare("CALL spu_jsonMostrar()");
+            $query->execute();
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+
+        }
+        catch(Exception $err){
+            die($err->getMessage());
+        }
+    }
 }
 
 ?>

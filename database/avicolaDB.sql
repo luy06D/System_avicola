@@ -143,15 +143,14 @@ CALL spu_ventas_register (1, 4, 1, 4, 123, 12, 0.2 , '{"caja1": 10,"caja2": 10,"
 			
 			-- MOSTRAR PAQUETES
 
-DELIMITER $$
-CREATE PROCEDURE spu_jsonMostrar()
-BEGIN 
-	SELECT	idventa, paquetes
-	FROM ventas;
-
+DELIMITER $$ 
+CREATE PROCEDURE spu_obtener_paquetes(IN _idventa INT )
+BEGIN
+	SELECT paquetes FROM ventas WHERE idventa = _idventa;
 END $$
 
-CALL spu_jsonMostrar()
+CALL spu_obtener_paquetes(26);
+
 
 				-- RECUPERAR PRODUCTOS
 DELIMITER $$ 
@@ -277,8 +276,8 @@ IN _fechafin	DATE
 )
 BEGIN
 
-	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.precio, VE.flete, VE.fechaventa,
+	SELECT 	VE.idventa, CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
+		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
@@ -287,7 +286,7 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro2_ventas('2023-08-04','2023-08-06')
+CALL spu_filtro2_ventas('2023-08-01','2023-08-12')
 
 			-- FILTRO FECHAS Y CLIENTE
 
@@ -300,8 +299,8 @@ IN _idcliente	INT
 )
 BEGIN
 
-	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.precio, VE.flete, VE.fechaventa,
+	SELECT 	VE.idventa, CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
+		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
@@ -310,7 +309,7 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro3_ventas('2023-08-01','2023-08-03',2)
+CALL spu_filtro3_ventas('2023-08-01','2023-08-12',2)
 
 
 
@@ -320,8 +319,8 @@ DELIMITER $$
 CREATE PROCEDURE spu_filtro1_ventas(IN _idcliente INT)
 BEGIN
 
-	SELECT 	CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.precio, VE.flete, VE.fechaventa,
+	SELECT 	VE.idventa, CONCAT(PE.nombres,' ', PE.apellidos) AS clientes,  
+		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN personas PE ON PE.idpersona = VE.idcliente
@@ -330,9 +329,7 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro1_ventas(3)
-
-
+CALL spu_filtro1_ventas(3);
 
 				-- SPU PRODUCTO	
 

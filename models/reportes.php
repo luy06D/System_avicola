@@ -64,10 +64,10 @@ class Reporte extends Conexion{
         }
     }
 
-    public function jsonMostrar(){
+    public function jsonMostrar($idventa = 0){
         try{
-            $query = $this->conexion->prepare("CALL spu_jsonMostrar()");
-            $query->execute();
+            $query = $this->conexion->prepare("CALL spu_clientes_recuperar(?)");
+            $query->execute(array($idventa));
             return $query->fetchAll(PDO::FETCH_ASSOC);
 
         }

@@ -42,10 +42,10 @@ class Clientes extends Conexion{
         return $respuesta;
     }
 
-    public function ObtenerCliente($idpersona= 0){
+    public function ObtenerCliente($idcliente = 0){
         try{
           $consulta = $this->conexion->prepare("CALL spu_cliente_obtener(?)");
-          $consulta->execute(array($idpersona));
+          $consulta->execute(array($idcliente));
           return $consulta->fetch(PDO::FETCH_ASSOC);
         }
         catch(Exception $e){
@@ -61,7 +61,7 @@ class Clientes extends Conexion{
         try{
             $consulta = $this->conexion->prepare("CALL spu_cliente_update(?,?,?,?,?)");
             $respuesta["status"] = $consulta->execute(array(
-                $datos["idpersona"],
+                $datos["idcliente"],
                 $datos["nombres"],
                 $datos["apellidos"],
                 $datos["dni"],
@@ -74,14 +74,14 @@ class Clientes extends Conexion{
         return $respuesta;
     }
 
-    public function EliminarCliente($idpersona = 0){
+    public function EliminarCliente($idcliente = 0){
         $respuesta = [
           "status" => false,
           "message" => ""
         ];
         try{
           $consulta = $this->conexion->prepare("CALL spu_cliente_delete(?)");
-          $respuesta ["status"] = $consulta->execute(array($idpersona));
+          $respuesta ["status"] = $consulta->execute(array($idcliente));
         }
         catch(Exception $e){
           $respuesta["message"] = "No se ha podido completar el proceso. Código error: " . $e->getCode();

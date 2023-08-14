@@ -9,20 +9,14 @@ CREATE TABLE personas
 idpersona	INT AUTO_INCREMENT PRIMARY KEY,
 nombres		VARCHAR(30)	NOT NULL,
 apellidos	VARCHAR(30)	NOT NULL,
-dni		CHAR(8)		NOT NULL,
-telefono	CHAR(9)		NULL,		
+dni		CHAR(8)		NULL,
+telefono	CHAR(9)		NULL,	
+estado 		CHAR (1) 	NOT NULL DEFAULT '1',
 CONSTRAINT uk_dni_per UNIQUE (dni)
 )
 ENGINE = INNODB;
 
-INSERT INTO personas (nombres, apellidos) VALUES
-		('Juan Moises','Gonzales Salazar');
-INSERT INTO personas (nombres, apellidos) VALUES
-		('Lidia Leonor','Cusi Gonzales');
 
--- Actualizando restriccion not null (dni)
-ALTER TABLE personas MODIFY COLUMN dni CHAR(8) NULL;
-ALTER TABLE personas ADD estado CHAR (1) NOT NULL DEFAULT '1';
 
 CREATE TABLE clientes
 (
@@ -32,17 +26,6 @@ estado		CHAR (1) NOT NULL DEFAULT '1',
 CONSTRAINT fk_idper_cli FOREIGN KEY (idpersona) REFERENCES personas (idpersona),
 CONSTRAINT uk_clien_cli UNIQUE(idpersona)
 )ENGINE = INNODB;
-
-SELECT * FROM personas
-
-INSERT INTO clientes(idpersona) VALUES
-	(2)
-
-SELECT idcliente,
-	CONCAT(personas.`nombres`,' ',personas.`apellidos`) AS cliente
-FROM clientes
-	INNER JOIN personas ON personas.`idpersona` = clientes.`idpersona`
-
 	 
 
 CREATE TABLE usuarios
@@ -51,12 +34,12 @@ idusuario	INT AUTO_INCREMENT PRIMARY KEY,
 idpersona	INT	NOT NULL,
 nombreusuario	VARCHAR(40)	NOT NULL,
 claveacceso	VARCHAR(100)	NOT NULL,
+estado 		CHAR(1) 	NOT NULL DEFAULT '1',
 CONSTRAINT fk_idp_usu FOREIGN KEY (idpersona) REFERENCES personas (idpersona),
 CONSTRAINT uk_nom_usu UNIQUE (nombreusuario)
 )
 ENGINE = INNODB;
 
-ALTER TABLE usuarios ADD estado CHAR(1) NOT NULL DEFAULT '1';
 
 CREATE TABLE productos
 (
@@ -91,9 +74,10 @@ idusuario	INT 		NOT NULL,
 idcliente	INT 		NOT NULL,
 kilos		SMALLINT 	NOT NULL,
 precio		DECIMAL(4,2) 	NOT NULL,
-flete		TINYINT		NULL,
+flete		DECIMAL(2,1) 	NULL,
 fechaventa	DATE		NOT NULL DEFAULT NOW(),
 estado		CHAR(1)		NOT NULL DEFAULT '1',
+paquetes 	JSON 		NOT NULL,
 CONSTRAINT fk_idd_ven FOREIGN KEY (iddetalle_venta) REFERENCES detalle_ventas (iddetalle_venta),
 CONSTRAINT fk_idu_ven FOREIGN KEY (idusuario) REFERENCES usuarios (idusuario),
 CONSTRAINT fk_idc_ven FOREIGN KEY (idcliente) REFERENCES clientes (idcliente),
@@ -101,13 +85,6 @@ CONSTRAINT ck_pre_ven CHECK (precio > 0),
 CONSTRAINT ck_kil_ven CHECK (kilos > 0)
 )
 ENGINE = INNODB;
-
-
-
--- Actualizando el tipo de dato (tinyint)
-ALTER TABLE ventas MODIFY COLUMN flete DECIMAL(2,1) NULL;
-ALTER TABLE ventas ADD paquetes JSON NOT NULL;
-
 
 
 			   /*Procedimientos*/
@@ -158,7 +135,7 @@ BEGIN
 		(g_iddetalle, _idusuario, _idcliente, _kilos , _precio , _flete, _paquetes);
 END$$
 
-CALL spu_ventas_register (1, 4, 1, 4, 123, 12, 0.2 , '{"caja1": 10,"caja2": 10,"caja3": 10,"caja4": 10}');
+CALL spu_ventas_register (1, 1, 1, 4, 123, 12, 0.2 , '{"caja1": 10,"caja2": 10,"caja3": 10,"caja4": 10}');
 			
 			-- MOSTRAR PAQUETES
 
@@ -373,7 +350,7 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro1_ventas(4);
+CALL spu_filtro1_ventas(1);
 
 SELECT * FROM ventas
 
@@ -560,8 +537,6 @@ BEGIN
 	WHERE idcliente = _idcliente;
 END $$
 
+
+
 CALL spu_cliente_obtener(1);
-
-SELECT * FROM personas
-
-SELECT * FROM clientes

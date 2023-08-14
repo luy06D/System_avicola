@@ -16,7 +16,6 @@ if(isset($_GET['operacion'])){
                         <td>{$registro['idproducto']}</td>
                         <td>{$registro['nombre']}</td>
                         <td>{$registro['descripcion']}</td>
-                        <td>{$registro['cantidad']}</td>
                         <td>
                             <a href='#' class='editar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idproducto ='{$registro['idproducto']}'><i class='bi bi-pencil-square'></i></a>
                             <a href='#' class='eliminar btn btn-outline-danger btn-sm' data-idproducto='{$registro['idproducto']}'><i class='bi bi-trash'></i></a> 
@@ -27,12 +26,13 @@ if(isset($_GET['operacion'])){
         }
     }
 
+    // <td>{$registro['cantidad']}</td>
+
     if($_GET['operacion'] == 'registrar'){
     
         $datos = [
           "nombre"      => $_GET['nombre'],     
-          "descripcion" => $_GET['descripcion'],
-          "cantidad"    => $_GET['cantidad']
+          "descripcion" => $_GET['descripcion']
         ];
     
         $producto->RegistrarProducto($datos);
@@ -48,8 +48,7 @@ if(isset($_GET['operacion'])){
         $datos = [
             "idproducto"  => $_GET['idproducto'],
             "nombre"      => $_GET['nombre'],     
-            "descripcion" => $_GET['descripcion'],
-            "cantidad"    => $_GET['cantidad']
+            "descripcion" => $_GET['descripcion']
         ];
 
         $producto->ActualizarProducto($datos);

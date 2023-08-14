@@ -51,7 +51,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
   </style>
 
   <header >
-    <nav class="navbar navbar-light bg-warning-subtle fixed-top opacity-75">
+    <nav class="navbar navbar-light bg-warning-subtle fixed-top opacity-100">
         <div class="container-fluid ">
         <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 80px;" alt=""></a>
         <div style="margin-inline-start: auto;"><i class="bi bi-person-fill"></i> <span style="margin-right: 1rem;"><?= $_SESSION['segurity']['nombres']?> <?= $_SESSION['segurity']['apellidos']?></span></div>    
@@ -72,6 +72,9 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 </li>
                 <li class="nav-item mt-2">
                 <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
+                </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="usuarios.php"><h4><i class="bi bi-person-gear"></i> Usuarios</h4></a>
                 </li>
                 <li class="nav-item mt-2">
                 <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
@@ -240,7 +243,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
           lsCliente.innerHTML = "<option value=''>Seleccione</option>";
           data.forEach(element => {
             const optionTag = document.createElement("option");
-            optionTag.value = element.idpersona
+            optionTag.value = element.idcliente
             optionTag.text = element.clientes;
             lsCliente.appendChild(optionTag);
             

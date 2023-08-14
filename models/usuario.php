@@ -50,6 +50,19 @@ class User extends Conexion{
     }
 
 
+    public function ListarUser(){
+        try{
+        $consulta =  $this->access->prepare("CALL spu_user_list()");
+        $consulta->execute();
+        $tabla = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        return $tabla;
+        }
+        catch(Exception $e){
+        die($e->getMessage());
+        }
+    }
+
+
 }
 
 

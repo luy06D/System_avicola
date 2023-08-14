@@ -26,7 +26,8 @@ if(isset($_POST['operacion'])){
     }
 
     if($_POST['operacion'] == 'mostrarJson'){
-        echo json_encode($reporte->jsonMostrar());
+        $data = $reporte->jsonMostrar($_POST['idventa']);
+        echo json_encode($data);
     }
 }
 

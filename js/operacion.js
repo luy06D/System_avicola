@@ -46,10 +46,10 @@ function crearCajas() {
 function validarNumero(input) {
     var valor = parseFloat(input.value);
     
-    if (isNaN(valor) || valor < 1 || valor > 10) {
+    if (isNaN(valor) || valor < 1 || valor > 15) {
         Swal.fire({
             icon: 'error',  
-            title: 'Por favor!, ingrese número valido entre 1 a 10',
+            title: 'Por favor!, ingrese número valido entre 1 a 15 kg máximo',
             showConfirmButton: false,
             timer: 1000
         })

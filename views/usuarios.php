@@ -9,11 +9,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
+    <title>Clientes</title>
     <link rel="icon" href="../img/remove.ico">
     <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -50,8 +50,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <header>
     <nav class="navbar navbar-light bg-warning-subtle  fixed-top">
         <div class="container-fluid ">
-        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 80px;" alt=""></a>    
-        <div style="margin-inline-start: auto;"><i class="bi bi-person-fill"></i> <span style="margin-right: 1rem;"><?= $_SESSION['segurity']['nombres']?> <?= $_SESSION['segurity']['apellidos']?></span></div>          
+        <a class="navbar-brand" href="#"><img src="../img/remove.png" style="width: 80px;" alt=""></a>     
+        <div style="margin-inline-start: auto;"><i class="bi bi-person-fill"></i> <span style="margin-right: 1rem;"><?= $_SESSION['segurity']['nombres']?> <?= $_SESSION['segurity']['apellidos']?></span></div>         
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
             aria-controls="offcanvasNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -83,7 +83,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
                 <li class="nav-item mt-5">
-                <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
+                    <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>
             </ul>
             
@@ -95,27 +95,25 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
       
     <br><br><br><br><br>
 
-    <!-- Tabla-Productos -->
+    <!-- Tabla-Clientes -->
     <div class="container-lg table-responsive ">
-
-        <h4 class="text-center">PRODUCTOS</h4>
+        <h4 class="text-center">USUARIOS</h4>
         <hr>
         <button type="button" id="abrir-modal-registro" class="btn btn-primary btn-md mb-3" data-bs-toggle="modal" data-bs-target="#modal-registrar">
-        Nuevo
+            Nuevo
         </button>
-        
-                
         <div class="row">
             <div class="col-lg-12">
-                <table id="tabla-producto" class="table table-sm table-striped" >
+                <table id="tabla-cliente" class="table table-sm table-striped" >
                                 
                     <thead class="table-secondary">
                         <tr>
-                            <th>Código</th>
-                            <th>Producto</th>
-                            <th>Descripción</th>
-                            <!-- <th>Cantidad</th> -->
-                            <th>Operación</th>
+                        <th>Código</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>DNI</th>
+                        <th>Teléfono</th>
+                        <th>Operación</th>
                         </tr>
                     </thead>
 
@@ -125,34 +123,47 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 </table>
             </div>
         </div> 
-    
     </div>
 
-    
+
 
     <!-- Modal-Registrar  -->
     <div class="modal fade" id="modal-registrar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header" id="modal-registro-header">
-                    <h5 class="modal-title" id="modal-titulo">Nuevo Producto</h5>
+                    <h5 class="modal-title" id="modal-titulo">Nuevo Cliente</h5>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="form-productos">
+                    <form action="" id="form-clientes">
+                    <div class="row">
+                      <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-cart-plus"></i></span>
-                          <input type="text" class="form-control" placeholder="Nombre producto" maxlength="50" id="producto">
+                          <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
+                          <input type="text" class="form-control" placeholder="Nombres" maxlength="50" id="nombres">
                         </div>
-              
+                      </div>
+
+                      <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
-                          <input type="text" class="form-control" placeholder="Descripción" maxlength="50" id="descripcion">
+                          <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
+                          <input type="text" class="form-control" placeholder="Apellidos" maxlength="50" id="apellidos">
                         </div>
-              
-                        <!-- <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-database"></i></span>
-                          <input type="number" class="form-control" placeholder="Cantidad"  id="cantidad" min="1" max="500">
-                        </div> -->
+                      </div>
+
+                      <div class="mb-3 col-lg-6">
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class='bx bx-id-card'></i></span>
+                          <input type="text" class="form-control" placeholder="Número DNI" maxlength="8" id="dni">
+                        </div>  
+                      </div>
+                      <div class="mb-3 col-lg-6">
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class='bx bx-phone' ></i></span>
+                          <input type="tel" class="form-control" placeholder="900-000-00" maxlength="9" id="telefono">
+                        </div>  
+                      </div>
+                    </div>
                     </form>    
                 </div>
                 <div class="modal-footer">
@@ -164,7 +175,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     </div>
 
     <footer>
-        <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0; background: #B6B9B9  ; opacity:80%"><img src="../img/3plogo.png" style="width: 40px;" alt=""><a href="https://www.facebook.com/3p.ingenieriaytecnologia"> <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/><a href="https://wa.me/962734821"><img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/></a></h6>
+        <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0; background: #B6B9B9  ; opacity:90%"><img src="../img/3plogo.png" style="width: 40px;" alt=""><a href="https://www.facebook.com/3p.ingenieriaytecnologia"> <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/><a href="https://wa.me/962734821"><img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/></a></h6>
     </footer>
 
     
@@ -187,21 +198,21 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         $(document).ready(function (){
 
             let datosNuevos = true;
-            let idproducto = 0; 
+            let idpersona = 0; 
 
             function mostrar(){
                 $.ajax({
-                    url: '../controllers/productos.controller.php',
+                    url: '../controllers/usuario.controller.php',
                     type: 'GET',
                     data: {'operacion' : 'listar'},
                     success: function (result){
 
-                        var tabla = $("#tabla-producto").DataTable();
+                        var tabla = $("#tabla-cliente").DataTable();
                         tabla.destroy();
-                        $("#tabla-producto tbody").html(result);
-                        $("#tabla-producto").DataTable({
+                        $("#tabla-cliente tbody").html(result);
+                        $("#tabla-cliente").DataTable({
                             responsive: true,
-                            lengthMenu:[10,5],
+                            lengthMenu:[15,10,5],
                             language: {
                                 url: '../js/Spanish.json'
                             }
@@ -210,23 +221,26 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 });
             }
 
-
-            function registrar() {
-                const nombre = document.querySelector("#producto").value.trim();            
-                // const descripcion = document.querySelector("#descripcion").value.trim();
+            function registrar(){
+                const nombres = document.querySelector("#nombres").value.trim();
+                const apellidos = document.querySelector("#apellidos").value.trim();
+                const dni = document.querySelector("#dni").value.trim();
+                const telefono = document.querySelector("#telefono").value.trim();
 
                 let datosEnviar = {
-                    'operacion': 'registrar',
-                    'nombre': $("#producto").val(),
-                    'descripcion': $("#descripcion").val(),
-                    // 'cantidad': $("#cantidad").val(),
+
+                'operacion'   : 'registrar',
+                'nombres'     : $("#nombres").val(),
+                'apellidos'   : $("#apellidos").val(),
+                'dni'         : $("#dni").val(),
+                'telefono'    : $('#telefono').val()
                 };
 
-                if (!datosNuevos) {
+                if(!datosNuevos){            
                     datosEnviar['operacion'] = "actualizar";
-                    datosEnviar['idproducto'] = idproducto;
-                }                
-            
+                    datosEnviar['idpersona'] = idpersona;
+                }
+
                 Swal.fire({
                     title: '¿Está seguro de realizar la operación?',
                     icon: 'question',
@@ -236,43 +250,45 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     confirmButtonColor: '#65BB3B',
 
                 }).then((result) => {
-                    if (result.isConfirmed) {
-                        if(nombre === ''){
-                            Swal.fire({
+                    if(result.isConfirmed) {
+                        if(nombres === '' || apellidos === '' ||
+                            dni === '' || telefono === ''){
+                                Swal.fire({
                                 title: "Por favor, complete los campos",
                                 icon: "warning",
                                 confirmButtonColor: "#E43D2C",
                             });
 
-                        }else{
+                         }else{
                             Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Operación exitosa',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Operación exitosa',
+                            showConfirmButton: false,
+                            timer: 1500
+                            })
 
-                        $.ajax({
-                            url: '../controllers/productos.controller.php',
-                            type: 'GET',
-                            data: datosEnviar,
-                            success: function (result) {
-                                $("#form-productos")[0].reset();
-                                mostrar();
-                                $("#modal-registrar").modal('hide');
-                            }
-                        });
+                            $.ajax({
+                                url:'../controllers/clientes.controller.php',
+                                type: 'GET',
+                                data: datosEnviar,
+                                success: function(result){
+                                
+                                    $("#form-clientes")[0].reset();
 
-                        }
-                
+                                    mostrar();
+
+                                    $("#modal-registrar").modal('hide');
+                                }
+                            });
+
+                         }
                     }
                 });
+                                     
             }
 
-
-
-            function eliminar(id) {
+            function eliminar(id){
                 Swal.fire({
                     title: '¿Está seguro de eliminar el registro?',
                     text: "Esta acción no se puede deshacer.",
@@ -282,69 +298,70 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     cancelButtonColor: '#3085d6',
                     confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar',
-                }).then((result) => {
-                    if (result.isConfirmed) {
+                }).then((result) =>{
+                    if(result.isConfirmed) {
                         $.ajax({
-                            url: '../controllers/productos.controller.php',
-                            type: 'GET',
-                            data: {
-                                'operacion': 'eliminar',
-                                'idproducto': id
-                            },
-                            success: function () {
-                                mostrar();
-                            }
-                        });
+                        url: '../controllers/clientes.controller.php',
+                        type: 'GET',
+                        data: {
+                            'operacion' : 'eliminar',
+                            'idpersona' : id
+                        },
+                        success: function(){
+                            mostrar();
+                        }
+                    });
+                
                     }
                 });
             }
 
-
             function mostrarDatos (id){
 
-                $("#form-productos")[0].reset();
+                $("#form-clientes")[0].reset();
 
                 $.ajax({
-                    url: '../controllers/productos.controller.php',
+                    url: '../controllers/clientes.controller.php',
                     type: 'GET',
                     data: {
                         'operacion' : 'obtener',
-                        'idproducto' : id
+                        'idpersona' : id
                     },
                     dataType: 'JSON',
                     success: function (result){
-                        $("#producto").val(result.nombre);
-                        $("#descripcion").val(result.descripcion);
-                        // $("#cantidad").val(result.cantidad);
+                        $("#nombres").val(result.nombres);
+                        $("#apellidos").val(result.apellidos);
+                        $("#dni").val(result.dni);
+                        $("#telefono").val(result.telefono);
                     }
                 });
 
-                $("#modal-titulo").html("Actualización de Producto");
+                $("#modal-titulo").html("Actualización de Cliente");
                 $("#modal-registro-header").removeClass("bg-primary");
                 $("#modal-registro-header").addClass("bg-success-subtle");
                 $("#guardar").html("Actualizar");
                 datosNuevos = false;
-                $("#modal-registrar").modal("show")
+                $("#modal-registro-empleado").modal("show")
                 
             }
 
             function abrirModalRegistro(){
-                $("#modal-titulo").html("Registro de Producto");
+                $("#modal-titulo").html("Registro de Cliente");
                 $("#modal-registro-header").removeClass("bg-primary");
                 $("#modal-registro-header").addClass("bg-success-subtle");
                 $("#guardar").html("Guardar");
-                $("#form-productos")[0].reset();
+                $("#form-clientes")[0].reset();
                 datosNuevos =true;
             }
 
-            $("#tabla-producto tbody").on("click", ".eliminar", function (){
-                idproducto = $(this).data("idproducto");
-                eliminar(idproducto);
+            $("#tabla-cliente tbody").on("click", ".eliminar", function (){
+                idpersona = $(this).data("idpersona");
+                eliminar(idpersona);
             });
 
-            $("#tabla-producto tbody").on("click", ".editar", function (){
-                idproducto = $(this).data("idproducto");            
-                mostrarDatos(idproducto);
+            $("#tabla-cliente tbody").on("click", ".editar", function (){
+                idpersona = $(this).data("idpersona");            
+                mostrarDatos(idpersona);
             });
 
             $("#abrir-modal-registro").click(abrirModalRegistro);

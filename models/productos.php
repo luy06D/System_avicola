@@ -26,12 +26,12 @@ class Producto extends Conexion{
     public function RegistrarProducto($datos = []){
 
         try{
-            $consulta= $this->acceso->prepare("CALL spu_producto_register(?,?,?)");
+            $consulta= $this->acceso->prepare("CALL spu_producto_register(?,?)");
             $consulta->execute(
                 array(
                     $datos['nombre'],
-                    $datos['descripcion'],
-                    $datos['cantidad']
+                    $datos['descripcion']
+                    // $datos['cantidad']
                 )
             );
         }
@@ -53,13 +53,13 @@ class Producto extends Conexion{
 
     public function ActualizarProducto($datos = []){
         try{
-            $consulta= $this->acceso->prepare("CALL spu_producto_update(?,?,?,?)");
+            $consulta= $this->acceso->prepare("CALL spu_producto_update(?,?,?)");
             $consulta->execute(
                 array(
                     $datos['idproducto'],
                     $datos['nombre'],
-                    $datos['descripcion'],
-                    $datos['cantidad']
+                    $datos['descripcion']
+                    // $datos['cantidad']
                 )
             );
         }

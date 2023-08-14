@@ -71,6 +71,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
                 </li>
                 <li class="nav-item mt-2">
+                <a class="nav-link" href="usuarios.php"><h4><i class="bi bi-person-gear"></i> Usuarios</h4></a>
+                </li>
+                <li class="nav-item mt-2">
                 <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
                 </li>
                 <li class="nav-item mt-2">
@@ -195,7 +198,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         $(document).ready(function (){
 
             let datosNuevos = true;
-            let idpersona = 0; 
+            let idcliente = 0; 
 
             function mostrar(){
                 $.ajax({
@@ -235,7 +238,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
                 if(!datosNuevos){            
                     datosEnviar['operacion'] = "actualizar";
-                    datosEnviar['idpersona'] = idpersona;
+                    datosEnviar['idcliente'] = idcliente;
                 }
 
                 Swal.fire({
@@ -302,7 +305,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         type: 'GET',
                         data: {
                             'operacion' : 'eliminar',
-                            'idpersona' : id
+                            'idcliente' : id
                         },
                         success: function(){
                             mostrar();
@@ -322,7 +325,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     type: 'GET',
                     data: {
                         'operacion' : 'obtener',
-                        'idpersona' : id
+                        'idcliente' : id
                     },
                     dataType: 'JSON',
                     success: function (result){
@@ -352,13 +355,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             }
 
             $("#tabla-cliente tbody").on("click", ".eliminar", function (){
-                idpersona = $(this).data("idpersona");
-                eliminar(idpersona);
+                idcliente= $(this).data("idcliente");
+                eliminar(idcliente);
             });
 
             $("#tabla-cliente tbody").on("click", ".editar", function (){
-                idpersona = $(this).data("idpersona");            
-                mostrarDatos(idpersona);
+                idcliente = $(this).data("idcliente");            
+                mostrarDatos(idcliente);
             });
 
             $("#abrir-modal-registro").click(abrirModalRegistro);

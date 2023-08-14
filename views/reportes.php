@@ -72,6 +72,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <li class="nav-item mt-2">
                 <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
                 </li>
+                <!-- <li class="nav-item mt-2">
+                <a class="nav-link" href="usuarios.php"><h4><i class="bi bi-person-gear"></i> Usuarios</h4></a>
+                </li> -->
                 <li class="nav-item mt-2">
                 <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
                 </li>
@@ -261,7 +264,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 lsCliente.innerHTML = "<option value=''>Seleccione</option>";
                 data.forEach(element => {
                 const optionTag = document.createElement("option");
-                optionTag.value = element.idpersona
+                optionTag.value = element.idcliente
                 optionTag.text = element.clientes;
                 lsCliente.appendChild(optionTag);
                 

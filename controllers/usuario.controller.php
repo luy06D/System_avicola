@@ -52,6 +52,28 @@ if(isset($_GET['operation'])){
         echo json_encode($access);
     }
 
+    // if($_GET['operacion'] == 'listar'){
+    //     $data = $user->ListarUser();
+    //     sleep(0.5);
+    //     if($data){
+    //         foreach($data as $registro){
+    //             echo "
+    //                 <tr>
+    //                     <td>{$registro['idusuario']}</td>
+    //                     <td>{$registro['usuario']}</td>
+    //                     <td>{$registro['nombreusuario']}</td>
+    //                     <td>{$registro['claveacceso']}</td>
+    //                     <td>
+    //                         <a href='#' class='editar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-usuario ='{$registro['idusuario']}'><i class='bi bi-pencil-square'></i></a>
+    //                         <a href='#' class='eliminar btn btn-outline-danger btn-sm' data-idusuario='{$registro['idusuario']}'><i class='bi bi-trash'></i></a> 
+    //                     </td>
+    //                 </tr>
+    //             ";
+    //         }
+    //     }
+    // }
+
+
 }
 
 ?>

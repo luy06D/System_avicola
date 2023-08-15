@@ -47,6 +47,44 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         background-size: cover;
         background-attachment: fixed; 
         }
+
+        /* Estilo para los paquetes */
+#conten_paquetes ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#conten_paquetes li {
+  flex-basis: calc(33.33% - 10px); /* Tres columnas con espacio entre ellas */
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Estilo para hacerlo responsive en dispositivos pequeños */
+@media (max-width: 768px) {
+  #conten_paquetes ul {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  #conten_paquetes li {
+    flex-basis: calc(33.33% - 10px); /* Tres columnas con espacio entre ellas */
+  }
+}
+
+
+
+
+
+
+       
   </style>
 
 <header>
@@ -176,17 +214,16 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
 
     
-    <!-- Modal Body -->
-    <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+    <!-- MODAL PAQUETES -->
     <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitleId">Paquetes</h5>
+                <div class="modal-header" style="background-color: #97269B;">
+                    <h5 class="modal-title text-white" id="modalTitleId">Paquetes</h5>
                 </div>
                 <div class="modal-body">
                     <form action="" id="formulariopaquetes">
-                        <div id="mostrapa">
+                        <div id="conten_paquetes">
 
                         </div>
                     </form>
@@ -203,6 +240,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0; background: #B6B9B9  ; opacity:80%"><img src="../img/3plogo.png" style="width: 40px;" alt=""><a href="https://www.facebook.com/3p.ingenieriaytecnologia"> <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/><a href="https://wa.me/962734821"><img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/></a></h6>
     </footer>
     
+    
    
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
@@ -211,6 +249,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
      <!-- AJAX = JavaScript asincrónico-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="../js//dataJson.js"></script>
 
     <!-- datatable-->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
@@ -246,7 +285,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             const btnExportar = document.querySelector("#exportar");
             const lsCliente = document.querySelector("#cliente");
             const btnReset = document.querySelector("#reset");
-            const formupa = document.querySelector("#formulariopaquetes");
+            const formupa = document.querySelector("#formulariopaquetes div");
 
             const modal = new bootstrap.Modal(document.querySelector("#modalId"));
 
@@ -304,7 +343,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <td>${element.kilos}</td>
                             <td>
                                  ${element.cantidad} 
-                                 <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modalId" data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
+                                 <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
                             </td>
                             <td>${element.precio}</td>
                             <td>${element.flete}</td>
@@ -460,9 +499,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <td>${element.idventa}</td>
                                 <td>${element.clientes}</td>
                                 <td>${element.kilos}</td>
-                                <td>${element.cantidad}
-                                <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modalId" data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
-                                
+                                <td>${element.cantidad} 
+                                 <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
                                 </td>
                                 <td>${element.precio}</td>
                                 <td>${element.flete}</td>
@@ -511,27 +549,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     
                 })
 
-                cuerpoTabla.addEventListener("click", (event) => {
-                if(event.target.classList[0] === 'mostrar'){
-                    idventa = parseInt(event.target.dataset.idventa);
-
-                    const parametros = new URLSearchParams();
-                    parametros.append("operacion", "obtener");
-                    parametros.append("idventa",idventa);
-
-                    fetch("../controllers/reportes.controller.php",{
-                        method: 'POST',
-                        body: parametros
-                    })
-                    .then(response => response.json())
-                    .then(datos => {
-                        document.querySelector("#mostrapa").value = datos.paquetes;
-                    modal.toggle();
-                    });
-                }
-            })
             }
 
+     
 
             
             function createPDF(){

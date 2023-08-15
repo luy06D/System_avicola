@@ -66,7 +66,7 @@ class Reporte extends Conexion{
 
     public function jsonMostrar($idventa = 0){
         try{
-            $query = $this->conexion->prepare("CALL spu_clientes_recuperar(?)");
+            $query = $this->conexion->prepare("CALL spu_obtener_paquetes(?)");
             $query->execute(array($idventa));
             return $query->fetchAll(PDO::FETCH_ASSOC);
 

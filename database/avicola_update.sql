@@ -145,7 +145,7 @@ BEGIN
 	SELECT paquetes FROM ventas WHERE idventa = _idventa;
 END $$
 
-CALL spu_obtener_paquetes(26);
+CALL spu_obtener_paquetes(1);
 
 
 				-- RECUPERAR PRODUCTOS
@@ -264,7 +264,7 @@ END$$
 
 CALL spu_usuario_registar('Luis David','Cusi Gonzales','','','Luy06','12345');
 
-
+			-- REGISTRAR USUARIO (MODULO)
 DELIMITER $$ 
 CREATE PROCEDURE spu_user_list()
 BEGIN

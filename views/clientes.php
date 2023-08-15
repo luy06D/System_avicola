@@ -341,7 +341,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 $("#modal-registro-header").addClass("bg-success-subtle");
                 $("#guardar").html("Actualizar");
                 datosNuevos = false;
-                $("#modal-registro-empleado").modal("show")
+                $("#modal-registrar").modal("show")
                 
             }
 

@@ -262,14 +262,19 @@ BEGIN
 END$$
 
 
-CALL spu_usuario_registar('Luis David','Cusi Gonzales','','','Luy06','12345');
-
 			-- REGISTRAR USUARIO (MODULO)
+
+CALL spu_usuario_registar('Avicola','Vania','','','admin','123456');
+
+		-- LISTAR USUARIOS --
 DELIMITER $$ 
 CREATE PROCEDURE spu_user_list()
 BEGIN
 	SELECT 	idusuario,
-		CONCAT (PE.nombres,' ', PE.apellidos) AS usuario,
+		PE.nombres,
+		PE.apellidos,
+		PE.dni,
+		PE.telefono,
 		nombreusuario,
 		claveacceso
 		FROM usuarios
@@ -281,7 +286,73 @@ END $$
 
 CALL spu_user_list()
 
-SELECT * FROM clientes
+		-- ACTUALIZAR USUARIOS
+DELIMITER $$
+CREATE PROCEDURE spu_user_update
+(
+	IN _idusuario	INT,
+	IN _nombres	VARCHAR(30),
+	IN _apellidos 	VARCHAR(30),
+	IN _dni	 	CHAR(8),
+	IN _telefono	CHAR(9),
+	IN _nombreusuario VARCHAR(40),
+	IN _claveacceso	  VARCHAR(100)
+)
+BEGIN	
+	UPDATE usuarios 
+		JOIN personas ON usuarios.`idpersona` = personas.`idpersona`
+		SET
+			nombres	  = _nombres,
+			apellidos = _apellidos,
+			dni 	  = _dni,
+			telefono  = _telefono,
+			nombreusuario = _nombreusuario,
+			claveacceso = _claveacceso
+
+	WHERE idusuario = _idusuario;
+END $$
+
+CALL spu_user_update(1,'Avic','Vani',75369596,953684771,'Admin','1234567')
+
+
+		-- OBTENER USUARIOS
+DELIMITER $$
+CREATE PROCEDURE spu_user_obtener
+(
+	IN _idusuario INT
+)
+BEGIN
+	SELECT personas.`idpersona`,
+		personas.`nombres`,
+		personas.`apellidos`,
+		personas.`dni`,
+		personas.`telefono`,
+		usuarios.`nombreusuario`,
+		usuarios.`claveacceso`
+	FROM usuarios 
+		INNER JOIN personas ON personas.`idpersona` = usuarios.`idpersona`
+	WHERE idusuario = _idusuario AND
+		usuarios.`estado`= '1';
+	
+END $$
+
+CALL spu_user_obtener(2)
+	
+		
+		-- ELIMINAR USUARIOS --
+DELIMITER $$
+CREATE PROCEDURE spu_user_delete
+(
+	IN _idusuario INT
+)
+BEGIN
+	UPDATE usuarios SET estado = '0'
+	WHERE idusuario = _idusuario;
+END $$
+
+CALL spu_user_delete(3);
+
+
 
 			-- FILTRO FECHAS
 
@@ -371,8 +442,8 @@ FROM productos
 END $$
 
 CALL spu_producto_list();
-SELECT * FROM productos
 
+		-- REGISTRAR PRODUCTO
 
 DELIMITER $$
 CREATE PROCEDURE spu_producto_register
@@ -388,7 +459,7 @@ END $$
 
 CALL spu_producto_register ('huevos doble','50g');
 
-
+		-- ACTUALIZAR PRODUCTO
 DELIMITER $$
 CREATE PROCEDURE spu_producto_update
 (
@@ -406,6 +477,8 @@ END $$
 
 CALL spu_producto_update (3,'Huevos quiñados','60g');
 
+
+		-- OBTENER PRODUCTO --
 DELIMITER $$
 CREATE PROCEDURE spu_producto_obtener
 (
@@ -415,6 +488,8 @@ BEGIN
 	SELECT * FROM productos WHERE idproducto = _idproducto;
 END $$
 
+
+		-- ELIMINAR PRODUCTO
 DELIMITER $$
 CREATE PROCEDURE spu_producto_delete
 (
@@ -448,8 +523,9 @@ FROM clientes
 END $$
 
 CALL spu_cliente_list();
-SELECT * FROM clientes
 
+
+		-- REGISTRAR CLIENTES
 DELIMITER $$
 CREATE PROCEDURE spu_cliente_register 
 (
@@ -482,7 +558,8 @@ END$$
 
 CALL spu_cliente_register('Pocho','Mendoza','','');
 
-
+		
+		-- ACTUALIZAR CLIENTES
 DELIMITER $$
 CREATE PROCEDURE spu_cliente_update
 (
@@ -507,6 +584,8 @@ END $$
 
 CALL spu_cliente_update (1,'Nombre','Pruebas',78451239,954683218);
 
+
+		-- OBTENER CLIENTES
 DELIMITER $$
 CREATE PROCEDURE spu_cliente_obtener
 (
@@ -525,8 +604,10 @@ BEGIN
 	
 END $$
 
-CALL spu_cliente_obtener(1);
+CALL spu_cliente_obtener(2);
 
+
+		-- ELIMINAR CLIENTES
 DELIMITER $$
 CREATE PROCEDURE spu_cliente_delete
 (

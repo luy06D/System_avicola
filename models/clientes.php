@@ -75,18 +75,18 @@ class Clientes extends Conexion{
     }
 
     public function EliminarCliente($idcliente = 0){
-        $respuesta = [
-          "status" => false,
-          "message" => ""
-        ];
-        try{
-          $consulta = $this->conexion->prepare("CALL spu_cliente_delete(?)");
-          $respuesta ["status"] = $consulta->execute(array($idcliente));
-        }
-        catch(Exception $e){
-          $respuesta["message"] = "No se ha podido completar el proceso. Código error: " . $e->getCode();
-        }
-        return $respuesta;
+      $respuesta = [
+        "status" => false,
+        "message" => ""
+      ];
+      try{
+        $consulta = $this->conexion->prepare("CALL spu_cliente_delete(?)");
+        $respuesta ["status"] = $consulta->execute(array($idcliente));
       }
+      catch(Exception $e){
+        $respuesta["message"] = "No se ha podido completar el proceso. Código error: " . $e->getCode();
+      }
+      return $respuesta;
+    }
 
 }

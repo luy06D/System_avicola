@@ -104,8 +104,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         </button>
         <div class="row">
             <div class="col-lg-12">
-                <table id="tabla-cliente" class="table table-sm table-striped" >
-                                
+                <table id="tabla-usuarios" class="table table-sm table-striped" >
+     
                     <thead class="table-secondary">
                         <tr>
                         <th>Código</th>
@@ -113,6 +113,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <th>Apellidos</th>
                         <th>DNI</th>
                         <th>Teléfono</th>
+                        <th>Usuario</th>
+                        <!-- <th>Clave</th> -->
                         <th>Operación</th>
                         </tr>
                     </thead>
@@ -135,7 +137,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <h5 class="modal-title" id="modal-titulo">Nuevo Cliente</h5>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="form-clientes">
+                    <form action="" id="form-usuarios">
                     <div class="row">
                       <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
@@ -161,6 +163,18 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class='bx bx-phone' ></i></span>
                           <input type="tel" class="form-control" placeholder="900-000-00" maxlength="9" id="telefono">
+                        </div>  
+                      </div>
+                      <div class="mb-3 col-lg-6">
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-envelope-at"></i></span>
+                          <input type="email" class="form-control" placeholder="Nombre Usuario" maxlength="30" id="correo">
+                        </div>  
+                      </div>
+                      <div class="mb-3 col-lg-6">
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-eye-slash"></i></span>
+                          <input type="text" class="form-control" placeholder="Contraseña" maxlength="100" id="clave">
                         </div>  
                       </div>
                     </div>
@@ -198,19 +212,19 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         $(document).ready(function (){
 
             let datosNuevos = true;
-            let idpersona = 0; 
+            let idusuario = 0; 
 
             function mostrar(){
                 $.ajax({
-                    url: '../controllers/usuario.controller.php',
-                    type: 'GET',
-                    data: {'operacion' : 'listar'},
+                    url: '../controllers/newusuario.controller.php',
+                    type: 'POST',
+                    data: {'operation' : 'listar'},
                     success: function (result){
 
-                        var tabla = $("#tabla-cliente").DataTable();
+                        var tabla = $("#tabla-usuarios").DataTable();
                         tabla.destroy();
-                        $("#tabla-cliente tbody").html(result);
-                        $("#tabla-cliente").DataTable({
+                        $("#tabla-usuarios tbody").html(result);
+                        $("#tabla-usuarios").DataTable({
                             responsive: true,
                             lengthMenu:[15,10,5],
                             language: {
@@ -224,21 +238,26 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             function registrar(){
                 const nombres = document.querySelector("#nombres").value.trim();
                 const apellidos = document.querySelector("#apellidos").value.trim();
-                const dni = document.querySelector("#dni").value.trim();
-                const telefono = document.querySelector("#telefono").value.trim();
+                // const dni = document.querySelector("#dni").value.trim();
+                // const telefono = document.querySelector("#telefono").value.trim();
+                const correo = document.querySelector("#correo").value.trim();
+                const clave = document.querySelector("#clave").value.trim();
+
 
                 let datosEnviar = {
 
-                'operacion'   : 'registrar',
+                'operation'   : 'UsuariosRegistrar',
                 'nombres'     : $("#nombres").val(),
                 'apellidos'   : $("#apellidos").val(),
                 'dni'         : $("#dni").val(),
-                'telefono'    : $('#telefono').val()
+                'telefono'    : $('#telefono').val(),
+                'nombreusuario'    : $('#correo').val(),
+                'claveacceso'    : $('#clave').val()
                 };
 
                 if(!datosNuevos){            
-                    datosEnviar['operacion'] = "actualizar";
-                    datosEnviar['idpersona'] = idpersona;
+                    datosEnviar['operation'] = "actualizar";
+                    datosEnviar['idusuario'] = idusuario;
                 }
 
                 Swal.fire({
@@ -252,7 +271,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 }).then((result) => {
                     if(result.isConfirmed) {
                         if(nombres === '' || apellidos === '' ||
-                            dni === '' || telefono === ''){
+                            correo === '' || clave === ''){
                                 Swal.fire({
                                 title: "Por favor, complete los campos",
                                 icon: "warning",
@@ -269,12 +288,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             })
 
                             $.ajax({
-                                url:'../controllers/clientes.controller.php',
-                                type: 'GET',
+                                url:'../controllers/newusuario.controller.php',
+                                type: 'POST',
                                 data: datosEnviar,
                                 success: function(result){
                                 
-                                    $("#form-clientes")[0].reset();
+                                    $("#form-usuarios")[0].reset();
 
                                     mostrar();
 
@@ -301,11 +320,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 }).then((result) =>{
                     if(result.isConfirmed) {
                         $.ajax({
-                        url: '../controllers/clientes.controller.php',
-                        type: 'GET',
+                        url: '../controllers/newusuario.controller.php',
+                        type: 'POST',
                         data: {
-                            'operacion' : 'eliminar',
-                            'idpersona' : id
+                            'operation' : 'eliminar',
+                            'idusuario' : id
                         },
                         success: function(){
                             mostrar();
@@ -318,14 +337,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
             function mostrarDatos (id){
 
-                $("#form-clientes")[0].reset();
+                $("#form-usuarios")[0].reset();
 
                 $.ajax({
-                    url: '../controllers/clientes.controller.php',
-                    type: 'GET',
+                    url: '../controllers/newusuario.controller.php',
+                    type: 'POST',
                     data: {
-                        'operacion' : 'obtener',
-                        'idpersona' : id
+                        'operation' : 'obtener',
+                        'idusuario' : id
                     },
                     dataType: 'JSON',
                     success: function (result){
@@ -333,40 +352,45 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         $("#apellidos").val(result.apellidos);
                         $("#dni").val(result.dni);
                         $("#telefono").val(result.telefono);
+                        $("#correo").val(result.nombreusuario);
+                        // $("#clave").val(result.claveacceso);
+                        $("#clave").val("");
+                        
                     }
                 });
-
-                $("#modal-titulo").html("Actualización de Cliente");
+                // $("#correo").prop("disabled", true);
+                $("#modal-titulo").html("Actualización de Usuario");
                 $("#modal-registro-header").removeClass("bg-primary");
                 $("#modal-registro-header").addClass("bg-success-subtle");
                 $("#guardar").html("Actualizar");
                 datosNuevos = false;
-                $("#modal-registro-empleado").modal("show")
+                $("#modal-registrar-usuarios").modal("show")
                 
             }
 
             function abrirModalRegistro(){
-                $("#modal-titulo").html("Registro de Cliente");
+                $("#modal-titulo").html("Registro de Usuario");
                 $("#modal-registro-header").removeClass("bg-primary");
                 $("#modal-registro-header").addClass("bg-success-subtle");
                 $("#guardar").html("Guardar");
-                $("#form-clientes")[0].reset();
+                $("#form-usuarios")[0].reset();
                 datosNuevos =true;
             }
 
-            $("#tabla-cliente tbody").on("click", ".eliminar", function (){
-                idpersona = $(this).data("idpersona");
-                eliminar(idpersona);
+            $("#tabla-usuarios tbody").on("click", ".eliminar", function (){
+                idusuario= $(this).data("idusuario");
+                eliminar(idusuario);
             });
 
-            $("#tabla-cliente tbody").on("click", ".editar", function (){
-                idpersona = $(this).data("idpersona");            
-                mostrarDatos(idpersona);
+            $("#tabla-usuarios tbody").on("click", ".editar", function (){
+                idusuario = $(this).data("idusuario");            
+                mostrarDatos(idusuario);
             });
 
             $("#abrir-modal-registro").click(abrirModalRegistro);
 
             $("#guardar").click(registrar);
+
             mostrar();
         });
     </script>

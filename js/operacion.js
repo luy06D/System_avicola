@@ -15,8 +15,13 @@ function crearCajas() {
     }
 
     var contenedorCajas = document.getElementById("contenedorCajas");
-     // Limpiamos el contenido previo
 
+    // Limpiamos el contenido previo
+    // contenedorCajas.innerHTML = '';
+
+    if (cantidad === 0) {
+        return; // No hay necesidad de crear cajas si la cantidad es 0
+    }
 
     for (var i = 0; i < cantidad; i++) {
         var nuevaCaja = document.createElement("input");
@@ -55,6 +60,22 @@ function validarNumero(input) {
         })
         input.value = ""; // Borra el contenido del input
     }
+
+    input.addEventListener("keydown", function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault(); // Evitar el comportamiento por defecto del "Enter"
+            
+            // Obtener el siguiente elemento hermano de tipo input
+            var nextInput = input.nextElementSibling;
+            while (nextInput && nextInput.tagName !== "INPUT") {
+                nextInput = nextInput.nextElementSibling;
+            }
+            
+            if (nextInput) {
+                nextInput.focus(); // Mover el enfoque al siguiente input
+            }
+        }
+    });
 }
 
 function limpiarCajas() {
@@ -93,9 +114,10 @@ function actualizarTotal() {
 
     var factor = parseFloat(document.getElementById("factor").value) || 0;
     var flete = parseFloat(document.getElementById("flete").value) || 0;
+    var cantidad = parseInt(document.getElementById("cantidad").value) || 0;
 
     var totalMultiplicacion = sumaValoresCajas * factor;
-    var totalConFlete = totalMultiplicacion - (flete * sumaValoresCajas);
+    var totalConFlete = totalMultiplicacion - (flete * cantidad);
     totalConFlete = totalConFlete.toFixed(2);
 
     document.getElementById("totalValores").value = sumaValoresCajas.toFixed(2);

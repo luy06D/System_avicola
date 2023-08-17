@@ -201,7 +201,7 @@ const graficoBarras2 = new Chart(lienzo2, {
     datasets:[
       {
         backgroundColor: ['#3498DB','#E74C3C','#F1C40F','#2ECC71','#8E44AD','#5DADE2','#48C9B0'],
-        label: 'Kg de Huevos vendidos en los ultimos meses',
+        label: 'Total de Huevos vendidos por meses',
         data:[],
        
       

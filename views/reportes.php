@@ -218,8 +218,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header" style="background-color: #97269B;">
-                    <h5 class="modal-title text-white" id="modalTitleId">Paquetes</h5>
+                <div class="modal-header" style="background-color: #9ACD32;">
+                    <h5 class="modal-title text-black" id="modalTitleId">Paquetes</h5>
                 </div>
                 <div class="modal-body">
                     <form action="" id="formulariopaquetes">

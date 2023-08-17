@@ -31,6 +31,7 @@ function crearCajas() {
             console.log(valoresJson);
             
         });
+
         contenedorCajas.appendChild(nuevaCaja);
 
     }

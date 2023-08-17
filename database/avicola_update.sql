@@ -86,6 +86,25 @@ CONSTRAINT ck_kil_ven CHECK (kilos > 0)
 )
 ENGINE = INNODB;
 
+CREATE TABLE pagos
+(
+idpago	INT AUTO_INCREMENT PRIMARY KEY,
+idventa		INT NOT NULL,
+fechapago	DATE NOT NULL DEFAULT NOW(),
+banco		VARCHAR(30)	NOT NULL,
+numoperacion	INT 		NOT NULL,
+pago		DECIMAL(7,2)	NOT NULL,
+estado		VARCHAR(30)	NOT NULL,
+CONSTRAINT fk_idv_pa FOREIGN KEY (idventa) REFERENCES ventas (idventa),
+CONSTRAINT uk_num_pa UNIQUE(numoperacion),
+CONSTRAINT ck_pa_pa CHECK (pago > 0)
+)
+ENGINE = INNODB;
+
+SELECT * FROM pagos
+
+INSERT INTO pagos (idventa, banco, numoperacion, pago, estado) VALUES
+	(5, 'BCP', 102342134, 365.40, 'cancelado' )
 
 			   /*Procedimientos*/
 

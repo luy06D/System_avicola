@@ -576,8 +576,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
                 // }else if(fechaI === '' || fechaF === ''){
                     
-
-                
+            
                 }else{
                     window.open(`../reports/filtro.report.php?${parameters}`,`_blank`);
                 }

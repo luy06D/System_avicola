@@ -49,4 +49,9 @@ if (isset($_POST['operacion'])){
         $datos = $ventas->Grafico2();
         renderJSON($datos);
     }
+
+    if($_POST['operacion'] == 'ultimaVenta'){
+        $datos = $ventas->obtener_ultimaV();
+        renderJSON($datos);
+    }
 }

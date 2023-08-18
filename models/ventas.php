@@ -83,6 +83,20 @@ class Ventas extends Conexion{
         }
         catch (Exception $e) {
             die($e->getMessage());
+        }
     }
-}
+
+    
+    public function obtener_ultimaV(){
+        try{
+            $consulta = $this->conexion->prepare("CALL spu_obtener_ultimaV()");
+            $consulta->execute();
+            return $consulta->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+
+  
 }

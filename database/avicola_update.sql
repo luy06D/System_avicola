@@ -155,6 +155,24 @@ BEGIN
 END$$
 
 CALL spu_ventas_register (1, 1, 1, 4, 123, 12, 0.2 , '{"caja1": 10,"caja2": 10,"caja3": 10,"caja4": 10}');
+
+			-- MOSTRAR ULTIMA VENTA REGISTRADA
+DELIMITER $$
+CREATE PROCEDURE spu_obtener_ultimaV()
+BEGIN
+	SELECT CONCAT(PE.nombres,'',PE.apellidos) AS clientes,
+		PRO.nombre, DV.cantidad, VE.paquetes, VE.kilos,
+		VE.precio, VE.flete, (VE.kilos * VE.precio)-(kilos * flete) AS totalPago
+	FROM ventas VE
+	INNER JOIN clientes CLI ON CLI.idcliente = VE.idcliente
+	INNER JOIN personas PE ON PE.idpersona = CLI.idpersona
+	INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
+	INNER JOIN productos PRO ON PRO.idproducto = DV.idproducto
+	ORDER BY fechaventa DESC
+	LIMIT 1;
+END $$
+
+CALL spu_obtener_ultimaV();
 			
 			-- MOSTRAR PAQUETES
 

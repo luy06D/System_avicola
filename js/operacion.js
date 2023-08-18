@@ -1,4 +1,3 @@
-
 var valoresJson = {};
 
 function crearCajas() {

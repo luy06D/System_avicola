@@ -86,6 +86,10 @@ CONSTRAINT ck_kil_ven CHECK (kilos > 0)
 )
 ENGINE = INNODB;
 
+ALTER TABLE ventas
+MODIFY COLUMN fechaventa DATETIME NOT NULL DEFAULT NOW();
+
+
 CREATE TABLE pagos
 (
 idpago	INT AUTO_INCREMENT PRIMARY KEY,
@@ -160,19 +164,28 @@ CALL spu_ventas_register (1, 1, 1, 4, 123, 12, 0.2 , '{"caja1": 10,"caja2": 10,"
 DELIMITER $$
 CREATE PROCEDURE spu_obtener_ultimaV()
 BEGIN
-	SELECT CONCAT(PE.nombres,'',PE.apellidos) AS clientes,
-		PRO.nombre, DV.cantidad, VE.paquetes, VE.kilos,
-		VE.precio, VE.flete, (VE.kilos * VE.precio)-(kilos * flete) AS totalPago
-	FROM ventas VE
-	INNER JOIN clientes CLI ON CLI.idcliente = VE.idcliente
-	INNER JOIN personas PE ON PE.idpersona = CLI.idpersona
-	INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
-	INNER JOIN productos PRO ON PRO.idproducto = DV.idproducto
-	ORDER BY fechaventa DESC
-	LIMIT 1;
+	    DECLARE last_sale_id INT;
+
+    SELECT MAX(idventa) INTO last_sale_id FROM ventas;
+
+    SELECT CONCAT(PE.nombres,' ',PE.apellidos) AS clientes,
+        PRO.nombre, DV.cantidad, VE.paquetes, VE.kilos,
+        VE.precio, VE.flete,(VE.kilos * VE.precio) AS monto,
+        (VE.kilos * VE.precio)-(DV.cantidad * VE.flete) AS totalPago,
+        VE.fechaventa
+    FROM ventas VE
+    INNER JOIN clientes CLI ON CLI.idcliente = VE.idcliente
+    INNER JOIN personas PE ON PE.idpersona = CLI.idpersona
+    INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
+    INNER JOIN productos PRO ON PRO.idproducto = DV.idproducto
+    WHERE VE.idventa = last_sale_id;
 END $$
 
 CALL spu_obtener_ultimaV();
+
+SELECT * FROM ventas;
+SELECT * FROM detalle_ventas;
+
 			
 			-- MOSTRAR PAQUETES
 
@@ -404,7 +417,7 @@ BEGIN
 	SELECT 	VE.idventa,
 		CONCAT(CL.nombres,' ',CL.apellidos) AS clientes,
 		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
-		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
+		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
 	LEFT JOIN personas CL ON CL.idpersona = clientes.`idpersona`
@@ -428,7 +441,7 @@ BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
 		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
-		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
+		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
 	INNER JOIN personas cl ON cl.idpersona = clientes.`idpersona`
@@ -449,7 +462,7 @@ BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
 		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
-		(VE.kilos * VE.precio)-(kilos * flete) AS totalPago
+		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes  ON clientes.`idcliente` = VE.idcliente
 	INNER JOIN personas cl ON cl.idpersona = clientes.`idpersona`

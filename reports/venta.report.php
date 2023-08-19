@@ -23,7 +23,9 @@ try {
         $kilos = $ventaData['kilos'];
         $precio = $ventaData['precio'];
         $flete = $ventaData['flete'];
+        $monto = $ventaData['monto'];
         $totalPago = $ventaData['totalPago'];
+        $fechaventa = $ventaData['fechaventa'];
 
         ob_start();
 

@@ -131,7 +131,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <div class="modal fade" id="modal-registrar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header" id="modal-registro-header">
+                <div class="modal-header" id="modal-registro-header" >
                     <h5 class="modal-title" id="modal-titulo">Nuevo Cliente</h5>
                 </div>
                 <div class="modal-body">
@@ -337,8 +337,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 });
 
                 $("#modal-titulo").html("Actualización de Cliente");
-                $("#modal-registro-header").removeClass("bg-primary");
-                $("#modal-registro-header").addClass("bg-success-subtle");
+                $("#modal-registro-header").removeClass("bg-success-subtle");
+                $("#modal-registro-header").addClass("bg-primary text-white");
                 $("#guardar").html("Actualizar");
                 datosNuevos = false;
                 $("#modal-registrar").modal("show")
@@ -347,7 +347,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
             function abrirModalRegistro(){
                 $("#modal-titulo").html("Registro de Cliente");
-                $("#modal-registro-header").removeClass("bg-primary");
+                $("#modal-registro-header").removeClass("bg-primary text-white");
                 $("#modal-registro-header").addClass("bg-success-subtle");
                 $("#guardar").html("Guardar");
                 $("#form-clientes")[0].reset();

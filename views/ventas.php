@@ -171,10 +171,10 @@ $idusuario = $_SESSION['segurity']['idusuario'];
         </div>
         <div class="card-footer text-muted">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <!-- <button class="btn btn-primary " type="button" onclick="crearCajas()">Crear paquetes</button> -->
-                <button id="exportar" class="btn btn-danger" type="button"><i class="bi bi-file-earmark-pdf"></i></button>
-                <button type="button" class="btn btn" style="background-color: #F7DC6F;" id="btnRegistrar">Registrar</button>
+                <!-- <button class="btn btn-primary " type="button" onclick="crearCajas()">Crear paquetes</button> -->          
+                <button type="button" class="btn btn text-white" style="background-color:#9ACD32;" id="btnRegistrar">Registrar</button>
                 <button class="btn btn-secondary "  onclick="limpiarCajas()" >Limpiar</button>                
+                <button id="exportar" class="btn btn-danger" type="button"><i class="bi bi-file-earmark-pdf"></i></button>
             </div>
         </div>
       </div>

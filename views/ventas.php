@@ -108,7 +108,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
               <div class="row">
 
               <div class="col-lg-4">
-                  <div class="mb-3">   
+                  <div class=" input-group mb-3">   
                     <label for="" class="form-label">Cliente:</label>                                 
                     <select  class="js-example-responsive"  id="cliente" style="width: 100%;" >
                       <option value=""></option>

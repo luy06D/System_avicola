@@ -210,6 +210,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
       const btnRegistrar = document.querySelector("#btnRegistrar");
       const btnPDF = document.querySelector("#exportar");
       const caja = document.querySelector("#caja");
+      
 
       function mostrarProductos(){
         const parameters = new URLSearchParams();
@@ -262,6 +263,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
         const flete = document.querySelector("#flete").value.trim();
         let idUsuario = <?php echo json_encode($idusuario) ?>;
         const valoresCajas = crearCajas();
+        
 
         Swal.fire({
             title: "¿Está seguro de registrar?",
@@ -312,7 +314,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                       })
                       document.querySelector("#form-venta").reset();
                       document.querySelector("#form-detalle").reset();
-                      // document.querySelector("#form-paquete").reset();
+                      
                       limpiarCajas();
                       $("#cliente").val(null).trigger('change');
                     

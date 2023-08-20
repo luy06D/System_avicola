@@ -244,7 +244,7 @@ DELIMITER $$
 			/*Grafico N2*/
 
 DELIMITER$$			
-CREATE PROCEDURE spu_ventas_resume()
+DROP PROCEDURE spu_ventas_resume()
 BEGIN
 SELECT LEFT(DAYNAME(fechaventa),10 ) AS Dia, COUNT(ventas.idventa)AS Ventas_Diarias, SUM(ventas.kilos) AS Kilos_Vendidos
 FROM ventas
@@ -253,6 +253,33 @@ WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 7 DAY)
 GROUP BY fechaventa
 ORDER BY fechaventa;
  END $$
+ 
+CALL spu_ventas_resume();
+
+-- GRAFICO N2 EN ESPAÑOL
+DELIMITER $$			
+CREATE PROCEDURE spu_ventas_resume()
+BEGIN
+    SELECT 
+        CASE 
+            WHEN DAYNAME(fechaventa) = 'Monday' THEN 'Lunes'
+            WHEN DAYNAME(fechaventa) = 'Tuesday' THEN 'Martes'
+            WHEN DAYNAME(fechaventa) = 'Wednesday' THEN 'Miércoles'
+            WHEN DAYNAME(fechaventa) = 'Thursday' THEN 'Jueves'
+            WHEN DAYNAME(fechaventa) = 'Friday' THEN 'Viernes'
+            WHEN DAYNAME(fechaventa) = 'Saturday' THEN 'Sábado'
+            WHEN DAYNAME(fechaventa) = 'Sunday' THEN 'Domingo'
+        END AS Dia,
+        COUNT(ventas.idventa) AS Ventas_Diarias,
+        SUM(ventas.kilos) AS Kilos_Vendidos
+    FROM ventas
+    INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
+    WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    GROUP BY fechaventa
+    ORDER BY fechaventa;
+END $$
+
+
  
  
  

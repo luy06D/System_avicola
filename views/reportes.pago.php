@@ -14,7 +14,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reportes</title>
+    <title>Reportes pagos</title>
     <link rel="icon" href="../img/remove.ico">
     <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -145,7 +145,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         <div class="container mt-5 col-12">
             <div class="card">
                 <div class="card-header bg-light-subtle text-black">
-                    <h4 class="text-center">FILTRADO</h4>
+                    <h4 class="text-center">FILTRADO PAGOS</h4>
                 </div>
                 <div class="card-body" >
                     <form action="" id="form-filtro">
@@ -179,13 +179,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     <button id="reset" class="btn btn-secondary" type="button"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
                                 </div>
                             </div>                     
-                               
-                            <!-- <div class="mb-3 col-lg-2">
-                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                    <button type="button" class="btn btn-primary"><i class='bx bx-filter-alt' ></i></button>
-                                    <button class="btn btn-secondary bg-danger" ><i class='bx bxs-file-pdf' ></i></button>
-                                </div>
-                            </div> -->
                             
                         </div>
                     </form>
@@ -200,12 +193,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <tr>
                                 <th>Código</th>
                                 <th>Cliente</th>
-                                <th>Kilos</th>
-                                <th>Paquetes</th>
-                                <th>Precio</th>
-                                <th>Flete</th>
-                                <th>Fecha Venta</th>
-                                <th>Total Venta</th>               
+                                <th>Fecha</th>
+                                <th>Producto</th>
+                                <th>Deuda total</th>
+                                <th>Pago total</th>
+                                <th>Saldo</th>
+                                <th>Estado</th>   
+                                <th>Operación</th>            
                             </tr>
                         </thead>
                         <tbody>
@@ -219,22 +213,46 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     </main>
 
 
-    
-    <!-- MODAL PAQUETES -->
-    <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <!-- Modal-Registrar  -->
+    <div class="modal fade" id="modal-registrar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header" style="background-color: #9ACD32;">
-                    <h5 class="modal-title text-black" id="modalTitleId">Paquetes</h5>
+                <div class="modal-header" id="modal-registro-header">
+                    <h5 class="modal-title" id="modal-titulo">Registrar pago</h5>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="formulariopaquetes">
-                        <div id="conten_paquetes">
-
+                    <form action="" id="form-productos">
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bx bx-calendar"></i></span>
+                          <input type="date" class="form-control"  maxlength="50" id="fechaventa">
                         </div>
-                    </form>
+              
+                        <div class="input-group mb-3">
+                        <select  class="form-select "  id="cliente" style="width: 100%;" >
+                        <option value="" disabled selected>
+                             Seleccione
+                        </option>
+                        <option value="BCP">BCP</option>
+                        <option value="SCOTIABANK">SCOTIABANK</option>
+                    </select>
+                        </div>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
+                          <input type="text" class="form-control" placeholder="N-Operacion" maxlength="20" id="operacion">
+                        </div>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
+                          <input type="number" class="form-control" placeholder="Pago" maxlength="50" id="Pago">
+                        </div>
+              
+                        <!-- <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-database"></i></span>
+                          <input type="number" class="form-control" placeholder="Cantidad"  id="cantidad" min="1" max="500">
+                        </div> -->
+                    </form>    
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="guardar">Guardar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -292,15 +310,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             const lsCliente = document.querySelector("#cliente");
             const btnReset = document.querySelector("#reset");
             const formupa = document.querySelector("#formulariopaquetes div");
-
-            const modal = new bootstrap.Modal(document.querySelector("#modalId"));
-
+            const modal = new bootstrap.Modal(document.querySelector("#modal-registrar"));
             
             function recuperarCliente(){
             const parameters = new URLSearchParams();
             parameters.append("operacion", "recuperarCliente");
 
-            fetch("../controllers/reportes.controller.php", {
+            fetch("../controllers/reportes.pago.controller.php", {
                 method: 'POST',
                 body: parameters
             })
@@ -319,13 +335,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
 
 
-            function filtro2Ventas(){
+            function filtropagofecha(){
                 const parameters = new URLSearchParams();
-                parameters.append("operacion", "filtra2Ventas");
+                parameters.append("operacion", "filtropagofechas");
                 parameters.append("fechainicio", document.querySelector("#fechainicio").value);
                 parameters.append("fechafin", document.querySelector("#fechafin").value);
 
-                fetch(`../controllers/reportes.controller.php`, {
+                fetch(`../controllers/reportes.pago.controller.php`, {
                     method: 'POST',
                     body: parameters
                 })
@@ -344,17 +360,18 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     data.forEach(element => {
                         const rows = `
                         <tr>
-                            <td>${element.idventa}</td>
-                            <td>${element.clientes}</td>
-                            <td>${element.kilos}</td>
+                            <td>${element.idpago}</td>
+                            <td>${element.cliente}</td>
+                            <td>${element.fechapago}</td>
+                            <td>${element.producto}</td>
+                            <td>${element.deuda_total}</td>
+                            <td>${element.pago_total}</td>
+                            <td>${element.saldo}</td>      
+                            <td>${element.estado}</td>
                             <td>
-                                 ${element.cantidad} 
-                                 <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
+                                <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idpago='${element.idpago}'><i class="bi bi-eye"></i></a>
                             </td>
-                            <td>${element.precio}</td>
-                            <td>${element.flete}</td>
-                            <td>${element.fechaventa}</td>
-                            <td>${element.totalPago}</td>                                               
+
                         </tr>
                         `;
                         cuerpoTabla.innerHTML += rows;                        
@@ -400,20 +417,20 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 })                            
             }
 
-            function filtro3Ventas(){
+            function filtropagofechacliente(){
                 const parameters = new URLSearchParams();
-                parameters.append("operacion", "filtra3Ventas");
+                parameters.append("operacion", "filtropagofechacliente");
                 parameters.append("fechainicio", document.querySelector("#fechainicio").value);
                 parameters.append("fechafin", document.querySelector("#fechafin").value);
                 parameters.append("idcliente", parseInt(lsCliente.value));
 
-                fetch(`../controllers/reportes.controller.php`, {
+                fetch(`../controllers/reportes.pago.controller.php`, {
                     method: 'POST',
                     body: parameters
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if(data.length === 0){                        
+                    if(data.length === ""){                        
                     Swal.fire({
                         title: "No hay registros",
                         icon: "warning",
@@ -425,17 +442,18 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
-                                <td>${element.idventa}</td>
-                                <td>${element.clientes}</td>
-                                <td>${element.kilos}</td>
-                                <td>${element.cantidad}
-                                <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modalId" data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
-                                </td>
-                                <td>${element.precio}</td>
-                                <td>${element.flete}</td>
-                                <td>${element.fechaventa}</td>
-                                <td>${element.totalPago}</td>                        
-                            </tr>                            
+                                <td>${element.idpago}</td>
+                                <td>${element.cliente}</td>
+                                <td>${element.fechapago}</td>
+                                <td>${element.producto}</td>
+                                <td>${element.deuda_total}</td>
+                                <td>${element.pago_total}</td>
+                                <td>${element.saldo}</td>      
+                                <td>${element.estado}</td>
+                                <td>
+                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idpago='${element.idpago}'><i class="bi bi-eye"></i></a>
+                                </td>                                         
+                            </tr>               
                             `;
                             cuerpoTabla.innerHTML += rows;
                         });
@@ -477,20 +495,21 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     
                 })
             }
+            
 
             
-            function filtro1Ventas(){
+            function filtropagocliente(){
                 const parameters = new URLSearchParams();
-                parameters.append("operacion", "filtra1Ventas");              
+                parameters.append("operacion", "filtropagoclientes");              
                 parameters.append("idcliente", parseInt(lsCliente.value));
 
-                fetch(`../controllers/reportes.controller.php`, {
+                fetch(`../controllers/reportes.pago.controller.php`, {
                     method: 'POST',
                     body: parameters
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if(data.length === 0){                                      
+                    if(data.length === ""){                                      
                     Swal.fire({
                         title: "No hay registros",
                         icon: "warning",
@@ -499,22 +518,23 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     
                     }else{
                         cuerpoTabla.innerHTML = ``;
-                        data.forEach(element =>{
-                            const rows = `
+                        data.forEach(element => {
+                        const rows = `
                             <tr>
-                                <td>${element.idventa}</td>
-                                <td>${element.clientes}</td>
-                                <td>${element.kilos}</td>
-                                <td>${element.cantidad} 
-                                 <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
-                                </td>
-                                <td>${element.precio}</td>
-                                <td>${element.flete}</td>
-                                <td>${element.fechaventa}</td>
-                                <td>${element.totalPago}</td>                        
-                            </tr>                            
+                                <td>${element.idpago}</td>
+                                <td>${element.cliente}</td>
+                                <td>${element.fechapago}</td>
+                                <td>${element.producto}</td>
+                                <td>${element.deuda_total}</td>
+                                <td>${element.pago_total}</td>
+                                <td>${element.saldo}</td>      
+                                <td>${element.estado}</td> 
+                                <td>
+                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idpago='${element.idpago}'><i class="bi bi-eye"></i></a>
+                                </td>                                         
+                            </tr>
                             `;
-                            cuerpoTabla.innerHTML += rows;
+                            cuerpoTabla.innerHTML += rows;                        
                         });
 
                         // Destruir la instancia actual de DataTables
@@ -584,12 +604,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     
             
                 }else{
-                    window.open(`../reports/filtro.report.php?${parameters}`,`_blank`);
+                    window.open(`../reports/filtro.pago.report.php?${parameters}`,`_blank`);
                 }
                 
 
             }
-
 
 
             recuperarCliente();
@@ -598,16 +617,16 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 const fechaI = document.querySelector("#fechainicio").value;
                 const fechaF = document.querySelector("#fechafin").value;
                 const idcliente = parseInt(lsCliente.value);
-
+                
                 if(!isNaN(idcliente) && idcliente !== 0 && fechaI && fechaF){
-                    filtro3Ventas(idcliente, fechaI, fechaF);
+                    filtropagofechacliente(idcliente, fechaI, fechaF);
                     
 
                 }else if(fechaI && fechaF){
-                    filtro2Ventas(fechaI, fechaF);
+                    filtropagofecha(fechaI, fechaF);
 
                 }else if(!isNaN(idcliente) && idcliente !==0){
-                    filtro1Ventas(idcliente)
+                    filtropagocliente(idcliente)
                 }
 
             });

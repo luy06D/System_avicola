@@ -80,6 +80,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes</h4></a>
                 </li>
                 <li class="nav-item mt-2">
+                <a class="nav-link" aria-current="page" href="reportes.pago.php"><h4><i class="bi bi-graph-up-arrow"></i >Reportes Pagos</h4></a>
+                </li>
+                <li class="nav-item mt-2">
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
                 <li class="nav-item mt-5">

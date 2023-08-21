@@ -71,6 +71,9 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 <a class="nav-link " aria-current="page" href="ventas.php"><h4><i class="bi bi-cart4"></i> Ventas</h4></a>
                 </li>
                 <li class="nav-item mt-2">
+                <a class="nav-link" aria-current="page" href="pagos.php"><h4><i class="bi bi-cash-coin"></i> Pagos</h4></a>
+                </li>
+                <li class="nav-item mt-2">
                 <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
                 </li>
                 <li class="nav-item mt-2">
@@ -80,7 +83,10 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
                 </li>
                 <li class="nav-item mt-2">
-                <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes</h4></a>
+                <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes Ventas</h4></a>
+                </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" aria-current="page" href="reportes.pago.php"><h4><i class="bi bi-graph-up-arrow"></i> Reportes Pagos</h4></a>
                 </li>
                 <li class="nav-item mt-2">
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
@@ -295,6 +301,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 parameters.append("kilos", document.querySelector("#totalValores").value);
                 parameters.append("precio", document.querySelector("#factor").value);
                 parameters.append("flete", document.querySelector("#flete").value);
+                parameters.append("deuda",document.querySelector("#resultadoResta").value);
                 parameters.append("paquetes", JSON.stringify(valoresCajas));
                 
 

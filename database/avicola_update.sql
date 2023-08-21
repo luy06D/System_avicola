@@ -51,7 +51,9 @@ estado		CHAR(1)		NOT NULL DEFAULT '1'
 ENGINE = INNODB;
 
 INSERT INTO productos (nombre,descripcion) VALUES 
-		('Huevos','');
+		('Huevos Pardos',''),
+		('Huevos Rosados',''),
+		('Huevos Yumbo','')
 
 
 CREATE TABLE detalle_ventas
@@ -76,7 +78,7 @@ kilos		SMALLINT 	NOT NULL,
 precio		DECIMAL(4,2) 	NOT NULL,
 flete		DECIMAL(2,1) 	NULL,
 deuda		DECIMAL(7,2)	NOT NULL,
-fechaventa	DATE		NOT NULL DEFAULT NOW(),
+fechaventa 	DATE		NOT NULL DEFAULT NOW(),
 estado		CHAR(1)		NOT NULL DEFAULT '1',
 paquetes 	JSON 		NOT NULL,
 CONSTRAINT fk_idd_ven FOREIGN KEY (iddetalle_venta) REFERENCES detalle_ventas (iddetalle_venta),
@@ -89,8 +91,8 @@ ENGINE = INNODB;
 
 
 
-ALTER TABLE ventas
-MODIFY COLUMN fechaventa DATETIME NOT NULL DEFAULT NOW();
+-- ALTER TABLE ventas
+-- MODIFY COLUMN fechaventa DATEtime NOT NULL DEFAULT NOW();
 
 
 
@@ -183,10 +185,6 @@ BEGIN
 END $$
 
 CALL spu_obtener_ultimaV();
-
-SELECT * FROM ventas;
-SELECT * FROM detalle_ventas;
-
 			
 			-- MOSTRAR PAQUETES
 
@@ -231,7 +229,6 @@ CALL spu_clientes_recuperar();
 
  
 DELIMITER $$
- 
  CREATE PROCEDURE spu_resume_ventas()
  BEGIN
  SELECT COUNT(*) AS Ventas, MONTHNAME(fechaventa) AS MONTH, SUM(ventas.kilos) AS Kilos_Vendidos2
@@ -253,6 +250,7 @@ INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_v
 WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 7 DAY)
 GROUP BY fechaventa
 ORDER BY fechaventa;
+
  END $$
  
 CALL spu_ventas_resume();
@@ -281,27 +279,6 @@ BEGIN
 END $$
 
 
- 
- 
- 
- 
-		
- 
-DELIMITER $$
- CREATE PROCEDURE spu_ventas_listar()
- BEGIN
- SELECT idventa, CONCAT(personas.nombres, ' ',  personas.apellidos)AS Cliente, productos.nombre AS producto, detalle_ventas.cantidad, productos.precio * productos.cantidad AS total, ventas.fechaventa
- FROM ventas
- INNER JOIN personas ON personas.idpersona = ventas.idcliente
- INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
- INNER JOIN productos ON detalle_ventas.idproducto = productos.idproducto;
- END $$
- 
- 
-
-				
-				
-				
 										
 				
 				-- REGISTRAR USUARIO 			
@@ -454,8 +431,8 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro2_ventas('2023-08-01','2023-08-14')
-
+CALL spu_filtro2_ventas('2023-08-01','2023-08-20')
+SELECT * FROM ventas
 			-- FILTRO FECHAS Y CLIENTE
 
 DELIMITER $$
@@ -478,9 +455,9 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro3_ventas('2023-08-01','2023-08-14',4)
+CALL spu_filtro3_ventas('2023-08-01','2023-09-20',2)
 
-
+SELECT * FROM ventas
 
 			-- FILTRO CLIENTE
 
@@ -737,9 +714,10 @@ CREATE PROCEDURE spu_filtro_clientePago(
     IN _idcliente INT
 )
 BEGIN
-    SELECT CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
+    SELECT p.idpago,
+	   CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
            p.fechapago,
-           pr.nombre,
+           pr.nombre AS producto,
            (SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) AS deuda_total,
            SUM(p.pago) AS pago_total, ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
            CASE 
@@ -755,13 +733,84 @@ BEGIN
     WHERE c.idcliente = _idcliente
     ORDER BY p.fechapago DESC;	
 END$$
-DELIMITER ;
+
+SELECT * FROM ventas
+CALL spu_filtro_clientePago(2);
+
+INSERT INTO pagos (idventa, banco, numoperacion, pago, estado) VALUES
+	(2, 'BCP', 1023480, 56.20, '' )
 
 
+DELIMITER $$
+CREATE PROCEDURE spu_filtro_ClienteFecha
+(
+    IN _fechainicio DATE,
+    IN _fechafin DATE
+)
+BEGIN
+    SELECT 
+        idpago,
+        CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
+        p.fechapago,
+        pr.nombre AS producto,
+        (SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) AS deuda_total,
+        SUM(p.pago) AS pago_total,
+        ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
+        CASE 
+            WHEN ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) = 0 THEN 'Cancelado'
+            ELSE 'Pendiente'
+        END AS estado
+    FROM pagos p
+    INNER JOIN ventas v ON v.idventa = p.idventa
+    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
+    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
+    INNER JOIN clientes c ON v.idcliente = c.idcliente
+    INNER JOIN personas cl ON c.idpersona = cl.idpersona
+    WHERE DATE(p.fechapago) BETWEEN _fechainicio AND _fechafin
+    GROUP BY Cliente, producto
+    ORDER BY idpago DESC;    
+END $$
+
+SELECT * FROM ventas
+
+CALL spu_filtro_ClienteFecha('2023-08-01','2023-08-20')
+
+DELIMITER $$
+CREATE PROCEDURE spu_filtro_pagoclientefecha 
+(
+    IN _fechainicio DATE,
+    IN _fechafin DATE,
+    IN _idcliente INT
+)
+BEGIN
+    SELECT 
+        idpago,
+        CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
+        p.fechapago,
+        pr.nombre AS producto,
+        (SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) AS deuda_total,
+        SUM(p.pago) AS pago_total,
+        ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
+        CASE 
+            WHEN ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) = 0 THEN 'Cancelado'
+            ELSE 'Pendiente'
+        END AS estado
+    FROM pagos p
+    INNER JOIN ventas v ON v.idventa = p.idventa
+    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
+    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
+    INNER JOIN clientes c ON v.idcliente = c.idcliente
+    INNER JOIN personas cl ON c.idpersona = cl.idpersona
+    WHERE DATE(p.fechapago) BETWEEN _fechainicio AND _fechafin AND c.idcliente = _idcliente
+    GROUP BY Cliente, producto
+    ORDER BY idpago DESC;    
+END $$
+
+CALL spu_filtro_pagoclientefecha('2023-08-01','2023-08-20',1)
 
 			-- Listar
 DELIMITER $$
-CREATE PROCEDURE spu_listar_pago
+CREATE PROCEDURE spu_listar_pago()
 BEGIN
     SELECT CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
            p.fechapago,
@@ -781,4 +830,6 @@ BEGIN
     ORDER BY p.fechapago DESC;	
 END $$
 
+CALL spu_listar_pago()
 
+SELECT * FROM ventas

@@ -18,7 +18,7 @@ class Ventas extends Conexion{
         ];
 
         try{
-            $consulta = $this->conexion->prepare("CALL spu_ventas_register(?,?,?,?,?,?,?,?)");
+            $consulta = $this->conexion->prepare("CALL spu_ventas_register(?,?,?,?,?,?,?,?,?)");
             $respuesta["status"] = $consulta->execute(array(
                 
                 $datos["idproducto"],
@@ -28,6 +28,7 @@ class Ventas extends Conexion{
                 $datos["kilos"],
                 $datos["precio"],
                 $datos["flete"],
+                $datos["deuda"],
                 $datos["paquetes"]
 
             

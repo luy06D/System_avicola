@@ -204,12 +204,15 @@ $idusuario = $_SESSION['segurity']['idusuario'];
 
       //Activa el select2 en clientes
       $("#cliente").select2();
+
+      
       
       const lsProducto = document.querySelector("#producto");
       const lsCliente = document.querySelector("#cliente");
       const btnRegistrar = document.querySelector("#btnRegistrar");
       const btnPDF = document.querySelector("#exportar");
       const caja = document.querySelector("#caja");
+      
 
       function mostrarProductos(){
         const parameters = new URLSearchParams();
@@ -253,6 +256,9 @@ $idusuario = $_SESSION['segurity']['idusuario'];
         });
       }
 
+
+      
+  
       function ventasRegistrar(){
 
         const producto = document.querySelector("#producto").value.trim();
@@ -262,6 +268,7 @@ $idusuario = $_SESSION['segurity']['idusuario'];
         const flete = document.querySelector("#flete").value.trim();
         let idUsuario = <?php echo json_encode($idusuario) ?>;
         const valoresCajas = crearCajas();
+
 
         Swal.fire({
             title: "¿Está seguro de registrar?",
@@ -293,7 +300,21 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 parameters.append("kilos", document.querySelector("#totalValores").value);
                 parameters.append("precio", document.querySelector("#factor").value);
                 parameters.append("flete", document.querySelector("#flete").value);
+                parameters.append("deuda", document.querySelector("#resultadoResta").value);
                 parameters.append("paquetes", JSON.stringify(valoresCajas));
+
+                // console.log("idproducto", document.querySelector("#producto").value);
+                // console.log("cantidad", document.querySelector("#cantidad").value);
+                // console.log("idusuario", idUsuario);
+                // console.log("idcliente", document.querySelector("#cliente").value);
+                // console.log("kilos", document.querySelector("#totalValores").value);
+                // console.log("precio", document.querySelector("#factor").value);
+                // console.log("flete", document.querySelector("#flete").value);
+                // console.log("deuda", document.querySelector("#resultadoResta").value);
+                // console.log("paquetes", JSON.stringify(valoresCajas));
+
+                
+
                 
 
                 fetch("../controllers/ventas.controller.php",{

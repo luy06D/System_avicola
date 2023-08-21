@@ -33,7 +33,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <style>
     body{
       font-family: 'Poppins', sans-serif;
-      overflow: hidden;
       position: relative;
       padding-bottom: 3em;
       min-height: 100vh;
@@ -95,7 +94,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <div class="col-12">
       <div class="row">
 
-        <div class=" mt-5 col-6">
+        <div class="col-md-10 col-lg-6 mt-3 mb-3">
           <div class="card">
             <div class="card-header bg-warning text-center text-black"> Cantidad de Ventas en cada dia</div>
             <div class="card-body">
@@ -105,7 +104,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
           </div>
         </div>
 
-        <div class="mt-5 col-6">
+        <div class="col-md-10 col-lg-6 mt-3 mb-3">
           <div class="card">
             <div class="card-header  bg-success text-center text-white" >Huevos vendidos en un mes</div>
             <div class="card-body">
@@ -136,7 +135,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
       const lienzo = document.getElementById("grafico");
       const leyenda = document.querySelector("#lista-leyenda");
 
-const graficoBarras = new Chart(lienzo, {
+      const graficoBarras = new Chart(lienzo, {
         type: "bar",
         data: {
           labels: [],

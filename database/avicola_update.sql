@@ -75,6 +75,7 @@ idcliente	INT 		NOT NULL,
 kilos		SMALLINT 	NOT NULL,
 precio		DECIMAL(4,2) 	NOT NULL,
 flete		DECIMAL(2,1) 	NULL,
+deuda		DECIMAL(7,2)	NOT NULL,
 fechaventa	DATE		NOT NULL DEFAULT NOW(),
 estado		CHAR(1)		NOT NULL DEFAULT '1',
 paquetes 	JSON 		NOT NULL,
@@ -86,8 +87,11 @@ CONSTRAINT ck_kil_ven CHECK (kilos > 0)
 )
 ENGINE = INNODB;
 
+
+
 ALTER TABLE ventas
 MODIFY COLUMN fechaventa DATETIME NOT NULL DEFAULT NOW();
+
 
 
 CREATE TABLE pagos
@@ -105,10 +109,6 @@ CONSTRAINT ck_pa_pa CHECK (pago > 0)
 )
 ENGINE = INNODB;
 
-SELECT * FROM pagos
-
-INSERT INTO pagos (idventa, banco, numoperacion, pago, estado) VALUES
-	(5, 'BCP', 102342134, 365.40, 'cancelado' )
 
 			   /*Procedimientos*/
 
@@ -143,6 +143,7 @@ IN _idcliente 	INT,
 IN _kilos	SMALLINT,
 IN _precio	DECIMAL(4,2),
 IN _flete	DECIMAL(2,1),
+IN _deuda	DECIMAL(7,2),
 IN _paquetes 	JSON 
 )	
 BEGIN 
@@ -154,11 +155,11 @@ BEGIN
 	SELECT LAST_INSERT_ID() INTO g_iddetalle;
 	
 	
-	INSERT INTO ventas (iddetalle_venta, idusuario, idcliente, kilos, precio, flete, paquetes)VALUES
-		(g_iddetalle, _idusuario, _idcliente, _kilos , _precio , _flete, _paquetes);
+	INSERT INTO ventas (iddetalle_venta, idusuario, idcliente, kilos, precio, flete, deuda,  paquetes)VALUES
+		(g_iddetalle, _idusuario, _idcliente, _kilos , _precio , _flete, _deuda, _paquetes);
 END$$
 
-CALL spu_ventas_register (1, 1, 1, 4, 123, 12, 0.2 , '{"caja1": 10,"caja2": 10,"caja3": 10,"caja4": 10}');
+
 
 			-- MOSTRAR ULTIMA VENTA REGISTRADA
 DELIMITER $$
@@ -244,7 +245,7 @@ DELIMITER $$
 			/*Grafico N2*/
 
 DELIMITER$$			
-CREATE PROCEDURE spu_ventas_resume()
+DROP PROCEDURE spu_ventas_resume()
 BEGIN
 SELECT LEFT(DAYNAME(fechaventa),10 ) AS Dia, COUNT(ventas.idventa)AS Ventas_Diarias, SUM(ventas.kilos) AS Kilos_Vendidos
 FROM ventas
@@ -254,12 +255,39 @@ GROUP BY fechaventa
 ORDER BY fechaventa;
  END $$
  
+CALL spu_ventas_resume();
+
+-- GRAFICO N2 EN ESPAÑOL
+DELIMITER $$			
+CREATE PROCEDURE spu_ventas_resume()
+BEGIN
+    SELECT 
+        CASE 
+            WHEN DAYNAME(fechaventa) = 'Monday' THEN 'Lunes'
+            WHEN DAYNAME(fechaventa) = 'Tuesday' THEN 'Martes'
+            WHEN DAYNAME(fechaventa) = 'Wednesday' THEN 'Miércoles'
+            WHEN DAYNAME(fechaventa) = 'Thursday' THEN 'Jueves'
+            WHEN DAYNAME(fechaventa) = 'Friday' THEN 'Viernes'
+            WHEN DAYNAME(fechaventa) = 'Saturday' THEN 'Sábado'
+            WHEN DAYNAME(fechaventa) = 'Sunday' THEN 'Domingo'
+        END AS Dia,
+        COUNT(ventas.idventa) AS Ventas_Diarias,
+        SUM(ventas.kilos) AS Kilos_Vendidos
+    FROM ventas
+    INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
+    WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    GROUP BY fechaventa
+    ORDER BY fechaventa;
+END $$
+
+
+ 
  
  
  
 		
  
- DELIMITER $$
+DELIMITER $$
  CREATE PROCEDURE spu_ventas_listar()
  BEGIN
  SELECT idventa, CONCAT(personas.nombres, ' ',  personas.apellidos)AS Cliente, productos.nombre AS producto, detalle_ventas.cantidad, productos.precio * productos.cantidad AS total, ventas.fechaventa
@@ -416,7 +444,7 @@ BEGIN
 
 	SELECT 	VE.idventa,
 		CONCAT(CL.nombres,' ',CL.apellidos) AS clientes,
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad,VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -440,7 +468,7 @@ IN _idcliente	INT
 BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -461,7 +489,7 @@ CREATE PROCEDURE spu_filtro1_ventas(IN _idcliente INT)
 BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes  ON clientes.`idcliente` = VE.idcliente
@@ -471,7 +499,7 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro1_ventas(1);
+CALL spu_filtro1_ventas(3);
 
 SELECT * FROM ventas
 
@@ -670,4 +698,87 @@ END $$
 
 
 
+
 CALL spu_cliente_obtener(1);
+
+DELIMITER $$
+CREATE PROCEDURE spu_pagos_listar()
+BEGIN
+SELECT idpago, CONCAT(personas.nombres, ' ', personas.apellidos) AS Cliente, fechapago, banco, numoperacion, ventas.deuda, pago, ventas.deuda - SUM(pago) AS saldo
+FROM pagos
+INNER JOIN ventas ON ventas.idventa = pagos.idventa
+INNER JOIN clientes ON clientes.idcliente = ventas.idcliente
+INNER JOIN personas ON personas.idpersona = clientes.idpersona;
+END$$
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+			-- Filtrar-------------------
+
+				
+DELIMITER $$
+CREATE PROCEDURE spu_filtro_clientePago(
+    IN _idcliente INT
+)
+BEGIN
+    SELECT CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
+           p.fechapago,
+           pr.nombre,
+           (SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) AS deuda_total,
+           SUM(p.pago) AS pago_total, ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
+           CASE 
+               WHEN ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) = 0 THEN 'Cancelado'
+               ELSE 'Pendiente'
+           END AS estado
+    FROM pagos p
+    INNER JOIN ventas v ON v.idventa = p.idventa
+    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
+    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
+    INNER JOIN clientes c ON v.idcliente = c.idcliente
+    INNER JOIN personas cl ON c.idpersona = cl.idpersona
+    WHERE c.idcliente = _idcliente
+    ORDER BY p.fechapago DESC;	
+END$$
+DELIMITER ;
+
+
+
+			-- Listar
+DELIMITER $$
+CREATE PROCEDURE spu_listar_pago
+BEGIN
+    SELECT CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
+           p.fechapago,
+           pr.nombre,
+           (SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) AS deuda_total,
+           SUM(p.pago) AS pago_total, ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
+           CASE 
+               WHEN ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) = 0 THEN 'Cancelado'
+               ELSE 'Pendiente'
+           END AS estado
+    FROM pagos p
+    INNER JOIN ventas v ON v.idventa = p.idventa
+    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
+    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
+    INNER JOIN clientes c ON v.idcliente = c.idcliente
+    INNER JOIN personas cl ON c.idpersona = cl.idpersona
+    ORDER BY p.fechapago DESC;	
+END $$
+
+

@@ -1,3 +1,4 @@
+
 <?php
 
 require_once '../models/ventas.php';
@@ -55,4 +56,5 @@ if (isset($_POST['operacion'])){
         $datos = $ventas->obtener_ultimaV();
         renderJSON($datos);
     }
+
 }

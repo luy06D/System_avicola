@@ -738,7 +738,12 @@ SELECT * FROM ventas
 CALL spu_filtro_clientePago(2);
 
 INSERT INTO pagos (idventa, banco, numoperacion, pago, estado) VALUES
-	(2, 'BCP', 1023480, 56.20, '' )
+	(2, 'BCP', 1023484, 2269.24, '' )
+	
+	
+	
+	SELECT * FROM personas
+	
 
 
 DELIMITER $$

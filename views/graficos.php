@@ -64,6 +64,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <a class="nav-link" aria-current="page" href="ventas.php"><h4><i class="bi bi-cart4"></i> Ventas</h4></a>
                 </li>
                 <li class="nav-item mt-2">
+                <a class="nav-link" aria-current="page" href="pagos.php"><h4><i class="bi bi-cash-coin"></i> Pagos</h4></a>
+                </li>
+                <li class="nav-item mt-2">
                 <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
                 </li>
                 <li class="nav-item mt-2">
@@ -73,7 +76,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
                 </li>
                 <li class="nav-item mt-2">
-                <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes</h4></a>
+                <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes Ventas</h4></a>
+                </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" aria-current="page" href="reportes.pago.php"><h4><i class="bi bi-graph-up-arrow"></i> Reportes Pagos</h4></a>
                 </li>
                 <li class="nav-item mt-2">
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
@@ -254,5 +260,4 @@ function loadData2(){
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
 </body>
->>>>>>> luis
 </html>

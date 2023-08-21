@@ -90,9 +90,9 @@ CONSTRAINT ck_kil_ven CHECK (kilos > 0)
 ENGINE = INNODB;
 
 
+
 -- ALTER TABLE ventas
 -- MODIFY COLUMN fechaventa DATEtime NOT NULL DEFAULT NOW();
-
 
 
 
@@ -237,7 +237,7 @@ DELIMITER $$
  ORDER BY fechaventa;
  END$$
  
- CALL spu_resume_ventas
+ CALL spu_resume_ventas();
 	
 			/*Grafico N2*/
 
@@ -277,9 +277,6 @@ BEGIN
     GROUP BY fechaventa
     ORDER BY fechaventa;
 END $$
-
-
- 
 
 
 										
@@ -424,7 +421,7 @@ BEGIN
 
 	SELECT 	VE.idventa,
 		CONCAT(CL.nombres,' ',CL.apellidos) AS clientes,
-		VE.kilos, DV.cantidad,VE.precio, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -448,7 +445,7 @@ IN _idcliente	INT
 BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -469,7 +466,7 @@ CREATE PROCEDURE spu_filtro1_ventas(IN _idcliente INT)
 BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes  ON clientes.`idcliente` = VE.idcliente
@@ -479,7 +476,7 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro1_ventas(3);
+CALL spu_filtro1_ventas(1);
 
 SELECT * FROM ventas
 
@@ -717,7 +714,6 @@ CREATE PROCEDURE spu_filtro_clientePago(
     IN _idcliente INT
 )
 BEGIN
-
     SELECT p.idpago,
 	   CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
            p.fechapago,
@@ -737,7 +733,6 @@ BEGIN
     WHERE c.idcliente = _idcliente
     ORDER BY p.fechapago DESC;	
 END$$
-
 
 SELECT * FROM ventas
 CALL spu_filtro_clientePago(2);
@@ -785,7 +780,6 @@ SELECT * FROM ventas
 
 CALL spu_filtro_ClienteFecha('2023-08-01','2023-08-20')
 
-
 DELIMITER $$
 CREATE PROCEDURE spu_filtro_pagoclientefecha 
 (
@@ -819,10 +813,9 @@ END $$
 
 CALL spu_filtro_pagoclientefecha('2023-08-01','2023-08-20',1)
 
-
 			-- Listar
-
-CREATE PROCEDURE spu_listar_pago
+DELIMITER $$
+CREATE PROCEDURE spu_listar_pago()
 BEGIN
     SELECT CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
            p.fechapago,
@@ -841,7 +834,6 @@ BEGIN
     INNER JOIN personas cl ON c.idpersona = cl.idpersona
     ORDER BY p.fechapago DESC;	
 END $$
-
 
 CALL spu_listar_pago()
 

@@ -1,4 +1,3 @@
-
 <?php
 
 require_once 'conexion.php';
@@ -99,6 +98,19 @@ class Ventas extends Conexion{
             die($e->getMessage());
         }
     }
+
+    public function obtener_detalleV($idventa = 0){
+        try{
+          $consulta = $this->conexion->prepare("CALL spu_obtener_detalleV(?)");
+          $consulta->execute(array($idventa));
+          return $consulta->fetch(PDO::FETCH_ASSOC);
+        }
+        catch(Exception $e){
+          die($e->getMessage());
+        }
+    }
+
+    
 
   
 }

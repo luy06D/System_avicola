@@ -185,6 +185,29 @@ BEGIN
 END $$
 
 CALL spu_obtener_ultimaV();
+	
+			
+			-- MOSTRAR DETALLE DE VENTA POR ID VENTA
+
+DELIMITER $$ 
+CREATE PROCEDURE spu_obtener_detalleV(IN _idventa INT)
+BEGIN 
+
+    SELECT CONCAT(PE.nombres,' ',PE.apellidos) AS clientes,
+        PRO.nombre, DV.cantidad, VE.paquetes, VE.kilos,
+        VE.precio, VE.flete,(VE.kilos * VE.precio) AS monto,
+        (VE.kilos * VE.precio)-(DV.cantidad * VE.flete) AS totalPago,
+        VE.fechaventa
+    FROM ventas VE
+    INNER JOIN clientes CLI ON CLI.idcliente = VE.idcliente
+    INNER JOIN personas PE ON PE.idpersona = CLI.idpersona
+    INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
+    INNER JOIN productos PRO ON PRO.idproducto = DV.idproducto
+    WHERE VE.idventa = _idventa;
+
+END $$
+
+CALL spu_obtener_detalleV(5);
 			
 			-- MOSTRAR PAQUETES
 
@@ -421,7 +444,7 @@ BEGIN
 
 	SELECT 	VE.idventa,
 		CONCAT(CL.nombres,' ',CL.apellidos) AS clientes,
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -445,7 +468,7 @@ IN _idcliente	INT
 BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -466,7 +489,7 @@ CREATE PROCEDURE spu_filtro1_ventas(IN _idcliente INT)
 BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes  ON clientes.`idcliente` = VE.idcliente
@@ -476,7 +499,7 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro1_ventas(1);
+CALL spu_filtro1_ventas(4);
 
 SELECT * FROM ventas
 

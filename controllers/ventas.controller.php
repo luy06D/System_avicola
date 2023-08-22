@@ -1,4 +1,3 @@
-
 <?php
 
 require_once '../models/ventas.php';
@@ -55,6 +54,12 @@ if (isset($_POST['operacion'])){
     if($_POST['operacion'] == 'ultimaVenta'){
         $datos = $ventas->obtener_ultimaV();
         renderJSON($datos);
+    }
+
+    
+    if($_POST['operacion'] == 'detalle_venta'){
+        $data = $ventas->obtener_detalleV($_POST['idventa']);
+        echo json_encode($data);
     }
 
 }

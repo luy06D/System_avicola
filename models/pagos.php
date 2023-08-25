@@ -39,7 +39,7 @@ class Pagos extends Conexion{
     }
     public function ObtenerPago($idventa = 0){
         try{
-          $consulta = $this->conexion->prepare("CALL spu_cliente_obtener(?)");
+          $consulta = $this->acceso->prepare("CALL spu_cliente_obtener(?)");
           $consulta->execute(array($idventa));
           return $consulta->fetch(PDO::FETCH_ASSOC);
         }

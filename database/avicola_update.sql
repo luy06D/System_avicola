@@ -185,6 +185,29 @@ BEGIN
 END $$
 
 CALL spu_obtener_ultimaV();
+	
+			
+			-- MOSTRAR DETALLE DE VENTA POR ID VENTA
+
+DELIMITER $$ 
+CREATE PROCEDURE spu_obtener_detalleV(IN _idventa INT)
+BEGIN 
+
+    SELECT CONCAT(PE.nombres,' ',PE.apellidos) AS clientes,
+        PRO.nombre, DV.cantidad, VE.paquetes, VE.kilos,
+        VE.precio, VE.flete,(VE.kilos * VE.precio) AS monto,
+        (VE.kilos * VE.precio)-(DV.cantidad * VE.flete) AS totalPago,
+        VE.fechaventa
+    FROM ventas VE
+    INNER JOIN clientes CLI ON CLI.idcliente = VE.idcliente
+    INNER JOIN personas PE ON PE.idpersona = CLI.idpersona
+    INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
+    INNER JOIN productos PRO ON PRO.idproducto = DV.idproducto
+    WHERE VE.idventa = _idventa;
+
+END $$
+
+CALL spu_obtener_detalleV(5);
 			
 			-- MOSTRAR PAQUETES
 
@@ -237,12 +260,12 @@ DELIMITER $$
  ORDER BY fechaventa;
  END$$
  
- CALL spu_resume_ventas
+ CALL spu_resume_ventas();
 	
 			/*Grafico N2*/
 
 DELIMITER$$			
-CREATE PROCEDURE spu_ventas_resume()
+DROP PROCEDURE spu_ventas_resume()
 BEGIN
 SELECT LEFT(DAYNAME(fechaventa),10 ) AS Dia, COUNT(ventas.idventa)AS Ventas_Diarias, SUM(ventas.kilos) AS Kilos_Vendidos
 FROM ventas
@@ -250,8 +273,35 @@ INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_v
 WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 7 DAY)
 GROUP BY fechaventa
 ORDER BY fechaventa;
+
  END $$
- 	
+ 
+CALL spu_ventas_resume();
+
+-- GRAFICO N2 EN ESPAÑOL
+DELIMITER $$			
+CREATE PROCEDURE spu_ventas_resume()
+BEGIN
+    SELECT 
+        CASE 
+            WHEN DAYNAME(fechaventa) = 'Monday' THEN 'Lunes'
+            WHEN DAYNAME(fechaventa) = 'Tuesday' THEN 'Martes'
+            WHEN DAYNAME(fechaventa) = 'Wednesday' THEN 'Miércoles'
+            WHEN DAYNAME(fechaventa) = 'Thursday' THEN 'Jueves'
+            WHEN DAYNAME(fechaventa) = 'Friday' THEN 'Viernes'
+            WHEN DAYNAME(fechaventa) = 'Saturday' THEN 'Sábado'
+            WHEN DAYNAME(fechaventa) = 'Sunday' THEN 'Domingo'
+        END AS Dia,
+        COUNT(ventas.idventa) AS Ventas_Diarias,
+        SUM(ventas.kilos) AS Kilos_Vendidos
+    FROM ventas
+    INNER JOIN detalle_ventas ON detalle_ventas.iddetalle_venta = ventas.iddetalle_venta
+    WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+    GROUP BY fechaventa
+    ORDER BY fechaventa;
+END $$
+
+
 										
 				
 				-- REGISTRAR USUARIO 			
@@ -394,7 +444,7 @@ BEGIN
 
 	SELECT 	VE.idventa,
 		CONCAT(CL.nombres,' ',CL.apellidos) AS clientes,
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -418,7 +468,7 @@ IN _idcliente	INT
 BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -439,7 +489,7 @@ CREATE PROCEDURE spu_filtro1_ventas(IN _idcliente INT)
 BEGIN
 
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes  ON clientes.`idcliente` = VE.idcliente
@@ -449,7 +499,7 @@ BEGIN
 	
 END $$
 
-CALL spu_filtro1_ventas(1);
+CALL spu_filtro1_ventas(4);
 
 SELECT * FROM ventas
 
@@ -710,8 +760,7 @@ END$$
 SELECT * FROM ventas
 CALL spu_filtro_clientePago(2);
 
-INSERT INTO pagos (idventa, banco, numoperacion, pago, estado) VALUES
-	(1, 'BCP', 1023480, 59.20, '' )
+
 
 
 DELIMITER $$

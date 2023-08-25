@@ -5,11 +5,10 @@
 
 <table class="table table-border">
     <colgroup>
-        <col style="width: 31%;">
+        <col style="width: 41%;">
         <col style="width: 10% ;">
         <col style="width: 11% ;">
         <col style="width: 12%;">
-        <col style="width: 10%;">
         <col style="width: 13%;">
         <col style="width: 13%;">
     </colgroup>
@@ -19,7 +18,6 @@
         <th>Kilo</th>
         <th>Paquetes</th>
         <th>Precio</th>
-        <th>Flete</th>
         <th>Fecha venta</th>
         <th>Total venta</th>    
         </tr>            
@@ -33,7 +31,7 @@
             <td><?=$registro['kilos']?></td>
             <td><?=$registro['cantidad']?></td>
             <td><?=$registro['precio']?></td>
-            <td><?=$registro['flete']?></td>
+            
             <td><?=$registro['fechaventa']?></td>
             <td><?=$registro['totalPago']?></td>
       

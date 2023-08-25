@@ -148,7 +148,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <div class="row">
                       <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class='bx bx-user' ></i></span>
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-minecart-loaded"></i></span>
                           <input type="text" class="form-control" placeholder="Nombre"  id="nombre">
                         </div>
                       </div>
@@ -171,9 +171,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                       </div>
                       <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class='bx bx-phone' ></i></span>
-                          <input type="text" class="form-control" placeholder="Descripcion"  id="descripcion" autocomplete="off">
-                        </div>  
+                        <span class="input-group-text"><i class="bi bi-text-left"></i></span>
+                        <textarea class="form-control" id="descripcion" placeholder="Descripcion" aria-label="With textarea"></textarea>
+                        </div>                      
                       </div>
                     </div>
                     </form>    
@@ -224,7 +224,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         $("#tabla-insumos tbody").html(result);
                         $("#tabla-insumos").DataTable({
                             responsive: true,
-                            lengthMenu:[10,5],
+                            lengthMenu:[5,10],
                             language: {
                                 url: '../js/Spanish.json'
                             }
@@ -236,72 +236,116 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             }
 
             function insumoRegister(){
-            const nombre = document.querySelector("#nombre").value.trim();
-            const unidad = document.querySelector("#unidad").value.trim();
-            const cantidad = document.querySelector("#cantidad").value.trim();
+                const nombre = document.querySelector("#nombre").value.trim();
+                const unidad = document.querySelector("#unidad").value.trim();
+                const cantidad = document.querySelector("#cantidad").value.trim();
 
-            let sendData = {
-                'operacion': 'insumosRegister',
-                'insumo' : $("#nombre").val(),
-                'unidad' : $("#unidad").val(),
-                'cantidad' : $("#cantidad").val(),
-                'descripcion' : $("#descripcion").val(),
-            };
+                
 
-            if(!sendData){
-                sendData['operacion'] = "insumosUpdate";
-                sendData['idinsumo'] = idinsumo;
+                let sendData = {
+                    'operacion': 'insumosRegister',
+                    'insumo' : $("#nombre").val(),
+                    'unidad' : $("#unidad").val(),
+                    'cantidad' : $("#cantidad").val(),
+                    'descripcion' : $("#descripcion").val(),
+                };
+
+                if(!sendData){
+                    sendData['operacion'] = "insumosUpdate";
+                    sendData['idinsumo'] = idinsumo;
+                    
+
+                }
+
+                
+
+                Swal.fire({
+                    title: '¿Está seguro de realizar la operación?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#65BB3B',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if(nombre === '' || unidad === '' || cantidad === ''){
+                            Swal.fire({
+                                title: "Por favor, complete los campos",
+                                icon: "warning",
+                                confirmButtonColor: "#E43D2C",
+                            });
+                        } else {
+                            $.ajax({
+                                url: '../controllers/insumos.controller.php',
+                                type: 'POST',
+                                data: sendData,
+                                success: function (result) {
+                                    let resultado = JSON.parse(result);
+                                    
+                                    if(resultado.status === false){
+                                        Swal.fire({
+                                            title: "Este insumo ya esta registrado",
+                                            icon: "warning",
+                                            confirmButtonColor: "#E43D2C",
+                                        }); 
+                                        $("#form-insumo")[0].reset();
+
+                                    } else {
+                                        Swal.fire({
+                                            position: 'top-end',
+                                            icon: 'success',
+                                            title: 'Operación exitosa',
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                        $("#form-insumo")[0].reset();
+                                        showInsumos();
+                                        $("#modal-registrar").modal('hide');
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
             }
 
-            Swal.fire({
-                title: '¿Está seguro de realizar la operación?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Sí',
-                cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#65BB3B',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if(nombre === '' || unidad === '' || cantidad === ''){
-                        Swal.fire({
-                            title: "Por favor, complete los campos",
-                            icon: "warning",
-                            confirmButtonColor: "#E43D2C",
-                        });
-                    } else {
-                        $.ajax({
-                            url: '../controllers/insumos.controller.php',
-                            type: 'POST',
-                            data: sendData,
-                            success: function (result) {
-                                let resultado = JSON.parse(result);
-                                
-                                if(resultado.status === false){
-                                    Swal.fire({
-                                        title: "Este insumo ya esta registrado",
-                                        icon: "warning",
-                                        confirmButtonColor: "#E43D2C",
-                                    }); 
-                                    $("#form-insumo")[0].reset();
-
-                                } else {
-                                    Swal.fire({
-                                        position: 'top-end',
-                                        icon: 'success',
-                                        title: 'Operación exitosa',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    });
-                                    $("#form-insumo")[0].reset();
-                                    showInsumos();
-                                    $("#modal-registrar").modal('hide');
-                                }
-                            }
-                        });
+    
+            function getInsumos(id){
+                $.ajax({
+                    url: '../controllers/insumos.controller.php',
+                    type: 'POST',
+                    data: {
+                        'operacion' : 'getInsumo',
+                        'idinsumo' : id
+                    },
+                    dataType: 'JSON',
+                    success: function (result){
+                        $("#nombre").val(result.insumo);
+                        $("#cantidad").val(result.cantidad);
+                        $("#unidad").val(result.unidad);
+                        $("#descripcion").val(result.descripcion);
                     }
-                }
+                });
+
+                $("#modal-titulo").html("Actualización de Insumo");                
+                $("#modal-registro-header").removeClass("bg-primary");
+                $("#modal-registro-header").addClass("bg-warning");
+                $("#guardar").addClass("btn-warning");
+                $("#guardar").html("Actualizar");
+                // $("#cantidad").prop("disabled", true);
+
+
+
+                sendData = false;
+                $("#modal-registrar").modal("show")
+            }
+
+
+
+            $("#tabla-insumos tbody").on("click", ".editar", function (){
+                idinsumo = $(this).data("idinsumo");            
+                getInsumos(idinsumo);
             });
-        }
 
 
 

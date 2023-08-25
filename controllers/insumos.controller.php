@@ -18,8 +18,8 @@ if(isset($_GET['operacion'])){
                     <td>{$registro['unidad']}</td>
                     <td>{$registro['descripcion']}</td>                    
                     <td>
-                        <a href='#' class='editar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idusuario ='{$registro['idinsumo']}'><i class='bi bi-pencil-square'></i></a>
-                        <a href='#' class='eliminar btn btn-outline-danger btn-sm' data-idusuario='{$registro['idinsumo']}'><i class='bi bi-trash'></i></a> 
+                        <a href='#' class='editar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idinsumo ='{$registro['idinsumo']}'><i class='bi bi-pencil-square'></i></a>
+                        <a href='#' class='eliminar btn btn-outline-danger btn-sm' data-idinsumo='{$registro['idinsumo']}'><i class='bi bi-trash'></i></a> 
                     </td>
                 </tr>
             ";
@@ -61,8 +61,9 @@ if(isset($_POST['operacion'])){
             
         ];
 
-        $respuesta = $insumos->insumo_update($saveData);
-        echo json_encode($respuesta);
+       $insumos->insumo_update($saveData);
+  
+        
     }
 
         

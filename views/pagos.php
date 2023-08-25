@@ -221,7 +221,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         $("#tabla-pago tbody").html(result);
                         $("#tabla-pago").DataTable({
                             responsive: true,
-                            lengthMenu:[10,5],
+                            lengthMenu:[5],
                             language: {
                                 url: '../js/Spanish.json'
                             }

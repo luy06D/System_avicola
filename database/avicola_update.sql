@@ -210,6 +210,11 @@ END $$
 
 CALL spu_insumos_register('CARBONATO GRANO','KG',500 ,'');
 
+INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
+		('HINT','KG', 400 ,'Proteica, vegetal, versátil, nutricional');
+
+SELECT * FROM insumos;
+
 -- ACTUALIZAR INSUMOS
 
 DELIMITER $$
@@ -1056,11 +1061,10 @@ BEGIN
 	    WHERE c.idcliente = _idcliente;
 END $$
 
-CALL spu_listar_detallesclientes(2);
+CALL spu_listar_detallesclientes(4);
 
 
 
- 
 DELIMITER $$
 CREATE PROCEDURE spu_ventas_mostrar()
 BEGIN
@@ -1070,7 +1074,7 @@ BEGIN
         pr.nombre,
         v.deuda AS deuda_total,SUM(p.pago) AS pago_total,  ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
         CASE
-            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) = 0 THEN 'Cancelado'
+            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
             ELSE 'Pendiente'
         END AS estado
     FROM ventas v
@@ -1081,9 +1085,12 @@ BEGIN
     INNER JOIN personas cl ON c.idpersona = cl.idpersona
     GROUP BY v.idventa
     ORDER BY p.fechapago DESC;
- END $$
+
+END $$
  
  SELECT * FROM pagos
+ 
+ CALL spu_ventas_mostrar();
  
  
  DELETE FROM ventas

@@ -90,7 +90,6 @@ CONSTRAINT ck_kil_ven CHECK (kilos > 0)
 ENGINE = INNODB;
 
 
-
 -- ALTER TABLE ventas
 -- MODIFY COLUMN fechaventa DATEtime NOT NULL DEFAULT NOW();
 
@@ -110,6 +109,152 @@ CONSTRAINT uk_num_pa UNIQUE(numoperacion),
 CONSTRAINT ck_pa_pa CHECK (pago > 0)
 )
 ENGINE = INNODB;
+
+
+
+-- NUEVOS TABLAS PARA ALMACEN (ENTRADA - SALIDA)
+
+CREATE TABLE insumos
+(
+idinsumo	INT AUTO_INCREMENT PRIMARY KEY,
+insumo		VARCHAR(30) 	NOT NULL,
+unidad		VARCHAR(20) 	NOT NULL, -- TONELADA , KILOS
+cantidad	SMALLINT 	NOT NULL,
+descripcion	VARCHAR(80)	NULL,
+CONSTRAINT uk_ins_ins UNIQUE(insumo)
+)
+ENGINE = INNODB;
+
+INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
+		('SOYA','KG', 400 ,'Proteica, vegetal, versátil, nutricional'),
+		('AFRECHO','KG', 700 ,'Fibroso, salvado, integral, nutritivo.'),
+		('MAIZ','KG', 1000 ,'Cereal, amarillo, versátil, nutritivo.'),
+		('SAL','KG', 700 ,'Mineral, condimento, saborizante, conservante');
+
+CREATE TABLE proveedores
+(
+idproveedor	INT AUTO_INCREMENT PRIMARY KEY,
+nombre		VARCHAR(30) NOT NULL,
+direccion	VARCHAR(50) NULL,
+telefono	CHAR(9)	    NOT NULL
+)
+ENGINE = INNODB;
+
+
+CREATE TABLE detalle_entradas
+(
+identrada	INT AUTO_INCREMENT PRIMARY KEY,
+idproveedor 	INT NOT NULL,
+idinsumo	INT NOT NULL,
+cantidad	SMALLINT	NOT NULL,
+precio		DECIMAL(7,2)	NOT NULL,
+fecha_entrada	DATE 	NOT NULL DEFAULT NOW(),
+CONSTRAINT fk_idp_ent FOREIGN KEY (idproveedor) REFERENCES proveedores (idproveedor),
+CONSTRAINT fk_idi_ent FOREIGN KEY (idinsumo) REFERENCES insumos (idinsumo)
+)
+ENGINE = INNODB;
+
+
+CREATE TABLE formulas
+(
+idformula 	INT AUTO_INCREMENT PRIMARY KEY,
+nombreformula	VARCHAR(40)	NOT NULL,
+CONSTRAINT uk_nom_for UNIQUE(nombreformula)
+)
+ENGINE = INNODB;
+
+CREATE TABLE detalle_insumos
+(
+iddetalle_insumo	INT AUTO_INCREMENT PRIMARY KEY,
+idformula		INT 		NOT NULL,
+idinsumo		INT 		NOT NULL,
+cantidad		SMALLINT	NOT NULL,
+unidad			VARCHAR(20)	NOT NULL,
+CONSTRAINT fk_idf_det FOREIGN KEY (idformula) REFERENCES formulas(idformula),
+CONSTRAINT fk_idi_det FOREIGN KEY (idinsumo) REFERENCES insumos(idinsumo)
+)
+ENGINE = INNODB;
+
+-- PROCEDIMIENTOS ALMACEN
+
+-- LISTAR INSUMOS
+
+DELIMITER $$
+CREATE PROCEDURE spu_insumos_listar()
+BEGIN 
+	SELECT idinsumo, insumo, cantidad, unidad,
+	descripcion
+	FROM insumos;
+END $$
+
+CALL spu_insumos_listar();
+
+-- REGISTRAR INSUMOS
+
+DELIMITER $$
+CREATE PROCEDURE spu_insumos_register
+(
+IN _insumo VARCHAR(30),
+IN _unidad VARCHAR(20),
+IN _cantidad	SMALLINT,
+IN _descripcion	VARCHAR(80)
+)
+BEGIN
+	IF _descripcion = '' THEN SET _descripcion = NULL;	
+	END IF;
+	
+	INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
+		(_insumo, _unidad, _cantidad, _descripcion);
+
+END $$
+
+CALL spu_insumos_register('CARBONATO GRANO','KG',500 ,'');
+
+-- ACTUALIZAR INSUMOS
+
+DELIMITER $$
+CREATE PROCEDURE spu_insumos_update
+(
+IN _idinsumo INT,
+IN _insumo VARCHAR(30),
+IN _unidad VARCHAR(20),
+IN _cantidad	SMALLINT,
+IN _descripcion	VARCHAR(80)
+)
+BEGIN
+	IF _descripcion = '' THEN SET _descripcion = NULL;	
+	END IF;
+	
+	UPDATE insumos SET 
+	insumo	= _insumo,
+	unidad = _unidad,
+	cantidad = _cantidad,
+	descripcion = _descripcion
+	WHERE idinsumo = _idinsumo;
+
+END $$
+
+CALL spu_insumos_update(17,'INSUMO PRUEBA','KG', 300 ,'');
+
+-- RECUPERAR DATOS INSUMO 
+
+DELIMITER $$
+CREATE PROCEDURE spu_get_insumo(IN _idinsumo INT)
+BEGIN
+	SELECT	insumo, unidad , cantidad, descripcion
+	FROM insumos
+	WHERE idinsumo = _idinsumo;
+
+END $$
+
+CALL spu_get_insumo(3);
+
+
+
+
+
+-- FIN PROCEDIMIENTOS ALMACEN
+
 
 
 			   /*Procedimientos*/
@@ -890,9 +1035,6 @@ END$$
 CALL spu_pagos_registrar(1, 'BCP', '00010', '330')
 
 
-
-SELECT * FROM ventas
-
 DELIMITER $$
 CREATE PROCEDURE spu_listar_detallesclientes
 (
@@ -950,4 +1092,3 @@ BEGIN
 
 
  
-

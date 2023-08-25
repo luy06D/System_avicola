@@ -64,6 +64,7 @@ class ReportePago extends Conexion{
 
     }
 
+
     public function filtropagodetallecliente($idcliente = 0){
         try{
         $query = $this->conexion->prepare("CALL spu_listar_detallesclientes (?)");
@@ -74,6 +75,22 @@ class ReportePago extends Conexion{
         }
         catch(Exception $err){
             die($err->getMessage());
+        }
+    }
+
+    public function RegistrarPagos($datos = []){
+        try{
+            $consulta = $this->conexion->prepare("CALL spu_pagos_registrar(?,?,?,?)");
+            $consulta->execute(
+                array(
+                    $datos['idventa'],
+                    $datos['banco'],
+                    $datos['numoperacion'],
+                    $datos['pago']
+                )
+            );
+        }catch(Exception $e){
+            die($e->getMessage());
         }
 
     }

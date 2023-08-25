@@ -224,6 +224,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <h5 class="modal-title text-black" style="text-align: center;" id="modalTitleId">HISTORIAL DE PAGOS</h5>
                 </div>
                 <div class="modal-body">
+
                 <div class="row mt-3">
                 <div class="col-lg-12">
                     <form action="" id="form-detalles">
@@ -245,10 +246,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     </form>
                 </div>
             </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
             </div>
         </div>
     </div>
@@ -481,6 +482,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idcliente='${element.idcliente}'><i class="bi bi-eye"></i></a>
                                 </td>
                                                                         
+
                             </tr>               
                             `;
                             cuerpoTabla.innerHTML += rows;
@@ -576,6 +578,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idcliente='${element.idcliente}'><i class="bi bi-eye"></i></a>
                                 </td>
                                                                        
+
                             </tr>
                             `;
                             cuerpoTabla.innerHTML += rows;                        
@@ -682,6 +685,65 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             btnReset.addEventListener("click", function(){
                 location.reload();                
             });
+
+
+            function registrar() {
+                const nombre = document.querySelector("#pago").value.trim();            
+                // const descripcion = document.querySelector("#descripcion").value.trim();
+
+                let datosEnviar = {
+                    'operacion': 'registrar',
+                    'idventa': idventa,
+                    'banco': $("#banco").val(),
+                    'numoperacion': $("#numoperacion").val(),
+                    'pago': $("#pago").val(),
+                    // 'cantidad': $("#cantidad").val(),
+                };
+            
+                Swal.fire({
+                    title: '¿Está seguro de realizar la operación?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#65BB3B',
+
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if(nombre === ''){
+                            Swal.fire({
+                                title: "Por favor, complete los campos",
+                                icon: "warning",
+                                confirmButtonColor: "#E43D2C",
+                            });
+
+                        }else{
+                            Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Operación exitosa',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+
+                        $.ajax({
+                            url: '../controllers/pagos.controller.php',
+                            type: 'GET',
+                            data: datosEnviar,
+                            success: function (result) {
+                                $("#form-pagos")[0].reset();
+                                mostrar();
+                                $("#modal-registrar").modal('hide');
+                            }
+                        });
+
+                        }
+                
+                    }
+                });
+            }
+
+            $("#guardar").click(registrar);
             
         });
     </script>

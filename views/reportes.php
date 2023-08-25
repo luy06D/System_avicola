@@ -48,8 +48,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         background-attachment: fixed; 
         }
 
-        /* Estilo para los paquetes */
-#conten_paquetes ul {
+ 
+/* #conten_paquetes ul {
   list-style: none;
   padding: 0;
   display: flex;
@@ -59,14 +59,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 }
 
 #conten_paquetes li {
-  flex-basis: calc(33.33% - 10px); /* Tres columnas con espacio entre ellas */
+  flex-basis: calc(33.33% - 10px);
   background-color: #f2f2f2;
   border: 1px solid #ddd;
   padding: 10px;
   border-radius: 5px;
 }
 
-/* Estilo para hacerlo responsive en dispositivos pequeños */
+
 @media (max-width: 768px) {
   #conten_paquetes ul {
     flex-wrap: wrap;
@@ -75,16 +75,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
   }
 
   #conten_paquetes li {
-    flex-basis: calc(33.33% - 10px); /* Tres columnas con espacio entre ellas */
+    flex-basis: calc(33.33% - 10px); 
   }
-}
+}  */
 
-
-
-
-
-
-       
+      
   </style>
 
 <header>
@@ -145,7 +140,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         <div class="container mt-5 col-12">
             <div class="card">
                 <div class="card-header bg-light-subtle text-black">
-                    <h4 class="text-center">FILTRADO</h4>
+                    <h4 class="text-center">FILTRADO DE VENTAS</h4>
                 </div>
                 <div class="card-body" >
                     <form action="" id="form-filtro">
@@ -202,10 +197,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <th>Cliente</th>
                                 <th>Kilos</th>
                                 <th>Paquetes</th>
-                                <th>Precio</th>
-                                <th>Flete</th>
+                                <th>Precio</th>                                
                                 <th>Fecha Venta</th>
-                                <th>Total Venta</th>               
+                                <th>Total Venta</th>
+                                <th>PDF</th>      
+
                             </tr>
                         </thead>
                         <tbody>
@@ -220,7 +216,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
 
     
-    <!-- MODAL PAQUETES -->
     <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -239,7 +234,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
     
 
     <footer>
@@ -292,6 +287,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             const lsCliente = document.querySelector("#cliente");
             const btnReset = document.querySelector("#reset");
             const formupa = document.querySelector("#formulariopaquetes div");
+            const btnDetalleV = document.querySelector("#detalle_venta");
 
             const modal = new bootstrap.Modal(document.querySelector("#modalId"));
 
@@ -347,14 +343,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <td>${element.idventa}</td>
                             <td>${element.clientes}</td>
                             <td>${element.kilos}</td>
-                            <td>
-                                 ${element.cantidad} 
-                                 <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
-                            </td>
-                            <td>${element.precio}</td>
-                            <td>${element.flete}</td>
+                            <td>${element.cantidad}</td>
+                            <td>${element.precio}</td>                            
                             <td>${element.fechaventa}</td>
-                            <td>${element.totalPago}</td>                                               
+                            <td>${element.totalPago}</td>       
+                            <td><a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a></td>                                                                                                                                
                         </tr>
                         `;
                         cuerpoTabla.innerHTML += rows;                        
@@ -428,13 +421,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <td>${element.idventa}</td>
                                 <td>${element.clientes}</td>
                                 <td>${element.kilos}</td>
-                                <td>${element.cantidad}
-                                <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modalId" data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
-                                </td>
-                                <td>${element.precio}</td>
-                                <td>${element.flete}</td>
+                                <td>${element.cantidad}</td>
+                                <td>${element.precio}</td>                                
                                 <td>${element.fechaventa}</td>
-                                <td>${element.totalPago}</td>                        
+                                <td>${element.totalPago}</td>  
+                                <td><a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a></td>                                                                                                             
                             </tr>                            
                             `;
                             cuerpoTabla.innerHTML += rows;
@@ -505,13 +496,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <td>${element.idventa}</td>
                                 <td>${element.clientes}</td>
                                 <td>${element.kilos}</td>
-                                <td>${element.cantidad} 
-                                 <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
-                                </td>
-                                <td>${element.precio}</td>
-                                <td>${element.flete}</td>
+                                <td>${element.cantidad}</td>
+                                <td>${element.precio}</td>                                
                                 <td>${element.fechaventa}</td>
-                                <td>${element.totalPago}</td>                        
+                                <td>${element.totalPago}</td> 
+                                <td><a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a></td>                                                                                        
                             </tr>                            
                             `;
                             cuerpoTabla.innerHTML += rows;
@@ -557,7 +546,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
             }
 
-     
 
             
             function createPDF(){
@@ -591,7 +579,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             }
 
 
-
             recuperarCliente();
             
             btnfiltro.addEventListener("click", function(){
@@ -612,6 +599,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
             });
             btnExportar.addEventListener("click",createPDF);
+
+            // btnDetalleV.addEventListener("click", function(){
+                
+            // })
+
+
             btnReset.addEventListener("click", function(){
                 location.reload();                
             });

@@ -56,4 +56,10 @@ if (isset($_POST['operacion'])){
         renderJSON($datos);
     }
 
+    
+    if($_POST['operacion'] == 'detalle_venta'){
+        $data = $ventas->obtener_detalleV($_POST['idventa']);
+        echo json_encode($data);
+    }
+
 }

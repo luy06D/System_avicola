@@ -23,6 +23,10 @@ class Pagos extends Conexion{
     }
 
     public function RegistrarPagos($datos = []){
+        $respuesta = [
+            "status" => false,
+            "message" => ""
+        ];
         try{
             $consulta = $this->acceso->prepare("CALL spu_pagos_registrar(?,?,?,?)");
             $consulta->execute(
@@ -33,13 +37,17 @@ class Pagos extends Conexion{
                     $datos['pago']
                 )
             );
-        }catch(Exception $e){
-            die($e->getMessage());
         }
+        catch(Exception $e){
+            $respuesta["message"] = "No se pudo completar la operacion Codigo error:" .$e->getCode();
+        }
+
+        return $respuesta;
     }
+    
     public function ObtenerPago($idventa = 0){
         try{
-          $consulta = $this->conexion->prepare("CALL spu_cliente_obtener(?)");
+          $consulta = $this->acceso->prepare("CALL spu_cliente_obtener(?)");
           $consulta->execute(array($idventa));
           return $consulta->fetch(PDO::FETCH_ASSOC);
         }

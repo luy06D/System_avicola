@@ -30,16 +30,7 @@ if(isset($_GET['operacion'])){
         }
     }
 
-    if($_GET['operacion'] == 'registrar'){
     
-        $datos = [
-          "idventa"       => $_GET['idventa'],     
-          "banco"         => $_GET['banco'],
-          "numoperacion"  => $_GET['numoperacion'],
-          "pago"          => $_GET['pago']
-        ];
-            $pagos->RegistrarPagos($datos);
-    }
 
     if ($_GET['operacion'] == 'obtener'){
         $data = $cliente->ObtenerCliente($_GET['idventa']);
@@ -47,4 +38,26 @@ if(isset($_GET['operacion'])){
         echo json_encode($data);
     }
 }
+
+if(isset($_POST['operacion'])){
+
+    $pagos = new Pagos();
+   
+    if($_POST['operacion'] == 'registrar'){
+
+        $datos = [
+            "idventa"       => $_POST['idventa'],     
+            "banco"         => $_POST['banco'],
+            "numoperacion"  => $_POST['numoperacion'],
+            "pago"          => $_POST['pago']
+        ];
+            $pagos->RegistrarPagos($datos);
+    }
+    
+    
+}
+
+
+
+
 

@@ -246,7 +246,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 const numoperacion = $("#numoperacion").val().trim();
                 const pago = $("#pago").val().trim();
 
- 
 
                 if (banco === '' || numoperacion === '' || pago === '' || parseFloat(pago) === 0) {
                     Swal.fire({
@@ -263,23 +262,35 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         'pago': pago
                     };
 
- 
-
                     $.ajax({
                         url: '../controllers/pagos.controller.php',
-                        type: 'GET',
+                        type: 'POST',
                         data: datosEnviar,
                         success: function (result) {
-                            $("#form-pagos")[0].reset();
-                            mostrar();
-                            $("#modal-registrar").modal('hide');
-                            Swal.fire({
+                            let resultado = JSON.parse(result);
+
+                            console.log("datos", result);
+                            if(resultado.status === false){
+                                Swal.fire({
+                                    title: "Este número de operación ya fues registrado",
+                                    icon: "warning",
+                                    showConfirmButton: false,
+                                    timer: 1200
+                                })
+                            } else{
+                                Swal.fire({
                                 position: 'top-end',
                                 icon: 'success',
                                 title: 'Operación exitosa',
                                 showConfirmButton: false,
                                 timer: 1500
                             });
+                            
+                            $("#form-pagos")[0].reset();
+                            mostrar();
+                            $("#modal-registrar").modal('hide');
+                        }
+                            
                         }
                     });
                 }
@@ -293,10 +304,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         idventa = $(this).data("idventa");
     });
 
-            
-            
-            
-
+        
             
             $("#guardar").click(registrar);
             

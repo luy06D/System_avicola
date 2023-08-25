@@ -715,6 +715,7 @@ CREATE PROCEDURE spu_filtro_clientePago(
 )
 BEGIN
     SELECT p.idpago,
+	   c.idcliente,
 	   CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
            p.fechapago,
            pr.nombre AS producto,
@@ -735,12 +736,13 @@ BEGIN
 END$$
 
 SELECT * FROM ventas
-CALL spu_filtro_clientePago(2);
+SELECT * FROM pagos
+CALL spu_filtro_clientePago(1);
 
 INSERT INTO pagos (idventa, banco, numoperacion, pago, estado) VALUES
-	(2, 'BCP', 1023484, 2269.24, '' )
+	(8, 'BCP', 1023400, 50, '' )
 	
-	
+DELETE FROM pagos WHERE idpago = 7	
 	
 	SELECT * FROM personas
 	
@@ -755,6 +757,7 @@ CREATE PROCEDURE spu_filtro_ClienteFecha
 BEGIN
     SELECT 
         idpago,
+        c.idcliente,
         CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
         p.fechapago,
         pr.nombre AS producto,
@@ -777,8 +780,9 @@ BEGIN
 END $$
 
 SELECT * FROM ventas
+SELECT * FROM personas
 
-CALL spu_filtro_ClienteFecha('2023-08-01','2023-08-20')
+CALL spu_filtro_ClienteFecha('2023-08-01','2023-08-21')
 
 DELIMITER $$
 CREATE PROCEDURE spu_filtro_pagoclientefecha 
@@ -790,6 +794,7 @@ CREATE PROCEDURE spu_filtro_pagoclientefecha
 BEGIN
     SELECT 
         idpago,
+        c.idcliente,
         CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
         p.fechapago,
         pr.nombre AS producto,
@@ -838,3 +843,57 @@ END $$
 CALL spu_listar_pago()
 
 SELECT * FROM ventas
+
+DELIMITER $$
+CREATE PROCEDURE spu_listar_detallesclientes
+(
+	IN _idcliente INT
+)
+BEGIN
+	SELECT 	
+		pa.fechapago,
+		pr.nombre,
+		pa.banco,
+		pa.numoperacion,
+		pa.pago
+	FROM pagos pa
+	    INNER JOIN ventas v ON v.idventa = pa.idventa
+	    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
+	    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
+	    INNER JOIN clientes c ON v.idcliente = c.idcliente
+	    INNER JOIN personas cl ON c.idpersona = cl.idpersona
+	    WHERE c.idcliente = _idcliente;
+END $$
+
+CALL spu_listar_detallesclientes(2);
+
+DELIMITER $$
+
+ 
+
+CREATE PROCEDURE spu_ventas_mostrar1()
+BEGIN
+    SELECT
+        v.idventa,
+        CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
+        v.deuda AS deuda_total,
+        COALESCE(SUM(p.pago), 0) AS pago_total,
+        (v.deuda - COALESCE(SUM(p.pago), 0)) AS saldo,
+        CASE
+            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) = 0 THEN 'Cancelado'
+            ELSE 'Pendiente'
+        END AS estado
+    FROM ventas v
+    LEFT JOIN pagos p ON v.idventa = p.idventa
+    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
+    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
+    INNER JOIN clientes c ON v.idcliente = c.idcliente
+    INNER JOIN personas cl ON c.idpersona = cl.idpersona
+    GROUP BY v.idventa
+    ORDER BY p.fechapago DESC;
+END $$
+
+ 
+
+DELIMITER ;
+		

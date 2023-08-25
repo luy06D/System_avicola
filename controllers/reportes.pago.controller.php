@@ -25,6 +25,12 @@ if(isset($_POST['operacion'])){
         $data = $reportes->filtropagoclientefecha($_POST['fechainicio'], $_POST['fechafin'], $_POST['idcliente']);
         echo json_encode($data);
     }
+
+    if($_POST['operacion'] == 'filtropagodetalle'){
+        $data = $reportes->filtropagodetallecliente($_POST['idcliente']);
+        echo json_encode($data);
+    }
+    
 }
 
 ?>

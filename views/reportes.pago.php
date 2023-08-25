@@ -192,6 +192,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <thead class="table-success text-center">
                             <tr>
                                 <th>Código</th>
+                                <th class="d-none">Código Cl</th>
                                 <th>Cliente</th>
                                 <th>Fecha</th>
                                 <th>Producto</th>
@@ -213,51 +214,48 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     </main>
 
 
-    <!-- Modal-Registrar  -->
-    <div class="modal fade" id="modal-registrar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    
+    
+    <!-- MODAL DETALLES -->
+    <div class="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header" id="modal-registro-header">
-                    <h5 class="modal-title" id="modal-titulo">Registrar pago</h5>
+                <div class="modal-header" style="background-color: #9ACD32;">
+                    <h5 class="modal-title text-black" style="text-align: center;" id="modalTitleId">HISTORIAL DE PAGOS</h5>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="form-productos">
-                        <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bx bx-calendar"></i></span>
-                          <input type="date" class="form-control"  maxlength="50" id="fechaventa">
-                        </div>
-              
-                        <div class="input-group mb-3">
-                        <select  class="form-select "  id="cliente" style="width: 100%;" >
-                        <option value="" disabled selected>
-                             Seleccione
-                        </option>
-                        <option value="BCP">BCP</option>
-                        <option value="SCOTIABANK">SCOTIABANK</option>
-                    </select>
-                        </div>
-                        <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
-                          <input type="text" class="form-control" placeholder="N-Operacion" maxlength="20" id="operacion">
-                        </div>
-                        <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
-                          <input type="number" class="form-control" placeholder="Pago" maxlength="50" id="Pago">
-                        </div>
-              
-                        <!-- <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-database"></i></span>
-                          <input type="number" class="form-control" placeholder="Cantidad"  id="cantidad" min="1" max="500">
-                        </div> -->
-                    </form>    
+                <div class="row mt-3">
+                <div class="col-lg-12">
+                    <form action="" id="form-detalles">
+
+                        <table class="table display nowrap" style="width: 100%;"  id="table-detalles">
+                            <thead class="table-secondary text-center">
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Producto</th>
+                                    <th>Banco</th>
+                                    <th>N° operación</th>
+                                    <th>Pago</th>          
+                                </tr>
+                            </thead>
+                            <tbody id="detallescuerpo">
+                            <!-- DATOS ASINCRONOS  -->
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="guardar">Guardar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
+    
+    
+    
+
     
 
     <footer>
@@ -273,7 +271,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
      <!-- AJAX = JavaScript asincrónico-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="../js//dataJson.js"></script>
+    
 
     <!-- datatable-->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
@@ -295,8 +293,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <script src="https://cdn.datatables.net/buttons/2.3.5/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.3.5/js/buttons.print.min.js"></script>
 
-
-
+    <script src="../js/verdetalles.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () =>{
@@ -305,12 +302,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
              $("#cliente").select2();
 
             const cuerpoTabla = document.querySelector("#table-report tbody");
+            const cuerpoTabla2 = document.querySelector("#detallescuerpo");
             const btnfiltro = document.querySelector("#btnfiltro");
             const btnExportar = document.querySelector("#exportar");
             const lsCliente = document.querySelector("#cliente");
             const btnReset = document.querySelector("#reset");
             const formupa = document.querySelector("#formulariopaquetes div");
-            const modal = new bootstrap.Modal(document.querySelector("#modal-registrar"));
+            // const modal = new bootstrap.Modal(document.querySelector("#modal-registrar"));
             
             function recuperarCliente(){
             const parameters = new URLSearchParams();
@@ -358,24 +356,42 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     }else{
                     cuerpoTabla.innerHTML = ``;
                     data.forEach(element => {
+                        let estadoHTML = '';
+
+                        // Verificar el estado y establecer el color de fondo correspondiente
+                        if (element.estado === 'Pendiente') {
+                            estadoHTML = `<span class="badge bg-danger text-white">${element.estado}</span>`;
+                        } else if (element.estado === 'Cancelado') {
+                            estadoHTML = `<span class="badge bg-success text-white">${element.estado}</span>`;
+                        } else {
+                            estadoHTML = `<span class="badge bg-primary">${element.estado}</span>`;
+                        }
                         const rows = `
                         <tr>
                             <td>${element.idpago}</td>
+                            <td class='d-none'>${element.idcliente}</td>
                             <td>${element.cliente}</td>
                             <td>${element.fechapago}</td>
                             <td>${element.producto}</td>
                             <td>${element.deuda_total}</td>
                             <td>${element.pago_total}</td>
                             <td>${element.saldo}</td>      
-                            <td>${element.estado}</td>
+                            <td>${estadoHTML}</td>
                             <td>
-                                <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idpago='${element.idpago}'><i class="bi bi-eye"></i></a>
+                                <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idcliente='${element.idcliente}'><i class="bi bi-eye"></i></a>
                             </td>
+                            
 
                         </tr>
                         `;
                         cuerpoTabla.innerHTML += rows;                        
                     });
+
+                    $("#modalId").on("hidden.bs.modal", function () {
+                        cuerpoTabla2.innerHTML = ''; // Vaciar el contenido del cuerpo de la tabla
+                    });
+
+                    
 
                     // Destruir la instancia actual de DataTables
                     if ($.fn.DataTable.isDataTable('#table-report')) {
@@ -395,7 +411,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'excel',
                                     text: '<i class="bi bi-file-excel"></i>',
                                     titleAttr:'Exportar a excel',
-                                    title:'REPORTES VENTAS',
+                                    title:'REPORTES PAGOS',
                                     className:'btn btn-success',
                                     exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 },                            
@@ -403,7 +419,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'print',
                                     text: '<i class="bi bi-printer"></i>',
                                     titleAttr:'imprimir',
-                                    title:'REPORTES VENTAS',
+                                    title:'REPORTES PAGOS',
                                     className:'btn btn-secondary',
                                     exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 }
@@ -440,24 +456,41 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     }else{
                         cuerpoTabla.innerHTML = ``;
                         data.forEach(element =>{
+                            let estadoHTML = '';
+
+                            // Verificar el estado y establecer el color de fondo correspondiente
+                            if (element.estado === 'Pendiente') {
+                                estadoHTML = `<span class="badge bg-danger text-white">${element.estado}</span>`;
+                            } else if (element.estado === 'Cancelado') {
+                                estadoHTML = `<span class="badge bg-success text-white">${element.estado}</span>`;
+                            } else {
+                                estadoHTML = `<span class="badge bg-primary">${element.estado}</span>`;
+                            }
                             const rows = `
                             <tr>
                                 <td>${element.idpago}</td>
+                                <td class='d-none'>${element.idcliente}</td>
                                 <td>${element.cliente}</td>
                                 <td>${element.fechapago}</td>
                                 <td>${element.producto}</td>
                                 <td>${element.deuda_total}</td>
                                 <td>${element.pago_total}</td>
                                 <td>${element.saldo}</td>      
-                                <td>${element.estado}</td>
+                                <td>${estadoHTML}</td>
                                 <td>
-                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idpago='${element.idpago}'><i class="bi bi-eye"></i></a>
-                                </td>                                         
+                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idcliente='${element.idcliente}'><i class="bi bi-eye"></i></a>
+                                </td>
+                                                                        
                             </tr>               
                             `;
                             cuerpoTabla.innerHTML += rows;
                         });
 
+                        $("#modalId").on("hidden.bs.modal", function () {
+                            cuerpoTabla2.innerHTML = ''; // Vaciar el contenido del cuerpo de la tabla
+                        });
+
+                        
                         // Destruir la instancia actual de DataTables
                         if ($.fn.DataTable.isDataTable('#table-report')) {
                             $('#table-report').DataTable().destroy();
@@ -476,7 +509,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'excel',
                                     text: '<i class="bi bi-file-excel"></i>',
                                     titleAttr:'Exportar a excel',
-                                    title:'REPORTES VENTAS',
+                                    title:'REPORTES PAGOS',
                                     className:'btn btn-success',
                                     exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 },                            
@@ -484,7 +517,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'print',
                                     text: '<i class="bi bi-printer"></i>',
                                     titleAttr:'imprimir',
-                                    title:'REPORTES VENTAS',
+                                    title:'REPORTES PAGOS',
                                     className:'btn btn-secondary',
                                     exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 }
@@ -519,22 +552,37 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     }else{
                         cuerpoTabla.innerHTML = ``;
                         data.forEach(element => {
+                        let estadoHTML = '';
+
+                        if (element.estado === 'Pendiente') {
+                            estadoHTML = `<span class="badge bg-danger text-white">${element.estado}</span>`;
+                        } else if (element.estado === 'Cancelado') {
+                            estadoHTML = `<span class="badge bg-success text-white">${element.estado}</span>`;
+                        } else {
+                            estadoHTML = `<span class="badge bg-primary">${element.estado}</span>`;
+                        }
                         const rows = `
                             <tr>
                                 <td>${element.idpago}</td>
+                                <td class='d-none'>${element.idcliente}</td>
                                 <td>${element.cliente}</td>
                                 <td>${element.fechapago}</td>
                                 <td>${element.producto}</td>
                                 <td>${element.deuda_total}</td>
                                 <td>${element.pago_total}</td>
                                 <td>${element.saldo}</td>      
-                                <td>${element.estado}</td> 
+                                <td>${estadoHTML}</td> 
                                 <td>
-                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idpago='${element.idpago}'><i class="bi bi-eye"></i></a>
-                                </td>                                         
+                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modalId' data-idcliente='${element.idcliente}'><i class="bi bi-eye"></i></a>
+                                </td>
+                                                                       
                             </tr>
                             `;
                             cuerpoTabla.innerHTML += rows;                        
+                        });
+
+                        $("#modalId").on("hidden.bs.modal", function () {
+                            cuerpoTabla2.innerHTML = ''; // Vaciar el contenido del cuerpo de la tabla
                         });
 
                         // Destruir la instancia actual de DataTables
@@ -556,7 +604,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'excel',
                                     text: '<i class="bi bi-file-excel"></i>',
                                     titleAttr:'Exportar a excel',
-                                    title:'REPORTES VENTAS',
+                                    title:'REPORTES PAGOS',
                                     className:'btn btn-success',
                                     exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 },                            
@@ -564,7 +612,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     extend: 'print',
                                     text: '<i class="bi bi-printer"></i>',
                                     titleAttr:'imprimir',
-                                    title:'REPORTES VENTAS',
+                                    title:'REPORTES PAGOS',
                                     className:'btn btn-secondary',
                                     exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 }

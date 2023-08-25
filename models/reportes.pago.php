@@ -64,6 +64,22 @@ class ReportePago extends Conexion{
 
     }
 
+    public function RegistrarPagos($datos = []){
+        try{
+            $consulta = $this->acceso->prepare("CALL spu_pagos_registrar(?,?,?,?)");
+            $consulta->execute(
+                array(
+                    $datos['idventa'],
+                    $datos['banco'],
+                    $datos['numoperacion'],
+                    $datos['pago']
+                )
+            );
+        }catch(Exception $e){
+            die($e->getMessage());
+        }
+    }
+
 }
 
 ?>

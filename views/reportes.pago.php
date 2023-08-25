@@ -221,14 +221,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <h5 class="modal-title" id="modal-titulo">Registrar pago</h5>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="form-productos">
-                        <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bx bx-calendar"></i></span>
-                          <input type="date" class="form-control"  maxlength="50" id="fechaventa">
-                        </div>
+                    <form action="" id="form-pagos">
               
                         <div class="input-group mb-3">
-                        <select  class="form-select "  id="cliente" style="width: 100%;" >
+                        <select  class="form-select "  id="banco" style="width: 100%;" >
                         <option value="" disabled selected>
                              Seleccione
                         </option>
@@ -238,11 +234,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         </div>
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
-                          <input type="text" class="form-control" placeholder="N-Operacion" maxlength="20" id="operacion">
+                          <input type="text" class="form-control" placeholder="N-Operacion" maxlength="20" id="numoperacion">
                         </div>
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
-                          <input type="number" class="form-control" placeholder="Pago" maxlength="50" id="Pago">
+                          <input type="number" class="form-control" placeholder="Pago" maxlength="50" id="pago">
                         </div>
               
                         <!-- <div class="input-group mb-3">
@@ -451,7 +447,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <td>${element.saldo}</td>      
                                 <td>${element.estado}</td>
                                 <td>
-                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idpago='${element.idpago}'><i class="bi bi-eye"></i></a>
+                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
                                 </td>                                         
                             </tr>               
                             `;
@@ -530,7 +526,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <td>${element.saldo}</td>      
                                 <td>${element.estado}</td> 
                                 <td>
-                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idpago='${element.idpago}'><i class="bi bi-eye"></i></a>
+                                    <a href='#' class='mostrar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idventa='${element.idventa}'><i class="bi bi-eye"></i></a>
                                 </td>                                         
                             </tr>
                             `;
@@ -634,6 +630,65 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             btnReset.addEventListener("click", function(){
                 location.reload();                
             });
+
+
+            function registrar() {
+                const nombre = document.querySelector("#pago").value.trim();            
+                // const descripcion = document.querySelector("#descripcion").value.trim();
+
+                let datosEnviar = {
+                    'operacion': 'registrar',
+                    'idventa': idventa,
+                    'banco': $("#banco").val(),
+                    'numoperacion': $("#numoperacion").val(),
+                    'pago': $("#pago").val(),
+                    // 'cantidad': $("#cantidad").val(),
+                };
+            
+                Swal.fire({
+                    title: '¿Está seguro de realizar la operación?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#65BB3B',
+
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if(nombre === ''){
+                            Swal.fire({
+                                title: "Por favor, complete los campos",
+                                icon: "warning",
+                                confirmButtonColor: "#E43D2C",
+                            });
+
+                        }else{
+                            Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Operación exitosa',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+
+                        $.ajax({
+                            url: '../controllers/pagos.controller.php',
+                            type: 'GET',
+                            data: datosEnviar,
+                            success: function (result) {
+                                $("#form-pagos")[0].reset();
+                                mostrar();
+                                $("#modal-registrar").modal('hide');
+                            }
+                        });
+
+                        }
+                
+                    }
+                });
+            }
+
+            $("#guardar").click(registrar);
             
         });
     </script>

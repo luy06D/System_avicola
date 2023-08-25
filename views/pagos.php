@@ -13,7 +13,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos</title>
+    <title>Pagos</title>
     <link rel="icon" href="../img/remove.ico">
     <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -106,9 +106,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
         <h4 class="text-center">PAGOS</h4>
         <hr>
-        <button type="button" id="abrir-modal-registro" class="btn btn-primary btn-md mb-3" data-bs-toggle="modal" data-bs-target="#modal-registrar">
-        Nuevo
-        </button>
+
         
                 
         <div class="row">
@@ -117,13 +115,15 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 
                     <thead class="table-secondary">
                         <tr>
-                            <th>Código</th>
+                        <th>Codigo</th>
+                            <th>Cliente</th>
                             <th>Fecha venta</th>
-                            <th>Descripción</th>
-                            <th>Entidad bancaria</th>
-                            <th>N.operacion</th>
-                            <th>Deuda</th>
-                            <th>pago</th>
+                            <th>nombre</th>
+                            <th>Deuda Total</th>
+                            <th>Pago</th>
+                            <th>Saldo</th>
+                            <th>Estado</th>
+                            <th>Operacion</th>
                             
                         </tr>
                     </thead>
@@ -147,14 +147,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <h5 class="modal-title" id="modal-titulo">Registrar pago</h5>
                 </div>
                 <div class="modal-body">
-                    <form action="" id="form-productos">
-                        <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bx bx-calendar"></i></span>
-                          <input type="date" class="form-control"  maxlength="50" id="fechaventa">
-                        </div>
+                    <form action="" id="form-pagos">
               
                         <div class="input-group mb-3">
-                        <select  class="form-select "  id="cliente" style="width: 100%;" >
+                        <select  class="form-select "  id="banco" style="width: 100%;" >
                         <option value="" disabled selected>
                              Seleccione
                         </option>
@@ -164,11 +160,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         </div>
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
-                          <input type="text" class="form-control" placeholder="N-Operacion" maxlength="20" id="operacion">
+                          <input type="text" class="form-control" placeholder="N-Operacion" maxlength="20" id="numoperacion">
                         </div>
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
-                          <input type="number" class="form-control" placeholder="Pago" maxlength="50" id="Pago">
+                          <input type="number" class="form-control" placeholder="Pago" maxlength="50" id="pago">
                         </div>
               
                         <!-- <div class="input-group mb-3">
@@ -205,6 +201,110 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
+<script src="../js/registrarpago.js"></script>
+
+    <script>
+        $(document).ready(function (){
+
+            let datosNuevos = true;
+            let idventa = 0; 
+
+            function mostrar(){
+                $.ajax({
+                    url: '../controllers/pagos.controller.php',
+                    type: 'GET',
+                    data: {'operacion' : 'listar'},
+                    success: function (result){
+
+                        var tabla = $("#tabla-pago").DataTable();
+                        tabla.destroy();
+                        $("#tabla-pago tbody").html(result);
+                        $("#tabla-pago").DataTable({
+                            responsive: true,
+                            lengthMenu:[10,5],
+                            language: {
+                                url: '../js/Spanish.json'
+                            }
+                        }); 
+                    }
+                });
+            }
+
+            
+
+    function registrar() {
+        Swal.fire({
+            title: '¿Está seguro de realizar la operación?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#65BB3B',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const banco = $("#banco").val().trim();
+                const numoperacion = $("#numoperacion").val().trim();
+                const pago = $("#pago").val().trim();
+
+ 
+
+                if (banco === '' || numoperacion === '' || pago === '' || parseFloat(pago) === 0) {
+                    Swal.fire({
+                        title: "Por favor, complete los campos y asegúrese de que el pago no sea cero.",
+                        icon: "warning",
+                        confirmButtonColor: "#E43D2C",
+                    });
+                } else {
+                    let datosEnviar = {
+                        'operacion': 'registrar',
+                        'idventa': idventa,
+                        'banco': banco,
+                        'numoperacion': numoperacion,
+                        'pago': pago
+                    };
+
+ 
+
+                    $.ajax({
+                        url: '../controllers/pagos.controller.php',
+                        type: 'GET',
+                        data: datosEnviar,
+                        success: function (result) {
+                            $("#form-pagos")[0].reset();
+                            mostrar();
+                            $("#modal-registrar").modal('hide');
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Operación exitosa',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+ 
+
+    $("#tabla-pago tbody").on("click", ".abonar", function () {
+        idventa = $(this).data("idventa");
+    });
+
+            
+            
+            
+
+            
+            $("#guardar").click(registrar);
+            
+            mostrar();
+            
+            
+        });
+    </script>
     <!--procediminetos-->
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

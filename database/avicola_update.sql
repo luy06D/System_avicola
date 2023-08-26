@@ -1098,10 +1098,16 @@ BEGIN
  
  SELECT * FROM pagos
  
+
+
  
- DELETE FROM pagos
+
+ CALL spu_ventas_mostrar();
  
- ALTER TABLE pagos AUTO_INCREMENT = 1
+ 
+ DELETE FROM ventas
+ 
+ ALTER TABLE ventas AUTO_INCREMENT = 1
 
 
  

@@ -267,6 +267,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         type: 'POST',
                         data: datosEnviar,
                         success: function (result) {
+                            $("#form-pagos")[0].reset();
+                            mostrar();
+                            $("#modal-registrar").modal('hide');
                             let resultado = JSON.parse(result);
 
                             console.log("datos", result);
@@ -277,6 +280,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     showConfirmButton: false,
                                     timer: 1200
                                 })
+                                $("#form-pagos")[0].reset();
+                                mostrar();
+                                $("#modal-registrar").modal('hide');
                             } else{
                                 Swal.fire({
                                 position: 'top-end',
@@ -286,9 +292,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 timer: 1500
                             });
                             
-                            $("#form-pagos")[0].reset();
-                            mostrar();
-                            $("#modal-registrar").modal('hide');
+                            
                         }
                             
                         }

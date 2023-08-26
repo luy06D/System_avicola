@@ -221,8 +221,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 const nombre = document.querySelector("#producto").value.trim();            
                 // const descripcion = document.querySelector("#descripcion").value.trim();
 
-                
-
                 let datosEnviar = {
                     'operacion': 'registrar',
                     'nombre': $("#producto").val(),

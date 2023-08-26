@@ -94,7 +94,14 @@ class Insumo extends Conexion{
         }
     }
 
-
+    public function delete_insumo($idinsumo = 0){
+        try{    
+            $consulta = $this->access->prepare("CALL spu_delete_insumo(?)");
+            $consulta->execute(array($idinsumo));
+        }catch(Exception $e){
+            die($e->getMessage());
+        }
+    }
 
 }
 

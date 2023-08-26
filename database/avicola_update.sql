@@ -121,6 +121,7 @@ insumo		VARCHAR(30) 	NOT NULL,
 unidad		VARCHAR(20) 	NOT NULL, -- TONELADA , KILOS
 cantidad	SMALLINT 	NOT NULL,
 descripcion	VARCHAR(80)	NULL,
+estado		CHAR(1)		NOT NULL DEFAULT '1',
 CONSTRAINT uk_ins_ins UNIQUE(insumo)
 )
 ENGINE = INNODB;
@@ -175,6 +176,8 @@ CONSTRAINT fk_idi_det FOREIGN KEY (idinsumo) REFERENCES insumos(idinsumo)
 )
 ENGINE = INNODB;
 
+SELECT * FROM insumos
+
 -- PROCEDIMIENTOS ALMACEN
 
 -- LISTAR INSUMOS
@@ -184,7 +187,9 @@ CREATE PROCEDURE spu_insumos_listar()
 BEGIN 
 	SELECT idinsumo, insumo, cantidad, unidad,
 	descripcion
-	FROM insumos;
+	FROM insumos
+	WHERE estado = '1'
+	ORDER BY idinsumo DESC;
 END $$
 
 CALL spu_insumos_listar();
@@ -209,11 +214,6 @@ BEGIN
 END $$
 
 CALL spu_insumos_register('CARBONATO GRANO','KG',500 ,'');
-
-INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
-		('HINT','KG', 400 ,'Proteica, vegetal, versátil, nutricional');
-
-SELECT * FROM insumos;
 
 -- ACTUALIZAR INSUMOS
 
@@ -255,7 +255,15 @@ END $$
 CALL spu_get_insumo(3);
 
 
-
+DELIMITER $$
+CREATE PROCEDURE spu_delete_insumo
+(
+	IN _idinsumo INT
+)
+BEGIN
+	UPDATE insumos SET estado = '0'
+	WHERE idinsumo = _idinsumo;
+END $$
 
 
 -- FIN PROCEDIMIENTOS ALMACEN
@@ -1061,10 +1069,11 @@ BEGIN
 	    WHERE c.idcliente = _idcliente;
 END $$
 
-CALL spu_listar_detallesclientes(4);
+CALL spu_listar_detallesclientes(2);
 
 
 
+ 
 DELIMITER $$
 CREATE PROCEDURE spu_ventas_mostrar()
 BEGIN
@@ -1074,7 +1083,7 @@ BEGIN
         pr.nombre,
         v.deuda AS deuda_total,SUM(p.pago) AS pago_total,  ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
         CASE
-            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
+            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) = 0 THEN 'Cancelado'
             ELSE 'Pendiente'
         END AS estado
     FROM ventas v
@@ -1085,17 +1094,14 @@ BEGIN
     INNER JOIN personas cl ON c.idpersona = cl.idpersona
     GROUP BY v.idventa
     ORDER BY p.fechapago DESC;
-
-END $$
+ END $$
  
  SELECT * FROM pagos
  
- CALL spu_ventas_mostrar();
  
+ DELETE FROM pagos
  
- DELETE FROM ventas
- 
- ALTER TABLE ventas AUTO_INCREMENT = 1
+ ALTER TABLE pagos AUTO_INCREMENT = 1
 
 
  

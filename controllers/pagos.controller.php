@@ -11,28 +11,26 @@ if(isset($_GET['operacion'])){
         sleep(0.5);
         if($data){
             foreach($data as $registro){
-
-               foreach ($data as $registro) {
-    $estadoColor = $registro['estado'] === 'pendiente' ? 'style="color: red;"' : 'style="color: green;"';
-
-    echo "
-        <tr>
-            <td>{$registro['idventa']}</td>
-            <td>{$registro['Cliente']}</td>
-            <td>{$registro['fechaventa']}</td>
-            <td>{$registro['nombre']}</td>
-            <td>{$registro['deuda_total']}</td>
-            <td>{$registro['pago_total']}</td>
-            <td>{$registro['saldo']}</td>
-            <td $estadoColor>{$registro['estado']}</td>
-            <td>
-                <a href='#' class='abonar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idventa='{$registro['idventa']}'><i class='bi bi-pencil-square'></i></a>
-            </td>
-        </tr>
-    ";
-}
+                echo "
+                    <tr>
+                    <td>{$registro['idventa']}</td>
+                        <td>{$registro['Cliente']}</td>
+                        <td>{$registro['fechaventa']}</td>
+                        <td>{$registro['nombre']}</td>
+                        <td>{$registro['deuda_total']}</td>
+                        <td>{$registro['pago_total']}</td>
+                        <td>{$registro['saldo']}</td>
+                        <td>{$registro['estado']}</td>
+                        <td>
+                            <a href='#'  class='abonar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idventa='{$registro['idventa']}'><i class='bi bi-pencil-square'></i></a>
+                        </td>
+                    </tr>
+                ";
+            }
         }
-    }
+    } 
+        
+    
 
     
 
@@ -78,5 +76,4 @@ if (isset($_POST['operacion'])) {
         echo json_encode($response);
     }
     
-}
 }

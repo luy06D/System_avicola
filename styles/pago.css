@@ -1,0 +1,11 @@
+/* Estilo para estado "Cancelado" (en verde) */
+.estado-cancelado {
+    color: white;
+    background-color: green; /* Cambia esto al color verde que desees */
+}
+
+/* Estilo para estado "Pendiente" (en rojo) */
+.estado-pendiente {
+    color: white;
+    background-color: red; /* Cambia esto al color rojo que desees */
+}

@@ -22,12 +22,12 @@ class Pagos extends Conexion{
         }
     }
 
-    public function RegistrarPagos($datos = []){
+    public function RegistrarPagos($datos = []) {
         $respuesta = [
             "status" => false,
             "message" => ""
         ];
-        try{
+        try {
             $consulta = $this->acceso->prepare("CALL spu_pagos_registrar(?,?,?,?)");
             $consulta->execute(
                 array(
@@ -37,13 +37,16 @@ class Pagos extends Conexion{
                     $datos['pago']
                 )
             );
+    
+            // Si la ejecución fue exitosa, actualiza el estado en la respuesta
+            $respuesta["status"] = true;
+        } catch (Exception $e) {
+            $respuesta["message"] = "No se pudo completar la operación Codigo error:" . $e->getCode();
         }
-        catch(Exception $e){
-            $respuesta["message"] = "No se pudo completar la operacion Codigo error:" .$e->getCode();
-        }
-
+    
         return $respuesta;
     }
+    
     
     public function ObtenerPago($idventa = 0){
         try{

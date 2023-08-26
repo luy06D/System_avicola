@@ -30,6 +30,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" rel="stylesheet">
 
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/pago.css">
+
 </head>
 <body>
 
@@ -229,76 +231,82 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     }
                 });
             }
+            function registrar() {
+    Swal.fire({
+        title: '¿Está seguro de realizar la operación?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#65BB3B',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const banco = $("#banco").val().trim();
+            const numoperacion = $("#numoperacion").val().trim();
+            const pago = $("#pago").val().trim();
 
-            
+            if (banco === '' || numoperacion === '' || pago === '' || parseFloat(pago) === 0) {
+                Swal.fire({
+                    title: "Por favor, complete los campos y asegúrese de que el pago no sea cero.",
+                    icon: "warning",
+                    confirmButtonColor: "#E43D2C",
+                });
+            } else {
+                let datosEnviar = {
+                    'operacion': 'registrar',
+                    'idventa': idventa,
+                    'banco': banco,
+                    'numoperacion': numoperacion,
+                    'pago': pago
+                };
 
-    function registrar() {
-        Swal.fire({
-            title: '¿Está seguro de realizar la operación?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Sí',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#65BB3B',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const banco = $("#banco").val().trim();
-                const numoperacion = $("#numoperacion").val().trim();
-                const pago = $("#pago").val().trim();
-
-
-                if (banco === '' || numoperacion === '' || pago === '' || parseFloat(pago) === 0) {
-                    Swal.fire({
-                        title: "Por favor, complete los campos y asegúrese de que el pago no sea cero.",
-                        icon: "warning",
-                        confirmButtonColor: "#E43D2C",
-                    });
-                } else {
-                    let datosEnviar = {
-                        'operacion': 'registrar',
-                        'idventa': idventa,
-                        'banco': banco,
-                        'numoperacion': numoperacion,
-                        'pago': pago
-                    };
-
-                    $.ajax({
-                        url: '../controllers/pagos.controller.php',
-                        type: 'POST',
-                        data: datosEnviar,
-                        success: function (result) {
-                            let resultado = JSON.parse(result);
-
-                            console.log("datos", result);
-                            if(resultado.status === false){
-                                Swal.fire({
-                                    title: "Este número de operación ya fues registrado",
-                                    icon: "warning",
-                                    showConfirmButton: false,
-                                    timer: 1200
-                                })
-                            } else{
-                                Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                title: 'Operación exitosa',
+                $.ajax({
+                    url: '../controllers/pagos.controller.php',
+                    type: 'POST',
+                    data: datosEnviar,
+                    success: function (result) {
+                        if (result.status === true) {
+                            Swal.fire({
+                                title: "Operación exitosa",
+                                icon: "success",
                                 showConfirmButton: false,
                                 timer: 1500
                             });
-                            
+
                             $("#form-pagos")[0].reset();
                             mostrar();
                             $("#modal-registrar").modal('hide');
+                        } else {
+                            Swal.fire({
+                                title: "Numero de operacion duplicado",
+                                icon: "error",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
                         }
-                            
-                        }
-                    });
-                }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error en la solicitud AJAX:", error);
+                        Swal.fire({
+                            title: "Error en la solicitud AJAX",
+                            icon: "error",
+                            confirmButtonColor: "#E43D2C",
+                        });
+                    }
+                });
             }
-        });
-    }
+        }
+    });
+}
 
- 
+
+
+
+
+
+
+
+
 
     $("#tabla-pago tbody").on("click", ".abonar", function () {
         idventa = $(this).data("idventa");

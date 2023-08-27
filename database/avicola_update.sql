@@ -121,6 +121,7 @@ insumo		VARCHAR(30) 	NOT NULL,
 unidad		VARCHAR(20) 	NOT NULL, -- TONELADA , KILOS
 cantidad	SMALLINT 	NOT NULL,
 descripcion	VARCHAR(80)	NULL,
+estado		CHAR(1)		NOT NULL DEFAULT '1',
 CONSTRAINT uk_ins_ins UNIQUE(insumo)
 )
 ENGINE = INNODB;
@@ -136,7 +137,8 @@ CREATE TABLE proveedores
 idproveedor	INT AUTO_INCREMENT PRIMARY KEY,
 nombre		VARCHAR(30) NOT NULL,
 direccion	VARCHAR(50) NULL,
-telefono	CHAR(9)	    NOT NULL
+telefono	CHAR(9)	    NOT NULL,
+estado		CHAR(1)	 NOT NULL DEFAULT 1
 )
 ENGINE = INNODB;
 
@@ -175,6 +177,8 @@ CONSTRAINT fk_idi_det FOREIGN KEY (idinsumo) REFERENCES insumos(idinsumo)
 )
 ENGINE = INNODB;
 
+SELECT * FROM insumos
+
 -- PROCEDIMIENTOS ALMACEN
 
 -- LISTAR INSUMOS
@@ -184,7 +188,9 @@ CREATE PROCEDURE spu_insumos_listar()
 BEGIN 
 	SELECT idinsumo, insumo, cantidad, unidad,
 	descripcion
-	FROM insumos;
+	FROM insumos
+	WHERE estado = '1'
+	ORDER BY idinsumo DESC;
 END $$
 
 CALL spu_insumos_listar();
@@ -209,11 +215,6 @@ BEGIN
 END $$
 
 CALL spu_insumos_register('CARBONATO GRANO','KG',500 ,'');
-
-INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
-		('HINT','KG', 400 ,'Proteica, vegetal, versátil, nutricional');
-
-SELECT * FROM insumos;
 
 -- ACTUALIZAR INSUMOS
 
@@ -256,6 +257,162 @@ CALL spu_get_insumo(3);
 
 
 
+
+
+
+-- REGISTRAR PROVEEDORES
+
+DELIMITER $$
+CREATE PROCEDURE spu_proveedor_register
+(
+IN _nombre VARCHAR(30),
+IN _direccion VARCHAR(50),
+IN _telefono	CHAR(9)
+)
+BEGIN
+	IF _direccion = '' THEN SET _direccion = NULL;	
+	END IF;
+	
+	INSERT INTO proveedores (nombre, direccion, telefono) VALUES
+		(_nombre, _direccion, _telefono);
+
+END $$
+
+CALL spu_proveedor_register('PERUSac','Calle san marcos 23', 95675456);
+
+
+-- ACTUALIZAR PROVEEDORES
+
+DELIMITER $$
+CREATE PROCEDURE spu_proveedor_update
+(
+IN _idproveedor INT,
+IN _nombre VARCHAR(30),
+IN _direccion VARCHAR(50),
+IN _telefono	CHAR(9)
+)
+BEGIN
+	IF _direccion = '' THEN SET _direccion = NULL;	
+	END IF;
+	
+	UPDATE proveedores SET 
+	nombre	= _nombre,
+	direccion = _direccion,
+	telefono = _telefono
+	WHERE idproveedor = _idproveedor;
+	
+END $$
+
+
+CALL spu_proveedor_update(1, 'PERUSac','Calle san marcos 25', 95675456);
+
+-- GET PROVEEDOR
+
+DELIMITER $$
+CREATE PROCEDURE spu_get_proveedor(IN _idproveedor INT)
+BEGIN
+	SELECT	nombre, direccion , telefono
+	FROM proveedores
+	WHERE idproveedor = _idproveedor;
+
+END $$
+
+CALL  spu_get_proveedor(1);
+
+
+-- ELIMINAR PROVEEDOR
+
+DELIMITER $$
+CREATE PROCEDURE spu_provedor_delete(IN _idproveedor INT)
+BEGIN
+	UPDATE proveedores SET
+	estado = 0
+	WHERE idproveedor = _idproveedor;
+
+END $$
+
+CALL spu_provedor_delete(1);
+
+
+-- REGISTRAR FORMULA
+DELIMITER $$
+CREATE PROCEDURE spu_formula_registrar
+(
+IN _nombreformula VARCHAR(40)
+)
+BEGIN 
+
+	INSERT INTO formulas (nombreformula) VALUES
+			(_nombreformula);
+END $$
+
+CALL spu_formula_registrar('ESTEROIDE')
+
+-- GET INSUMOS
+
+
+DELIMITER $$
+CREATE PROCEDURE spu_getInsumo()
+BEGIN 
+	SELECT idinsumo, insumo
+	FROM insumos
+	ORDER BY idinsumo;
+END $$
+
+CALL spu_getInsumo();
+
+
+
+
+-- REGISTRAR UNA DETALLE_INSUMO
+DELIMITER $$
+CREATE PROCEDURE spu_detalleInsumo_registrar
+(
+IN _idformula	INT,
+IN _idinsumo 	INT,
+IN _cantidad	SMALLINT,
+IN _unidad	VARCHAR(20)
+)
+BEGIN 
+
+	INSERT INTO detalle_insumos (idformula, idinsumo, cantidad, unidad) VALUES
+				(_idformula, _idinsumo, _cantidad, _unidad);
+	
+END $$
+
+CALL spu_detalleInsumo_registrar( 3 , 4, 20, 'KG');
+
+SELECT * FROM formulas
+SELECT * FROM detalle_insumos
+SELECT * FROM insumos
+
+
+-- DETALLE DE FORMULAS POR ID
+DELIMITER $$
+CREATE PROCEDURE spu_listar_detalleF(IN _idformula INT)
+BEGIN 
+	SELECT  I.insumo, 
+	DI.cantidad,
+	(Di.cantidad * 0.05) AS gkgU
+	FROM detalle_insumos DI
+	INNER JOIN  formulas F ON F.idformula = DI.idformula
+	INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
+	WHERE F.idformula = _idformula;
+	
+END $$
+
+CALL spu_listar_detalleF(3)
+
+-- MOSTRAR FORMULA 
+
+DELIMITER $$
+CREATE PROCEDURE spu_getFormula()
+BEGIN 
+	SELECT idformula, nombreformula
+	FROM formulas;
+END $$
+
+CALL spu_getFormula();
 
 
 -- FIN PROCEDIMIENTOS ALMACEN
@@ -1061,10 +1218,11 @@ BEGIN
 	    WHERE c.idcliente = _idcliente;
 END $$
 
-CALL spu_listar_detallesclientes(4);
+CALL spu_listar_detallesclientes(2);
 
 
 
+ 
 DELIMITER $$
 CREATE PROCEDURE spu_ventas_mostrar()
 BEGIN
@@ -1077,22 +1235,23 @@ BEGIN
         SUM(p.pago) AS pago_total,
         (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) AS saldo,
         CASE
-            WHEN (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
+            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
             ELSE 'Pendiente'
         END AS estado
     FROM ventas v
     LEFT JOIN pagos p ON v.idventa = p.idventa
     INNER JOIN clientes c ON v.idcliente = c.idcliente
     INNER JOIN personas cl ON c.idpersona = cl.idpersona
-    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
-    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
-    GROUP BY c.idcliente
-    ORDER BY c.idcliente;
-END $$
-
+    GROUP BY v.idventa
+    ORDER BY p.fechapago DESC;
+ END $$
  
  SELECT * FROM pagos
  
+
+
+ 
+
  CALL spu_ventas_mostrar();
  
  

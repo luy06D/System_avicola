@@ -28,6 +28,10 @@ if(isset($_GET['operacion'])){
         }
     }
 
+    if ($_GET['operacion'] == 'eliminar'){
+        $insumos->delete_insumo($_GET['idinsumo']);
+    }
+
 
 }
 

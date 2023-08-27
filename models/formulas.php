@@ -2,7 +2,7 @@
 
 require_once 'conexion.php';
 
-class Insumo extends Conexion{
+class Formula extends Conexion{
 
     private $access;
 
@@ -11,9 +11,9 @@ class Insumo extends Conexion{
     }
 
 
-    public function show_Insumos(){
+    public function getFormulas(){
         try{
-            $consulta = $this->access->prepare("CALL spu_insumos_listar()");
+            $consulta = $this->access->prepare("CALL spu_getFormula()");
             $consulta->execute();
 
             $datosObtenidos = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -26,7 +26,25 @@ class Insumo extends Conexion{
 
     }
 
-    public function insumo_register($data = []){
+    public function getInsumos(){
+        try{
+            $consulta = $this->access->prepare("CALL spu_getInsumo()");
+            $consulta->execute();
+
+            $datosObtenidos = $consulta->fetchAll(PDO::FETCH_ASSOC);
+            return $datosObtenidos;
+        }
+        catch(Exception $e){
+            die($e->getMessage());
+       
+        }
+
+    }
+
+
+
+    
+    public function formula_registrar($datos = []){
 
         $respuesta = [
             "status" => false,
@@ -34,14 +52,11 @@ class Insumo extends Conexion{
         ];
 
         try{
-            $consulta = $this->access->prepare("CALL spu_insumos_register(?,?,?,?)");
+            $consulta = $this->access->prepare("CALL spu_formula_registrar  (?)");
             $respuesta["status"] = $consulta->execute(array(
                 
-                $data["insumo"],
-                $data["unidad"],
-                $data["cantidad"],
-                $data["descripcion"]
-           
+                $datos["nombreformula"]
+            
             ));
         }
         catch(Exception $e){
@@ -49,11 +64,9 @@ class Insumo extends Conexion{
         }
 
         return $respuesta;
-
     }
 
-
-    public function insumo_update($data = []){
+    public function detalle_registrar($datos = []){
 
         $respuesta = [
             "status" => false,
@@ -61,15 +74,14 @@ class Insumo extends Conexion{
         ];
 
         try{
-            $consulta = $this->access->prepare("CALL spu_insumos_update(?,?,?,?,?)");
+            $consulta = $this->access->prepare("CALL spu_detalleInsumo_registrar(?,?,?,?)");
             $respuesta["status"] = $consulta->execute(array(
-
-                $data["idinsumo"],
-                $data["insumo"],
-                $data["unidad"],
-                $data["cantidad"],
-                $data["descripcion"]
-           
+                
+                $datos["idformula"],
+                $datos["idinsumo"],
+                $datos["cantidad"],
+                $datos["unidad"]
+            
             ));
         }
         catch(Exception $e){
@@ -77,29 +89,20 @@ class Insumo extends Conexion{
         }
 
         return $respuesta;
-
     }
 
 
-    public function get_insumo($idinsumo = 0){
+    public function obtener_formula($idformula = 0){
         try{
-          $consulta = $this->access->prepare("CALL spu_get_insumo(?)");
-          $consulta->execute(array($idinsumo));
-          return $consulta->fetch(PDO::FETCH_ASSOC);
+          $consulta = $this->access->prepare("CALL spu_listar_detalleF(?)");
+          $consulta->execute(array($idformula));
+          return $consulta->fetchAll(PDO::FETCH_ASSOC);
         }
         catch(Exception $e){
           die($e->getMessage());
         }
     }
 
-    public function delete_insumo($idinsumo = 0){
-        try{    
-            $consulta = $this->access->prepare("CALL spu_delete_insumo(?)");
-            $consulta->execute(array($idinsumo));
-        }catch(Exception $e){
-            die($e->getMessage());
-        }
-    }
 
 }
 

@@ -1235,7 +1235,7 @@ BEGIN
         SUM(p.pago) AS pago_total,
         (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) AS saldo,
         CASE
-            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
+            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) = 0 THEN 'Cancelado'
             ELSE 'Pendiente'
         END AS estado
     FROM ventas v

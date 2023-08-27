@@ -120,7 +120,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <th>Codigo</th>
                             <th>Cliente</th>
                             <th>Fecha venta</th>
-                            <th>nombre</th>
                             <th>Deuda Total</th>
                             <th>Pago</th>
                             <th>Saldo</th>

@@ -1070,23 +1070,26 @@ CREATE PROCEDURE spu_ventas_mostrar()
 BEGIN
     SELECT
         v.idventa,
-        CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente, fechaventa,
-        pr.nombre,
-        v.deuda AS deuda_total,SUM(p.pago) AS pago_total,  ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
+        CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
+        MAX(v.fechaventa) AS fechaventa, -- Utilizamos MAX para obtener la fecha más reciente
+        MAX(pr.nombre) AS nombre, -- Utilizamos MAX para obtener un nombre (puede ser el último)
+        SUM(v.deuda) AS deuda_total,
+        SUM(p.pago) AS pago_total,
+        (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) AS saldo,
         CASE
-            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
+            WHEN (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
             ELSE 'Pendiente'
         END AS estado
     FROM ventas v
     LEFT JOIN pagos p ON v.idventa = p.idventa
-    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
-    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
     INNER JOIN clientes c ON v.idcliente = c.idcliente
     INNER JOIN personas cl ON c.idpersona = cl.idpersona
-    GROUP BY v.idventa
-    ORDER BY p.fechapago DESC;
-
+    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
+    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
+    GROUP BY c.idcliente
+    ORDER BY c.idcliente;
 END $$
+
  
  SELECT * FROM pagos
  

@@ -85,6 +85,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <li class="nav-item mt-2">
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="./insumos.php"><h4><i class="bi bi-bar-chart"></i> Insumos</h4></a>
+                </li>              
                 <li class="nav-item mt-5">
                     <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>
@@ -165,7 +168,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                       <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class='bx bx-phone' ></i></span>
-                          <input type="tel" class="form-control" placeholder="900-000-00" maxlength="9" id="telefono">
+                          <input type="tel" class="form-control" placeholder="900-000-000" maxlength="9" id="telefono">
                         </div>  
                       </div>
                       <div class="mb-3 col-lg-6">

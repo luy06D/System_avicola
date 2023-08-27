@@ -91,6 +91,9 @@ $idusuario = $_SESSION['segurity']['idusuario'];
                 <li class="nav-item mt-2">
                 <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
                 </li>
+                <li class="nav-item mt-2">
+                <a class="nav-link" href="./insumos.php"><h4><i class="bi bi-bar-chart"></i> Insumos</h4></a>
+                </li>                         
                 <li class="nav-item mt-5">
                 <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>

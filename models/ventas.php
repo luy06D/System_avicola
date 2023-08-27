@@ -39,7 +39,7 @@ class Ventas extends Conexion{
         }
 
         return $respuesta;
-}
+    }
 
     public function recuperarProductos(){
         try{

@@ -1362,7 +1362,6 @@ BEGIN
         v.idventa,
         CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
         MAX(v.fechaventa) AS fechaventa, -- Utilizamos MAX para obtener la fecha más reciente
-        MAX(pr.nombre) AS nombre, -- Utilizamos MAX para obtener un nombre (puede ser el último)
         SUM(v.deuda) AS deuda_total,
         SUM(p.pago) AS pago_total,
         (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) AS saldo,

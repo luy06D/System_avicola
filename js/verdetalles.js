@@ -18,8 +18,10 @@ $(document).ready(function (){
                 data.forEach(element => {
                     const row = `
                         <tr>
+                            <td class='text-center d-none'>${element.idcliente}</td>
+                            <td class='text-center'>${element.Cliente}</td>
                             <td class='text-center'>${element.fechapago}</td>
-                            <td class='text-center'>${element.nombre}</td>
+                            <td class='text-center d-none'>${element.nombre}</td>
                             <td class='text-center'>${element.banco}</td>>
                             <td class='text-center'>${element.numoperacion}</td>
                             <td class='text-center'>${element.pago}</td>                                               

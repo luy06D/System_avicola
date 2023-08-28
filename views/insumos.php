@@ -132,6 +132,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 </table>
             </div>
         </div> 
+
+        <div>
+            <label id="total-cantidad">Sumatoria de cantidad: 0</label>
+        </div>
     </div>
 
 
@@ -155,7 +159,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
                       <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
-                                <select class="form-select" id="unidad">
+                                <select class="form-select" id="unidad" disabled>
                                 <option selected>Seleccione</option>    
                                 <option value="KG">KILOS</option>    
                                 <option value="TN">TONELADAS</option>                 
@@ -166,7 +170,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                       <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class='bx bx-id-card'></i></span>
-                          <input type="number" class="form-control" placeholder="Cantidad"  id="cantidad">
+                          <input type="number" class="form-control" placeholder="Cantidad"  id="cantidad" disabled>
                         </div>  
                       </div>
                       <div class="mb-3 col-lg-6">
@@ -180,6 +184,41 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" id="guardar">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-registrar-insu" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header" id="modal-registro-header">
+                    <h5 class="modal-title" id="modal-titulo">Agregar a Stock</h5>
+                </div>
+                <div class="modal-body">
+                    <form action="" id="form-pagos">
+                        <!-- <div class="input-group mb-3">
+                            <select class="form-select" id="unidad">
+                            <option selected>Seleccione</option>    
+                            <option value="KG">KILOS</option>    
+                            <option value="TN">TONELADAS</option>                 
+                            </select>                
+                            <label class="input-group-text" for="inputGroupSelect02"><i class='bx bx-cart-add' ></i></label>
+                        </div> -->
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
+                          <input type="number" class="form-control" placeholder="Cantidad" maxlength="50" id="md-cantidad">
+                        </div>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-coin"></i></span>
+                          <input type="number" class="form-control" placeholder="S/00.00" maxlength="50" id="md-precio">
+                        </div>
+              
+                    </form>    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="guardarinsu">Guardar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -205,7 +244,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-
+    <!-- <script src="../js/addstock.js"></script> -->
 
     <script>
         $(document).ready(function(){
@@ -230,12 +269,90 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             }
 
                         });
+            
+            let totalCantidad = 0;
+            $("#tabla-insumos tbody tr").each(function() {
+                const cantidad = parseFloat($(this).find("td:nth-child(3)").text());
+                totalCantidad += cantidad;
+            });
+
+ 
+            $("#total-cantidad").text("Total GKG/TN: " + totalCantidad.toFixed(2)); // Mostrar con 2 decimales
 
                     }
                 });
             }
 
+            
+
+            function registrarinsu() {
+               console.log("id",idinsumo)
+                Swal.fire({
+                    title: '¿Está seguro de realizar la operación?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#65BB3B',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const cantidad = $("#md-cantidad").val().trim();
+                        const precio = $("#md-precio").val().trim();
+                        if (cantidad === "" || precio === "" ) {
+                            Swal.fire({
+                                title: "Por favor, complete los campos y asegúrese de que la cantidad no esté vacía.",
+                                icon: "warning",
+                                confirmButtonColor: "#E43D2C",
+                            });
+                        } else {
+                            let datosEnviar = {
+                                'operacion': 'actualizar_stock',
+                                'idinsumo': idinsumo,
+                                'cantidad': cantidad,
+                                'precio': precio
+                            };
+
+                            $.ajax({
+                                url: '../controllers/insumos.controller.php',
+                                type: 'POST',
+                                data: datosEnviar,
+                                success: function (result) {
+                                    if (result.status === true) {
+                                        Swal.fire({
+                                            title: "Operación exitosa",
+                                            icon: "success",
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+
+                                        $("#form-pagos")[0].reset();
+                                        showInsumos();
+                                        $("#modal-registrar-insu").modal('hide');
+                                    } else {
+                                        Swal.fire({
+                                            title: "No se pudo completar la operación",
+                                            icon: "error",
+                                            confirmButtonColor: "#E43D2C",
+                                        });
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error en la solicitud AJAX:", error);
+                                    Swal.fire({
+                                        title: "Error en la solicitud AJAX",
+                                        icon: "error",
+                                        confirmButtonColor: "#E43D2C",
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+
             function insumoRegister(){
+                console.log("id",idinsumo)
                 const nombre = document.querySelector("#nombre").value.trim();
                 const unidad = document.querySelector("#unidad").value.trim();
                 const cantidad = document.querySelector("#cantidad").value.trim();
@@ -266,7 +383,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     confirmButtonColor: '#65BB3B',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        if(nombre === '' || unidad === '' || cantidad === ''){
+                        if(nombre === ''){
                             Swal.fire({
                                 title: "Por favor, complete los campos",
                                 icon: "warning",
@@ -385,9 +502,25 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 getInsumos(idinsumo);
             });
 
-            $("#abrir-modal-registro").click(abrirModalRegistro);
+            $("#tabla-insumos tbody").on("click", ".add", function () {
+                idinsumo = $(this).data("idinsumo");
+            });
 
+            $("#guardarinsu").click(registrarinsu);
+
+            // Cuando se cierre el modal, resetear el valor de idinsumo
+            $("#modal-registrar").on("hidden.bs.modal", function () {
+                idinsumo = 0;
+            });
+
+
+            $("#abrir-modal-registro").click(abrirModalRegistro);
+           
             $("#guardar").click(insumoRegister);
+
+            
+
+            
 
             showInsumos();
         });

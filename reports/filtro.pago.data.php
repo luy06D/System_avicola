@@ -13,21 +13,21 @@
         <col style="width: 12%;">
         <col style="width: 10%;">
         <col style="width: 10%;"> -->
+        <col style="width: 30%;">
+        <col style="width: 14% ;">
+        <col style="width: 16% ;">
         <col style="width: 15%;">
-        <col style="width: 10% ;">
-        <col style="width: 11% ;">
-        <col style="width: 12%;">
         <col style="width: 10%;">
-        <col style="width: 13%;">
-        <col style="width: 13%;">
-        <col style="width: 16%">
+        <col style="width: 15%;">
+        <!-- <col style="width: 13%;"> -->
+        <!-- <col style="width: 16%"> -->
     </colgroup>
     <thead class="table-cabez">
         <tr>
-        <th>Código</th>
+        
         <th>Cliente</th>
         <th>Fecha</th>
-        <th>Producto</th>
+        <!-- <th>Producto</th> -->
         <th>Deuda total</th>
         <th>Pago total</th>
         <th>Saldo</th>   
@@ -39,10 +39,10 @@
     <?php foreach($data as $registro): ?>
         <tr>
       
-            <td><?=$registro['idpago']?></td>
+            <!-- <td><?=$registro['idpago']?></td> -->
             <td><?=$registro['cliente']?></td>
             <td><?=$registro['fechapago']?></td>
-            <td><?=$registro['producto']?></td>
+            <!-- <td><?=$registro['producto']?></td> -->
             <td><?=$registro['deuda_total']?></td>
             <td><?=$registro['pago_total']?></td>
             <td><?=$registro['saldo']?></td>

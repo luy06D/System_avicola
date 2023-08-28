@@ -18,8 +18,9 @@ if(isset($_GET['operacion'])){
                     <td>{$registro['unidad']}</td>
                     <td>{$registro['descripcion']}</td>                    
                     <td>
-                        <a href='#' class='editar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idinsumo ='{$registro['idinsumo']}'><i class='bi bi-pencil-square'></i></a>
-                        <a href='#' class='eliminar btn btn-outline-danger btn-sm' data-idinsumo='{$registro['idinsumo']}'><i class='bi bi-trash'></i></a> 
+                        <a href='#' class='editar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idinsumo ='{$registro['idinsumo']}'><i class='bi bi-pencil-square'></i></a>
+                        <a href='#' class='eliminar btn btn-danger btn-sm' data-idinsumo='{$registro['idinsumo']}'><i class='bi bi-trash'></i></a>
+                        <a href='#' class='add btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar-insu' data-idinsumo ='{$registro['idinsumo']}'><i class='bi bi-plus-circle-dotted'></i></a>
                     </td>
                 </tr>
             ";
@@ -70,23 +71,36 @@ if(isset($_POST['operacion'])){
         
     }
 
+    if ($_POST['operacion'] == 'actualizar_stock') {
+        $saveData = [
+            "idinsumo"      => $_POST['idinsumo'],  
+            "cantidad"      => $_POST['cantidad'],
+            "precio"        => $_POST['precio']
+      
+            
+        ];
+        $resultado = $insumos->insumo_add($saveData);
+        header('Content-Type: application/json');
+    
+        if ($resultado["status"]) {
+            $response = array(
+                'status' => true,
+                'mensaje' => 'Operación exitosa'
+            );
+        } else {
+            $response = array(
+                'status' => false,
+                'mensaje' => 'La operación falló'
+            );
+        }
+        echo json_encode($response);
+    }
         
     if($_POST['operacion'] == 'getInsumo'){
         $data = $insumos->get_insumo($_POST['idinsumo']);
         echo json_encode($data);
-    }
-
-
-
-
+    }   
 
 }
-
-
-
-
-
-
-
 
 ?>

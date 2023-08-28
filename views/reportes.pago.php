@@ -191,11 +191,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <table class="table display nowrap" style="width: 100%;"  id="table-report">
                         <thead class="table-success text-center">
                             <tr>
-                                <th>Código</th>
+                                <th class='d-none'>Código</th>
                                 <th class="d-none">Código Cl</th>
                                 <th>Cliente</th>
                                 <th>Fecha</th>
-                                <th>Producto</th>
+                                <th class='d-none'>Producto</th>
                                 <th>Deuda total</th>
                                 <th>Pago total</th>
                                 <th>Saldo</th>
@@ -232,8 +232,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <table class="table display nowrap" style="width: 100%;"  id="table-detalles">
                             <thead class="table-secondary text-center">
                                 <tr>
+                                    <th class='d-none'>Id</th>
+                                    <th>Cliente</th>
                                     <th>Fecha</th>
-                                    <th>Producto</th>
+                                    <th class='d-none'>Producto</th>
                                     <th>Banco</th>
                                     <th>N° operación</th>
                                     <th>Pago</th>          
@@ -248,6 +250,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             </div>
 
             <div class="modal-footer">
+                <!-- <button id="exportard" class="btn btn-danger" type="button"><i class="bi bi-file-earmark-pdf"></i></button> -->
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
             </div>
@@ -306,6 +309,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             const cuerpoTabla2 = document.querySelector("#detallescuerpo");
             const btnfiltro = document.querySelector("#btnfiltro");
             const btnExportar = document.querySelector("#exportar");
+            const btnPDF = document.querySelector("#exportard");
             const lsCliente = document.querySelector("#cliente");
             const btnReset = document.querySelector("#reset");
             const formupa = document.querySelector("#formulariopaquetes div");
@@ -369,11 +373,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         }
                         const rows = `
                         <tr>
-                            <td>${element.idpago}</td>
+                            <td class='d-none'>${element.idpago}</td>
                             <td class='d-none'>${element.idcliente}</td>
                             <td>${element.cliente}</td>
                             <td>${element.fechapago}</td>
-                            <td>${element.producto}</td>
+                            <td class='d-none'>${element.producto}</td>
                             <td>${element.deuda_total}</td>
                             <td>${element.pago_total}</td>
                             <td>${element.saldo}</td>      
@@ -469,11 +473,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             }
                             const rows = `
                             <tr>
-                                <td>${element.idpago}</td>
+                                <td class='d-none'>${element.idpago}</td>
                                 <td class='d-none'>${element.idcliente}</td>
-                                <td>${element.cliente}</td>
+                                <td >${element.cliente}</td>
                                 <td>${element.fechapago}</td>
-                                <td>${element.producto}</td>
+                                <td class='d-none'>${element.producto}</td>
                                 <td>${element.deuda_total}</td>
                                 <td>${element.pago_total}</td>
                                 <td>${element.saldo}</td>      
@@ -565,11 +569,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         }
                         const rows = `
                             <tr>
-                                <td>${element.idpago}</td>
+                                <td class='d-none'>${element.idpago}</td>
                                 <td class='d-none'>${element.idcliente}</td>
                                 <td>${element.cliente}</td>
                                 <td>${element.fechapago}</td>
-                                <td>${element.producto}</td>
+                                <td class='d-none'>${element.producto}</td>
                                 <td>${element.deuda_total}</td>
                                 <td>${element.pago_total}</td>
                                 <td>${element.saldo}</td>      
@@ -628,7 +632,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
             }
 
-     
+            function crearpdfdet(){
+                window.open(`../reports/detallePago.report.php?`,`_blank`);
+            }
 
             
             function createPDF(){
@@ -681,6 +687,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 }
 
             });
+            
             btnExportar.addEventListener("click",createPDF);
             btnReset.addEventListener("click", function(){
                 location.reload();                
@@ -744,6 +751,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             }
 
             $("#guardar").click(registrar);
+            btnPDF.addEventListener("click", crearpdfdet);
             
         });
     </script>

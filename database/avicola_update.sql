@@ -118,8 +118,8 @@ CREATE TABLE insumos
 (
 idinsumo	INT AUTO_INCREMENT PRIMARY KEY,
 insumo		VARCHAR(30) 	NOT NULL,
-unidad		VARCHAR(20) 	NOT NULL, -- TONELADA , KILOS
-cantidad	SMALLINT 	NOT NULL,
+unidad		VARCHAR(20) 	NULL, -- TONELADA , KILOS
+cantidad	SMALLINT 	NULL,
 descripcion	VARCHAR(80)	NULL,
 estado		CHAR(1)		NOT NULL DEFAULT '1',
 CONSTRAINT uk_ins_ins UNIQUE(insumo)
@@ -132,28 +132,19 @@ INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
 		('MAIZ','KG', 1000 ,'Cereal, amarillo, versátil, nutritivo.'),
 		('SAL','KG', 700 ,'Mineral, condimento, saborizante, conservante');
 
-CREATE TABLE proveedores
-(
-idproveedor	INT AUTO_INCREMENT PRIMARY KEY,
-nombre		VARCHAR(30) NOT NULL,
-direccion	VARCHAR(50) NULL,
-telefono	CHAR(9)	    NOT NULL
-)
-ENGINE = INNODB;
 
 
 CREATE TABLE detalle_entradas
 (
 identrada	INT AUTO_INCREMENT PRIMARY KEY,
-idproveedor 	INT NOT NULL,
 idinsumo	INT NOT NULL,
 cantidad	SMALLINT	NOT NULL,
 precio		DECIMAL(7,2)	NOT NULL,
 fecha_entrada	DATE 	NOT NULL DEFAULT NOW(),
-CONSTRAINT fk_idp_ent FOREIGN KEY (idproveedor) REFERENCES proveedores (idproveedor),
 CONSTRAINT fk_idi_ent FOREIGN KEY (idinsumo) REFERENCES insumos (idinsumo)
 )
 ENGINE = INNODB;
+
 
 
 CREATE TABLE formulas
@@ -181,18 +172,30 @@ SELECT * FROM insumos
 -- PROCEDIMIENTOS ALMACEN
 
 -- LISTAR INSUMOS
-
 DELIMITER $$
+
+ 
 CREATE PROCEDURE spu_insumos_listar()
 BEGIN 
-	SELECT idinsumo, insumo, cantidad, unidad,
-	descripcion
-	FROM insumos
-	WHERE estado = '1'
-	ORDER BY idinsumo DESC;
+    SELECT
+        idinsumo,
+        insumo,
+        CASE
+            WHEN cantidad >= 1000 THEN FORMAT(cantidad / 1000, 2) 
+            ELSE FORMAT(cantidad, 2) 
+        END AS cantidad,
+        CASE
+            WHEN cantidad >= 1000 THEN 'TN' 
+            ELSE 'KG' 
+        END AS unidad,
+        descripcion
+    FROM insumos
+    WHERE estado = '1'
+    ORDER BY idinsumo DESC;
 END $$
 
-CALL spu_insumos_listar();
+
+
 
 -- REGISTRAR INSUMOS
 
@@ -263,7 +266,62 @@ CREATE PROCEDURE spu_delete_insumo
 BEGIN
 	UPDATE insumos SET estado = '0'
 	WHERE idinsumo = _idinsumo;
+	
 END $$
+
+DELIMITER $$
+CREATE PROCEDURE spu_mostrar_insumos()
+BEGIN
+	SELECT idinsumo,
+		insumo,
+		unidad,
+		cantidad
+	FROM insumos
+	WHERE estado = '1'
+	ORDER BY idinsumo DESC;
+END $$
+
+DELIMITER $$
+
+CALL spu_mostrar_insumos()
+
+
+-- Registrar entrdas de insumos --
+DELIMITER $$
+CREATE PROCEDURE sp_registrar_entrada(
+    IN p_idinsumo INT,
+    IN p_cantidad SMALLINT,
+    IN _precio DECIMAL(7,2)
+)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Error durante la operación.';
+    END;
+
+    START TRANSACTION;
+
+    -- Registrar el detalle de entrada
+    INSERT INTO detalle_entradas (idinsumo, cantidad, precio)
+    VALUES (p_idinsumo, p_cantidad, _precio);
+
+    -- Actualizar la cantidad en la tabla de insumos
+    UPDATE insumos
+    SET cantidad = cantidad + p_cantidad,
+        unidad = CASE WHEN (cantidad + p_cantidad) > 1000 AND unidad = 'KG' THEN 'TN' ELSE unidad END
+    WHERE idinsumo = p_idinsumo;
+
+    COMMIT;
+
+    SELECT 'Entrada registrada y stock actualizado correctamente' AS mensaje;
+END $$
+
+
+CALL sp_registrar_entrada (1,700,600)
+
+
 
 
 -- FIN PROCEDIMIENTOS ALMACEN
@@ -365,7 +423,7 @@ BEGIN
 
 END $$
 
-CALL spu_obtener_detalleV(5);
+CALL spu_obtener_detalleV(2);
 			
 			-- MOSTRAR PAQUETES
 
@@ -891,7 +949,8 @@ END$$
 
 				
 DELIMITER $$
-CREATE PROCEDURE spu_filtro_clientePago(
+CREATE PROCEDURE spu_filtro_clientePago
+(
     IN _idcliente INT
 )
 BEGIN
@@ -930,7 +989,6 @@ DELETE FROM pagos WHERE idpago = 7
 	
 
 
-
 DELIMITER $$
 CREATE PROCEDURE spu_filtro_ClienteFecha
 (
@@ -939,11 +997,9 @@ CREATE PROCEDURE spu_filtro_ClienteFecha
 )
 BEGIN
     SELECT 
-        idpago,
         c.idcliente,
-        CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
         p.fechapago,
-        pr.nombre AS producto,
+        CONCAT(cl.nombres, ' ', cl.apellidos) AS cliente,
         (SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) AS deuda_total,
         SUM(p.pago) AS pago_total,
         ((SELECT SUM(v.deuda) FROM ventas v WHERE v.idcliente = c.idcliente) - SUM(p.pago)) AS saldo,
@@ -953,19 +1009,20 @@ BEGIN
         END AS estado
     FROM pagos p
     INNER JOIN ventas v ON v.idventa = p.idventa
-    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
-    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
     INNER JOIN clientes c ON v.idcliente = c.idcliente
     INNER JOIN personas cl ON c.idpersona = cl.idpersona
     WHERE DATE(p.fechapago) BETWEEN _fechainicio AND _fechafin
-    GROUP BY Cliente, producto
-    ORDER BY idpago DESC;    
+    GROUP BY c.idcliente, cl.nombres, cl.apellidos
+    ORDER BY c.idcliente, p.fechapago DESC;    
 END $$
+DELIMITER ;
 
-SELECT * FROM ventas
-SELECT * FROM personas
 
-CALL spu_filtro_ClienteFecha('2023-08-01','2023-08-21')
+
+
+
+
+CALL spu_filtro_ClienteFecha('2023-08-01','2023-08-26')
 
 DELIMITER $$
 CREATE PROCEDURE spu_filtro_pagoclientefecha 
@@ -999,7 +1056,7 @@ BEGIN
     ORDER BY idpago DESC;    
 END $$
 
-CALL spu_filtro_pagoclientefecha('2023-08-01','2023-08-20',1)
+CALL spu_filtro_pagoclientefecha('2023-08-01','2023-08-26',1)
 
 			-- Listar
 DELIMITER $$
@@ -1054,7 +1111,7 @@ CREATE PROCEDURE spu_listar_detallesclientes
 	IN _idcliente INT
 )
 BEGIN
-	SELECT 	
+	SELECT 	c.idcliente,CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
 		pa.fechapago,
 		pr.nombre,
 		pa.banco,
@@ -1069,7 +1126,7 @@ BEGIN
 	    WHERE c.idcliente = _idcliente;
 END $$
 
-CALL spu_listar_detallesclientes(2);
+CALL spu_listar_detallesclientes(4);
 
 
 
@@ -1104,10 +1161,12 @@ BEGIN
 
  CALL spu_ventas_mostrar();
  
- 
+ DELETE FROM pagos
  DELETE FROM ventas
  
- ALTER TABLE ventas AUTO_INCREMENT = 1
+ ALTER TABLE pagos AUTO_INCREMENT = 1
+ 
+ DELETE FROM ventas WHERE idventa =5
 
 
  

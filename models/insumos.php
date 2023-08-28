@@ -82,6 +82,31 @@ class Insumo extends Conexion{
 
     }
 
+    public function insumo_add($datos = []) {
+        $respuesta = [
+            "status" => false,
+            "message" => ""
+        ];
+
+        try{
+            $consulta = $this->access->prepare("CALL sp_registrar_entrada(?,?,?)");
+            $respuesta["status"] = $consulta->execute(array(
+                
+                $datos["idinsumo"],
+                $datos["cantidad"],
+                $datos["precio"]
+           
+            ));
+    
+            $respuesta["status"] = true;
+        } catch (Exception $e) {
+            $respuesta["message"] = "No se pudo completar la operación Codigo error:" . $e->getCode();
+        }
+    
+        return $respuesta;
+    }
+
+    
 
     public function get_insumo($idinsumo = 0){
         try{

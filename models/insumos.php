@@ -1,7 +1,5 @@
 <?php
 
-use Complex\Functions;
-
 require_once 'conexion.php';
 
 class Insumo extends Conexion{

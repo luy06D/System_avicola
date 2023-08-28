@@ -16,7 +16,6 @@ if(isset($_GET['operacion'])){
                     <td>{$registro['idventa']}</td>
                         <td>{$registro['Cliente']}</td>
                         <td>{$registro['fechaventa']}</td>
-                        <td>{$registro['nombre']}</td>
                         <td>{$registro['deuda_total']}</td>
                         <td>{$registro['pago_total']}</td>
                         <td>{$registro['saldo']}</td>

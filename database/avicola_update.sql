@@ -4,6 +4,7 @@ CREATE DATABASE avicola;
 USE avicola;
 
 
+
 CREATE TABLE personas
 (
 idpersona	INT AUTO_INCREMENT PRIMARY KEY,

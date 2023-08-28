@@ -135,12 +135,12 @@ INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
 CREATE TABLE detalle_entradas
 (
 identrada	INT AUTO_INCREMENT PRIMARY KEY,
-idproveedor 	INT NOT NULL,
+
 idinsumo	INT NOT NULL,
 cantidad	SMALLINT	NOT NULL,
 precio		DECIMAL(7,2)	NOT NULL,
 fecha_entrada	DATE 	NOT NULL DEFAULT NOW(),
-CONSTRAINT fk_idp_ent FOREIGN KEY (idproveedor) REFERENCES proveedores (idproveedor),
+
 CONSTRAINT fk_idi_ent FOREIGN KEY (idinsumo) REFERENCES insumos (idinsumo)
 )
 ENGINE = INNODB;
@@ -176,33 +176,59 @@ ENGINE = INNODB;
 -- LISTAR INSUMOS
 
 DELIMITER $$
+
 CREATE PROCEDURE spu_insumos_listar()
 BEGIN 
 	SELECT idinsumo, insumo, cantidad, unidad,
 	descripcion
-	FROM insumos;
+	FROM insumos
+	WHERE estado = '1'
+	ORDER BY idinsumo DESC;
 END $$
+
+DELIMITER ;
+
+
+
+
 
 CALL spu_insumos_listar();
 
 -- REGISTRAR INSUMOS
 
 DELIMITER $$
+
 CREATE PROCEDURE spu_insumos_register
 (
 IN _insumo VARCHAR(30),
 IN _unidad VARCHAR(20),
-IN _cantidad	SMALLINT,
-IN _descripcion	VARCHAR(80)
+IN _cantidad DECIMAL(10, 3), 
+IN _descripcion VARCHAR(80)
 )
 BEGIN
-	IF _descripcion = '' THEN SET _descripcion = NULL;	
-	END IF;
-	
-	INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
-		(_insumo, _unidad, _cantidad, _descripcion);
+    DECLARE existing_idinsumo INT;
+
+    DECLARE conversion_factor DECIMAL(10, 3);
+
+    SET conversion_factor = CASE WHEN _unidad = 'TN' THEN 1000 ELSE 1 END;
+
+    SET _cantidad = _cantidad * conversion_factor;
+
+    SET existing_idinsumo = (SELECT idinsumo FROM insumos WHERE insumo = _insumo);
+
+    IF existing_idinsumo IS NOT NULL THEN
+        UPDATE insumos SET cantidad = cantidad + _cantidad WHERE idinsumo = existing_idinsumo;
+    ELSE
+        IF _descripcion = '' THEN SET _descripcion = NULL; END IF;
+
+        INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
+            (_insumo, 'kg', _cantidad, _descripcion);
+    END IF;
 
 END $$
+
+
+
 
 CALL spu_insumos_register('CARBONATO GRANO','KG',500 ,'');
 
@@ -252,6 +278,83 @@ CALL spu_get_insumo(3);
 
 
 
+
+
+
+-- REGISTRAR PROVEEDORES
+
+DELIMITER $$
+CREATE PROCEDURE spu_proveedor_register
+(
+IN _nombre VARCHAR(30),
+IN _direccion VARCHAR(50),
+IN _telefono	CHAR(9)
+)
+BEGIN
+	IF _direccion = '' THEN SET _direccion = NULL;	
+	END IF;
+	
+	INSERT INTO proveedores (nombre, direccion, telefono) VALUES
+		(_nombre, _direccion, _telefono);
+
+END $$
+
+CALL spu_proveedor_register('PERUSac','Calle san marcos 23', 95675456);
+
+
+-- ACTUALIZAR PROVEEDORES
+
+DELIMITER $$
+CREATE PROCEDURE spu_proveedor_update
+(
+IN _idproveedor INT,
+IN _nombre VARCHAR(30),
+IN _direccion VARCHAR(50),
+IN _telefono	CHAR(9)
+)
+BEGIN
+	IF _direccion = '' THEN SET _direccion = NULL;	
+	END IF;
+	
+	UPDATE proveedores SET 
+	nombre	= _nombre,
+	direccion = _direccion,
+	telefono = _telefono
+	WHERE idproveedor = _idproveedor;
+	
+END $$
+
+
+CALL spu_proveedor_update(1, 'PERUSac','Calle san marcos 25', 95675456);
+
+-- GET PROVEEDOR
+
+DELIMITER $$
+CREATE PROCEDURE spu_get_proveedor(IN _idproveedor INT)
+BEGIN
+	SELECT	nombre, direccion , telefono
+	FROM proveedores
+	WHERE idproveedor = _idproveedor;
+
+END $$
+
+CALL  spu_get_proveedor(1);
+
+
+-- ELIMINAR PROVEEDOR
+
+DELIMITER $$
+CREATE PROCEDURE spu_provedor_delete(IN _idproveedor INT)
+BEGIN
+	UPDATE proveedores SET
+	estado = 0
+	WHERE idproveedor = _idproveedor;
+
+END $$
+
+CALL spu_provedor_delete(1);
+
+
 -- REGISTRAR FORMULA
 DELIMITER $$
 CREATE PROCEDURE spu_formula_registrar
@@ -283,22 +386,83 @@ CALL spu_getInsumo();
 
 
 -- REGISTRAR UNA DETALLE_INSUMO
+
+
+
+
+
+
 DELIMITER $$
+
 CREATE PROCEDURE spu_detalleInsumo_registrar
 (
-IN _idformula	INT,
-IN _idinsumo 	INT,
-IN _cantidad	SMALLINT,
-IN _unidad	VARCHAR(20)
+IN _idformula INT,
+IN _idinsumo INT,
+IN _cantidad DECIMAL(10, 3),
+IN _unidad VARCHAR(20)
 )
-BEGIN 
+BEGIN
+  DECLARE insumo_cantidad DECIMAL(10, 3);
+  SET @conversion_factor = 1;
+  
+  IF _unidad = 'TN' THEN
+    SET @conversion_factor = 1000;
+  END IF;
 
-	INSERT INTO detalle_insumos (idformula, idinsumo, cantidad, unidad) VALUES
-				(_idformula, _idinsumo, _cantidad, _unidad);
-	
+  -- Iniciar la transacción
+  START TRANSACTION;
+
+  -- Obtener la cantidad actual del insumo
+  SELECT cantidad INTO insumo_cantidad FROM insumos WHERE idinsumo = _idinsumo;
+
+  -- Verificar si hay suficiente cantidad disponible en insumos
+  IF insumo_cantidad >= (_cantidad * @conversion_factor) THEN
+    -- Si hay suficiente cantidad disponible, actualizar la cantidad en insumos
+    SET insumo_cantidad = insumo_cantidad - (_cantidad * @conversion_factor);
+    UPDATE insumos SET cantidad = insumo_cantidad WHERE idinsumo = _idinsumo;
+    
+    -- Intentar actualizar la cantidad en detalle_insumos
+    UPDATE detalle_insumos
+    SET cantidad = cantidad + (_cantidad * @conversion_factor)
+    WHERE idinsumo = _idinsumo AND idformula = _idformula;
+
+    -- Verificar si se actualizó alguna fila en detalle_insumos
+    IF ROW_COUNT() = 0 THEN
+      -- No se actualizó ninguna fila en detalle_insumos, agregar un nuevo registro
+      INSERT INTO detalle_insumos (idformula, idinsumo, cantidad, unidad) VALUES (_idformula, _idinsumo, (_cantidad * @conversion_factor), 'kg');
+    END IF;
+  ELSE
+    -- No hay suficiente cantidad disponible en insumos, hacer rollback y generar una señal de error
+    ROLLBACK;
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No hay suficiente cantidad de este insumo para la fórmula.';
+  END IF;
+
+  -- Confirmar la transacción
+  COMMIT;
 END $$
 
-CALL spu_detalleInsumo_registrar( 3 , 4, 20, 'KG');
+
+
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+DELETE FROM formulas
+
+
+
+
+
+SELECT * FROM insumos
+CALL spu_detalleInsumo_registrar( 1 , 4, 20, 'KG');
 
 SELECT * FROM formulas
 SELECT * FROM detalle_insumos
@@ -307,9 +471,10 @@ SELECT * FROM insumos
 
 -- DETALLE DE FORMULAS POR ID
 DELIMITER $$
+
 CREATE PROCEDURE spu_listar_detalleF(IN _idformula INT)
 BEGIN 
-	SELECT DI.iddetalle_insumo, I.insumo, 
+	SELECT  I.insumo, 
 	DI.cantidad,
 	(Di.cantidad * 0.05) AS gkgU
 	FROM detalle_insumos DI
@@ -319,7 +484,7 @@ BEGIN
 	
 END $$
 
-CALL spu_listar_detalleF(3)
+CALL spu_listar_detalleF(1)
 
 -- MOSTRAR FORMULA 
 

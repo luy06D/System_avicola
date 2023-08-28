@@ -217,29 +217,42 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <script>
         $(document).ready(function (){
 
-            let datosNuevos = true;
-            let idventa = 0; 
+let datosNuevos = true;
+let idventa = 0; 
 
-            function mostrar(){
-                $.ajax({
-                    url: '../controllers/pagos.controller.php',
-                    type: 'GET',
-                    data: {'operacion' : 'listar'},
-                    success: function (result){
+function mostrar(){
+    $.ajax({
+        url: '../controllers/pagos.controller.php',
+        type: 'GET',
+        data: {'operacion' : 'listar'},
+        success: function (result){
 
-                        var tabla = $("#tabla-pago").DataTable();
-                        tabla.destroy();
-                        $("#tabla-pago tbody").html(result);
-                        $("#tabla-pago").DataTable({
-                            responsive: true,
-                            lengthMenu:[5],
-                            language: {
-                                url: '../js/Spanish.json'
-                            }
-                        }); 
-                    }
-                });
-            }
+            var tabla = $("#tabla-pago").DataTable();
+            tabla.destroy();
+            $("#tabla-pago tbody").html(result);
+            $("#tabla-pago").DataTable({
+                responsive: true,
+                lengthMenu:[5],
+                language: {
+                    url: '../js/Spanish.json'
+                }
+            }); 
+
+            // Cambiar color de fondo del estado según el saldo
+            $("#tabla-pago tbody tr").each(function() {
+                const saldo = parseFloat($(this).find("td:nth-child(6)").text());
+                const estadoCell = $(this).find("td:nth-child(7)");
+
+                if (saldo === 0) {
+                    estadoCell.html('<span class="badge bg-success text-white">Cancelado</span>');
+                } else {
+                    estadoCell.html('<span class="badge bg-danger text-white">Pendiente</span>');
+                }
+            });
+        }
+    });
+}
+
             function registrar() {
     Swal.fire({
         title: '¿Está seguro de realizar la operación?',

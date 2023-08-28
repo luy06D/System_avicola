@@ -565,7 +565,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             Swal.fire({
                                 position: 'top-end',
                                 icon: 'success',
-                                title: 'La formula se registro correctamente',
+                                title: 'Insumo agregado correctamente',
                                 showConfirmButton: false,
                                 timer: 1500
                                 })
@@ -573,7 +573,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             $("#modal-addInsumo").modal('hide');                          
                         }else{
                             Swal.fire({
-                          title: "La formula ya fue registrada",
+                          title: "Cantidad no está disponible en stock",
                           icon: "warning",
                           confirmButtonColor: "#E43D2C",
                       });

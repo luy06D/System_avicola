@@ -99,35 +99,42 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             </div>
             <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                 <li class="nav-item dropdown mt-2">
+                    <a class="nav-link dropdown-toggle" style="font-size: 25px;" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Huevos
+                   </a>
+                    <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="./ventas.php"><h5><i class="bi bi-cart4"></i> Ventas</a></h5></li>
+                    <li><a class="dropdown-item" href="./reportes.php"><h5><i class="bi bi-filetype-pdf"></i> Reporte Ventas</h5></a></li> 
+                    <li><a class="dropdown-item" href="./pagos.php"><h5><i class="bi bi-cash-coin"></i> Pagos</h5></a></li> 
+                    <li><a class="dropdown-item" href="./reportes.pago.php"><h5><i class="bi bi-graph-up-arrow"></i> Reporte Pagos</h5></a></li>                   
+                    </ul>
+                </li>    
+                <li class="nav-item dropdown mt-2">
+                    <a class="nav-link dropdown-toggle" style="font-size: 25px;" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Complementos
+                   </a>
+                    <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="./productos.php"><h5><i class="bi bi-egg"></i> Productos</a></h5></li>
+                    <li><a class="dropdown-item" href="./clientes.php"><h5><i class="bi bi-people"></i> Clientes</h5></a></li> 
+                    <li><a class="dropdown-item" href="./usuarios.php"><h5><i class="bi bi-person-gear"></i> Usuarios</h5></a></li>                  
+                    </ul>
+                </li>                                                        
+                <li class="nav-item dropdown mt-2">
+                <a class="nav-link dropdown-toggle" style="font-size: 25px;" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Almacén
+                </a>
+                    <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="./insumos.php"><h5><i class="bi bi-truck"></i> Insumos</a></h5></li>
+                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Formulas</h5></a></li> 
+
+                    </ul>
+                </li>  
                 <li class="nav-item mt-2">
-                <a class="nav-link" aria-current="page" href="ventas.php"><h4><i class="bi bi-cart4"></i> Ventas</h4></a>
-                </li>
-                <li class="nav-item mt-2">
-                <a class="nav-link" aria-current="page" href="pagos.php"><h4><i class="bi bi-cash-coin"></i> Pagos</h4></a>
-                </li>
-                <li class="nav-item mt-2">
-                <a class="nav-link" href="productos.php"><h4><i class="bi bi-boxes"></i> Productos</h4></a>
-                </li>
-                <li class="nav-item mt-2">
-                <a class="nav-link" href="usuarios.php"><h4><i class="bi bi-person-gear"></i> Usuarios</h4></a>
-                </li>
-                <li class="nav-item mt-2">
-                <a class="nav-link" href="clientes.php"><h4><i class="bi bi-people"></i> Clientes </h4></a>
-                </li>
-                <li class="nav-item mt-2">
-                <a class="nav-link" href="./reportes.php"><h4><i class="bi bi-filetype-pdf"></i> Reportes Ventas</h4></a>
-                </li>
-                <li class="nav-item mt-2">
-                <a class="nav-link" aria-current="page" href="reportes.pago.php"><h4><i class="bi bi-graph-up-arrow"></i> Reportes Pagos</h4></a>
-                </li>
-                <li class="nav-item mt-2">
-                <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-bar-chart"></i> Gráficos</h4></a>
-                </li>
-                <li class="nav-item mt-2">
-                <a class="nav-link" href="./insumos.php"><h4><i class="bi bi-bar-chart"></i> Insumos</h4></a>
-                </li>            
+                <a class="nav-link" href="./graficos.php"><h4><i class="bi bi-graph-up"></i> Gráficos</h4></a>
+                </li>                     
                 <li class="nav-item mt-5">
-                    <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
+                <a class="nav-link" style="position:absolute; bottom: -0px; color:crimson" href="../controllers/usuario.controller.php?operation=destroy"><h4><i class="bi bi-box-arrow-left"></i> Cerrar sesión</h4></a>
                 </li>
             </ul>
             

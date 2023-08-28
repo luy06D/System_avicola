@@ -137,14 +137,15 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <div class=" col-lg-3">
                                 <div>   
                                     <label for="lista-formula" class="form-label"></label>                                 
-                                    <select  id="lista-formula" class="js-example-responsive" style="width: 100%;" >
+                                    <select  id="lista-formula" class="js-example-responsive js-example-placeholder-single js-states form-control" style="width: 100%;" >
                                     <option value=""></option>
                                     </select>
                                 </div>                               
                             </div>
                             <div class="col-md-3 mt-4">
-                                <div class="">
-                                    <button id="btnfiltro" class="btn btn-success btn-md " type="button">Mostrar</button>                    
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <button id="btnfiltro" class="btn btn-success btn-md " type="button">Mostrar</button>    
+                                    <button id="btnDelete" class="btn btn-danger btn-md " type="button">Eliminar</button>                    
                                 </div>
                             </div>                     
 
@@ -167,8 +168,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <table class="table display nowrap" style="width: 100%;"  id="tabla-formula">
                         <thead class="table-success text-center">
                             <tr>
+                                <th>Código</th>
                                 <th>Insumos</th>
-                                <th>Cantidad</th> 
+                                <th>GKG/TN</th> 
                                 <th>GKG/U</th> 
                                 <th>Editar</th>                               
 
@@ -180,7 +182,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     </table>
                 </div>
             </div>
-      
+
+            <label id="total-cantidad">Total GKG/TN: 0</label>
+
         </div>
     </main>
 
@@ -190,7 +194,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     </footer>
 
     
-    <!-- Modal Body -->
+    <!-- Modal Registrar -->
     <div class="modal fade" id="modal-addInsumo" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered " role="document">
             <div class="modal-content">
@@ -217,7 +221,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         </div>
                                      
                         <div class="input-group mb-3">
-                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-boxes"></i></span>
                           <input type="number" class="form-control" placeholder="Cantidad"  id="cantidad">
                         </div>
         
@@ -230,13 +234,59 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             </div>
         </div>
     </div>
+
+    
+     <!-- Modal Actualizar -->
+     <div class="modal fade" id="modal-updateInsumo" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitleId">Actualizar insumo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                <form action="" id="form-updateInsumo">
+                        <label for="" class="form-label">Insumo:</label> 
+                        <div class=" input-group mb-4">                           
+                            <select class="form-select" id="insumoUp" aria-label="Default select example">
+                            <option selected>Seleccione</option>
+                            </select>
+                        </div>
+
+                        <label for="" class="form-label">Unidad:</label> 
+                        <div class=" input-group mb-4">                           
+                            <select class="form-select" id="unidadUp" aria-label="Default select example">
+                            <option selected>Seleccione</option>
+                            <option value="KG">KILOS</option>
+                            <option value="TN">TONELADA</option>
+                            </select>
+                        </div>
+                                     
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-boxes"></i></span>
+                          <input type="number" class="form-control" placeholder="Cantidad"  id="cantidadUp" disabled>
+                        </div>
+        
+                    </form>   
+                </div>
+                <div class="modal-footer">                    
+                    <button type="button" id="btnUpdateInsumo" class="btn btn-primary">Agregar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     
 
     <!-- sweetalert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- AJAX = JavaScript asincrónico-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
+    
+    <script src="../js/detalle_insumo.js"></script>
     <!-- datatable-->
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
@@ -253,13 +303,19 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         document.addEventListener("DOMContentLoaded", () => {
 
             $("#lista-formula").select2();
+            $(".js-example-placeholder-single").select2({
+                placeholder: "Seleccione",
+                allowClear: true,                
+             });
 
             const lsFormula = document.querySelector("#lista-formula");
             const lsInsumo = document.querySelector("#insumo");
+            const lsInsumoUp = document.querySelector("#insumoUp");
             const btnFormulaR = document.querySelector("#registrarFormula");
             const cuerpoTabla = document.querySelector("#tabla-formula tbody");
             const btnFiltro = document.querySelector("#btnfiltro");
             const btnAddInsumo = document.querySelector("#btnAddInsumo");
+            const btnUpdateInsumo = document.querySelector("#btnUpdateInsumo");
             
 
       function mostrarFormula(){
@@ -278,6 +334,28 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     optionTag.value = element.idformula
                     optionTag.text = element.nombreformula;
                     lsFormula.appendChild(optionTag);
+                    
+                });
+                });
+      }
+
+      
+      function mostrarInsumosUp(){
+                const parameters = new URLSearchParams();
+                parameters.append("operacion", "getInsumo");
+
+                fetch("../controllers/formulas.controller.php", {
+                method: 'POST',
+                body: parameters
+                })
+                .then(response => response.json())
+                .then(data => {
+                lsInsumoUp.innerHTML = "<option value=''>Seleccione formula</option>";
+                data.forEach(element => {
+                    const optionTag = document.createElement("option");
+                    optionTag.value = element.idinsumo
+                    optionTag.text = element.insumo;
+                    lsInsumoUp.appendChild(optionTag);
                     
                 });
                 });
@@ -376,17 +454,22 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         .then(response => response.json())
         .then(data => {
             cuerpoTabla.innerHTML = ``;
-            data.forEach(element => {
+            data.forEach(element => {                            
                 const rows =  `
                 <tr>
+                    <td>${element.iddetalle_insumo}</td>  
                     <td>${element.insumo}</td>    
                     <td>${element.cantidad}</td>
                     <td>${element.gkgU}</td>
-                    <td><a href='#'id="detalle_venta" class='mostrar btn btn-warning btn-sm' data-idventa='${element.idventa}'><i class='bi bi-pencil-square'></i></a></td>                                                                                                                                
+                    <td><a href='#' class='detalle_insumo btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modal-updateInsumo"
+                      data-iddetalle_insumo='${element.iddetalle_insumo}'><i class='bi bi-pencil-square'></i></a></td>                                                                                                                                
                 </tr>
                 `;
                 cuerpoTabla.innerHTML += rows;
+
             });
+
+
 
             // Destruir la instancia DataTable existente
             if ($.fn.DataTable.isDataTable('#tabla-formula')) {
@@ -404,15 +487,35 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     dom: 'Bfrtip'                            
                 });
 
+
+                let totalCantidad = 0;
+
+                $("#tabla-formula tbody tr").each(function() {
+                    const cantidad = parseFloat($(this).find("td:nth-child(3)").text());
+                    totalCantidad += cantidad;
+                });
+
+                // Actualizar el contenido del label
+                $("#total-cantidad").text("Total GKG/TN: " + totalCantidad.toFixed(2)); // Mostrar con 2 decimales
+
+ 
+
+
+                
+
                 // Actualizar la tabla DataTable con los nuevos datos
                 const nuevosDatos = data.map(element => [
+                    element.iddetalle_insumo,
                     element.insumo,
                     element.cantidad,
                     element.gkgU,
-                    `<a href='#' class='mostrar btn btn-warning btn-sm' data-idventa='${element.idventa}'><i class='bi bi-pencil-square'></i></a>`
+                    `<a href='#' class='detalle_insumo btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modal-updateInsumo"
+                      data-iddetalle_insumo='${element.iddetalle_insumo}'><i class='bi bi-pencil-square'></i></a>`
                 ]);
                 table.clear().rows.add(nuevosDatos).draw();
             });
+
+
         })
 }
 
@@ -488,7 +591,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
 
 
-
       var formulaR = document.querySelector("#formula");
       formulaR.addEventListener("keydown", function(event){
         if (event.keyCode === 13) {
@@ -498,7 +600,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
       })
 
 
+
       mostrarFormula();
+      mostrarInsumosUp();
       mostrarInsumos();
       btnFormulaR.addEventListener("click", formulaRegistrar);
       btnFiltro.addEventListener("click", filtrarFormula);

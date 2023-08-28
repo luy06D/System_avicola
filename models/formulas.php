@@ -103,6 +103,56 @@ class Formula extends Conexion{
         }
     }
 
+    public function get_detalleI($iddetalle_insumo = 0){
+        try{
+          $consulta = $this->access->prepare("CALL spu_getdetalleI(?)");
+          $consulta->execute(array($iddetalle_insumo));
+          return $consulta->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch(Exception $e){
+          die($e->getMessage());
+        }
+    }
+
+    public function formula_delete($idformula = 0){
+        try{
+          $consulta = $this->access->prepare("CALL spu_formulaDelete(?)");
+          $consulta->execute(array($idformula));
+
+        }
+        catch(Exception $e){
+          die($e->getMessage());
+        }
+    }
+
+
+
+    public function detalleInsumo_update($datos = []){
+
+        $respuesta = [
+            "status" => false,
+            "message" => ""
+        ];
+
+        try{
+            $consulta = $this->access->prepare("CALL spu_detalleInsumo_update(?,?,?,?)");
+            $respuesta["status"] = $consulta->execute(array(
+                
+                $datos["iddetalle_insumo"],
+                $datos["idinsumo"],
+                $datos["cantidad"],
+                $datos["unidad"]
+            
+            ));
+        }
+        catch(Exception $e){
+            $respuesta["message"] = "No se pudo completar la operacion Codigo error:" .$e->getCode();
+        }
+
+        return $respuesta;
+    }
+
+
 
 }
 

@@ -137,7 +137,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <div class=" col-lg-3">
                                 <div>   
                                     <label for="lista-formula" class="form-label"></label>                                 
-                                    <select  id="lista-formula" class="js-example-responsive js-example-placeholder-single js-states form-control" style="width: 100%;" >
+                                    <select  id="lista-formula" class="js-example-responsive js-example-placeholder-single js-states form-control" style="width: 100%">
                                     <option value=""></option>
                                     </select>
                                 </div>                               
@@ -145,7 +145,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             <div class="col-md-3 mt-4">
                                 <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                     <button id="btnfiltro" class="btn btn-success btn-md " type="button">Mostrar</button>    
-                                    <button id="btnDelete" class="btn btn-danger btn-md " type="button">Eliminar</button>                    
+                                    <button id="btnDelete" class="btn btn-danger btn-md " type="button"><i class='bi bi-trash'></i> Eliminar</button>                    
                                 </div>
                             </div>                     
 
@@ -198,7 +198,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <div class="modal fade" id="modal-addInsumo" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered " role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-warning">
                     <h5 class="modal-title" id="modalTitleId">Agregar nuevo insumo</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -228,7 +228,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     </form>   
                 </div>
                 <div class="modal-footer">                    
-                    <button type="button" id="btnAddInsumo" class="btn btn-primary">Agregar</button>
+                    <button type="button" id="btnAddInsumo" class="btn btn-outline-warning">Agregar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -240,7 +240,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
      <div class="modal fade" id="modal-updateInsumo" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered " role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-warning">
                     <h5 class="modal-title" id="modalTitleId">Actualizar insumo</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -270,7 +270,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     </form>   
                 </div>
                 <div class="modal-footer">                    
-                    <button type="button" id="btnUpdateInsumo" class="btn btn-primary">Agregar</button>
+                    <button type="button" id="btnUpdateInsumo" class="btn btn-outline-warning">Agregar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -391,7 +391,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             showCancelButton: true,
             confirmButtonText: "Sí",
             cancelButtonText: "Cancelar",
-            confirmButtonColor: '#65BB3B',
+            cancelButtonColor: '#3085d6',
+            confirmButtonColor: '#368E5B',
 
         }).then((result)=>{
             if(result.isConfirmed){
@@ -461,7 +462,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <td>${element.insumo}</td>    
                     <td>${element.cantidad}</td>
                     <td>${element.gkgU}</td>
-                    <td><a href='#' class='detalle_insumo btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modal-updateInsumo"
+                    <td><a href='#' class='detalle_insumo btn btn-outline-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modal-updateInsumo"
                       data-iddetalle_insumo='${element.iddetalle_insumo}'><i class='bi bi-pencil-square'></i></a></td>                                                                                                                                
                 </tr>
                 `;
@@ -509,7 +510,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     element.insumo,
                     element.cantidad,
                     element.gkgU,
-                    `<a href='#' class='detalle_insumo btn btn-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modal-updateInsumo"
+                    `<a href='#' class='detalle_insumo btn btn-outline-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modal-updateInsumo"
                       data-iddetalle_insumo='${element.iddetalle_insumo}'><i class='bi bi-pencil-square'></i></a>`
                 ]);
                 table.clear().rows.add(nuevosDatos).draw();

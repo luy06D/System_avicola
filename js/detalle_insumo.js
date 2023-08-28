@@ -115,6 +115,75 @@ $(document).ready(function () {
             }
         });
     }
+
+
+
+
+
+
+    $('#descontar').click(function() {
+        // Crear un array para almacenar los datos de la tabla
+        var datosTabla = [];
+      
+        var idformula = $('#lista-formula').val();
+        var unidadPorDefecto = 'KG'; // Establecer la unidad por defecto como 'KG'
+      
+        // Iterar a través de las filas de la tabla (excluyendo la primera fila de encabezado)
+        $('#tabla-formula tbody tr').each(function() {
+          var fila = $(this);
+          var idinsumos = fila.find('td:eq(1)').text();
+          var cantidad = fila.find('td:eq(3)').text();
+          
+          // Utilizar la unidad por defecto 'KG'
+          var unidad = unidadPorDefecto;
+      
+          // Agregar los datos de la fila al array
+          datosTabla.push({
+            idformula: idformula,
+            idinsumo: idinsumos,
+            cantidad: cantidad,
+            unidad: unidad,
+          });
+        });
+      
+        // Enviar los datos al servidor utilizando AJAX
+        $.ajax({
+          url: '../controllers/formulas.controller.php',
+          method: 'POST',
+          Type: 'JSON',
+          data: JSON.stringify(datosTabla),
+          success: function(response) {
+            console.log(datosTabla)
+            // Manejar la respuesta del servidor si es necesario
+            if (response.success) {
+              // Mostrar una alerta SweetAlert2 de éxito
+              Swal.fire({
+                icon: 'success',
+                title: 'Registro exitoso',
+                text: 'Los datos se han registrado correctamente.',
+              });
+
+              let resultado = JSON.parse(response);
+
+            } else {
+              // Mostrar una alerta SweetAlert2 de error si el registro falla
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al registrar los datos.',
+              });
+            }
+          },
+          error: function(error) {
+            console.error('Error:', error);
+          }
+        });
+      });
+      
+      
+      
+
+
     
 
     $("#tabla-formula tbody").on("click", ".detalle_insumo", function () {

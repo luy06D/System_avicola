@@ -154,7 +154,15 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <div class="">
                                     <button id="" class="btn btn-warning btn-md " type="button" data-bs-toggle="modal" data-bs-target="#modal-addInsumo"><i class="bi bi-plus-circle"></i> Agregar insumo</button>                    
                                 </div>
-                            </div>                     
+                            </div>
+                            
+                            <div class=" col-lg-3">
+                                <div class="input-group  mt-4">
+
+                                    <button id="descontar" class="btn btn-success" type="button"><i class="bi bi-plus-circle"></i> Descontar</button>
+                                </div> 
+                            
+
 
                             
                         </div>
@@ -169,6 +177,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <thead class="table-success text-center">
                             <tr>
                                 <th>Código</th>
+                                <th>IDinsumo</th>
                                 <th>Insumos</th>
                                 <th>GKG/TN</th> 
                                 <th>GKG/U</th> 
@@ -459,6 +468,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 const rows =  `
                 <tr>
                     <td>${element.iddetalle_insumo}</td>  
+                    <td>${element.idinsumo}</td> 
                     <td>${element.insumo}</td>    
                     <td>${element.cantidad}</td>
                     <td>${element.gkgU}</td>
@@ -507,6 +517,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 // Actualizar la tabla DataTable con los nuevos datos
                 const nuevosDatos = data.map(element => [
                     element.iddetalle_insumo,
+                    element.idinsumo,
                     element.insumo,
                     element.cantidad,
                     element.gkgU,
@@ -588,6 +599,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         });
 
       }
+
+
+
 
 
 

@@ -93,14 +93,18 @@ class Formula extends Conexion{
 
 
     public function obtener_formula($idformula = 0){
+        $respuesta = [
+            "message" => ""
+        ];
         try{
           $consulta = $this->access->prepare("CALL spu_listar_detalleF(?)");
           $consulta->execute(array($idformula));
           return $consulta->fetchAll(PDO::FETCH_ASSOC);
         }
         catch(Exception $e){
-          die($e->getMessage());
+          $respuesta["message"] = "No se pudo completar la operacion Codigo error:" .$e->getCode();
         }
+        return $respuesta;
     }
 
     public function get_detalleI($iddetalle_insumo = 0){

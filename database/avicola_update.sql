@@ -172,7 +172,7 @@ SELECT * FROM insumos
 
 -- LISTAR INSUMOS
 DELIMITER $$
-
+CALL spu_insumos_listar()
  
 CREATE PROCEDURE spu_insumos_listar()
 BEGIN 
@@ -254,7 +254,7 @@ BEGIN
 
 END $$
 
-CALL spu_get_insumo(3);
+CALL spu_get_insumo(2);
 
 
 DELIMITER $$
@@ -282,7 +282,7 @@ END $$
 
 DELIMITER $$
 
-CALL spu_mostrar_insumos()
+CALL spu_getFormula
 
 
 -- Registrar entrdas de insumos --
@@ -1646,7 +1646,7 @@ DELIMITER $$
 
 CREATE PROCEDURE spu_listar_detalleF(IN _idformula INT)
 BEGIN 
-	SELECT  I.insumo, 
+	SELECT DI.iddetalle_insumo, I.idinsumo, I.insumo, 
 	DI.cantidad,
 	(Di.cantidad * 0.05) AS gkgU
 	FROM detalle_insumos DI
@@ -1656,7 +1656,7 @@ BEGIN
 	
 END $$
 
-CALL spu_listar_detalleF(1)
+CALL spu_listar_detalleF(6)
 
 -- MOSTRAR FORMULA 
 
@@ -2452,9 +2452,9 @@ BEGIN
     GROUP BY Cliente, producto
     ORDER BY idpago DESC;    
 END $$
-
+CALL spu_listar_detalleF(6)
 CALL spu_filtro_pagoclientefecha('2023-08-01','2023-08-20',1)
-
+SELECT * FROM formulas
 			-- Listar
 DELIMITER $$
 CREATE PROCEDURE spu_listar_pago()
@@ -2528,37 +2528,51 @@ CALL spu_listar_detallesclientes(4);
 
 
 DELIMITER $$
+
+ 
 CREATE PROCEDURE spu_ventas_mostrar()
 BEGIN
     SELECT
         v.idventa,
         CONCAT(cl.nombres, ' ', cl.apellidos) AS Cliente,
-        MAX(v.fechaventa) AS fechaventa, -- Utilizamos MAX para obtener la fecha más reciente
+        MAX(v.fechaventa) AS fechaventa,
+        MAX(pr.nombre) AS nombre,
         SUM(v.deuda) AS deuda_total,
-        SUM(p.pago) AS pago_total,
+        COALESCE(SUM(p.pago), 0) AS pago_total,
         (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) AS saldo,
         CASE
-            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
+            WHEN (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
             ELSE 'Pendiente'
         END AS estado
     FROM ventas v
-    LEFT JOIN pagos p ON v.idventa = p.idventa
+    LEFT JOIN (
+        SELECT idventa, SUM(pago) AS pago
+        FROM pagos
+        GROUP BY idventa
+    ) p ON v.idventa = p.idventa
     INNER JOIN clientes c ON v.idcliente = c.idcliente
     INNER JOIN personas cl ON c.idpersona = cl.idpersona
-    GROUP BY v.idventa
-    ORDER BY p.fechapago DESC;
-
+    INNER JOIN detalle_ventas dv ON v.iddetalle_venta = dv.iddetalle_venta
+    INNER JOIN productos pr ON dv.idproducto = pr.idproducto
+    GROUP BY c.idcliente
+    ORDER BY c.idcliente;
 END $$
- 
- SELECT * FROM pagos
- 
- CALL spu_ventas_mostrar();
- 
- 
- DELETE FROM ventas
- 
- ALTER TABLE ventas AUTO_INCREMENT = 1
 
 
 
->>>>>>> d6a6f2b3fa016aff3dbbdbf3d2ddc11ceb52b9cf
+ SELECT * FROM formulas
+DELIMITER $$
+CREATE PROCEDURE spu_descontar_insumos(IN  _idformula INT, IN _idinsumo INT, IN _cantidad SMALLINT, IN _unidad VARCHAR(20))
+BEGIN
+INSERT  INTO detalle_insumos (idformula, idinsumo, cantidad, unidad)VALUES
+	(_idformula, _idinsumo, _cantidad, _unidad);
+END$$	
+
+	
+	
+
+
+
+
+
+

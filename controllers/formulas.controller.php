@@ -42,6 +42,20 @@ if(isset($_POST['operacion'])){
         echo json_encode($response);
     }
 
+    if ($_POST['operacion'] == 'descontar_insumos') {
+        $data = json_decode($_POST['datos'], true); // Decodificar el array de objetos
+    
+        $responses = array(); // Almacenar las respuestas de registro
+    
+        foreach ($data as $dataSave) {
+            $response = $formulas->detalle_registrar($dataSave); // Supongamos que esta función registra un objeto
+            $responses[] = $response;
+        }
+    
+        echo json_encode($responses); // Devolver las respuestas de registro
+    }
+    
+
 
         
     if($_POST['operacion'] == 'obtener_formula'){

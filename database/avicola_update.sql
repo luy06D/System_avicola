@@ -121,7 +121,6 @@ insumo		VARCHAR(30) 	NOT NULL,
 unidad		VARCHAR(20) 	NOT NULL, -- TONELADA , KILOS
 cantidad	SMALLINT 	NOT NULL,
 descripcion	VARCHAR(80)	NULL,
-estado		CHAR(1)		NOT NULL DEFAULT '1',
 CONSTRAINT uk_ins_ins UNIQUE(insumo)
 )
 ENGINE = INNODB;
@@ -131,16 +130,6 @@ INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
 		('AFRECHO','KG', 700 ,'Fibroso, salvado, integral, nutritivo.'),
 		('MAIZ','KG', 1000 ,'Cereal, amarillo, versátil, nutritivo.'),
 		('SAL','KG', 700 ,'Mineral, condimento, saborizante, conservante');
-
-CREATE TABLE proveedores
-(
-idproveedor	INT AUTO_INCREMENT PRIMARY KEY,
-nombre		VARCHAR(30) NOT NULL,
-direccion	VARCHAR(50) NULL,
-telefono	CHAR(9)	    NOT NULL,
-estado		CHAR(1)	 NOT NULL DEFAULT 1
-)
-ENGINE = INNODB;
 
 
 CREATE TABLE detalle_entradas
@@ -165,6 +154,11 @@ CONSTRAINT uk_nom_for UNIQUE(nombreformula)
 )
 ENGINE = INNODB;
 
+-- AGREGARDO ESTADO
+
+ALTER TABLE formulas ADD COLUMN estado CHAR(1) NOT NULL DEFAULT 1;
+
+
 CREATE TABLE detalle_insumos
 (
 iddetalle_insumo	INT AUTO_INCREMENT PRIMARY KEY,
@@ -177,8 +171,6 @@ CONSTRAINT fk_idi_det FOREIGN KEY (idinsumo) REFERENCES insumos(idinsumo)
 )
 ENGINE = INNODB;
 
-SELECT * FROM insumos
-
 -- PROCEDIMIENTOS ALMACEN
 
 -- LISTAR INSUMOS
@@ -187,21 +179,11 @@ DELIMITER $$
 
 CREATE PROCEDURE spu_insumos_listar()
 BEGIN 
-    SELECT
-        idinsumo,
-        insumo,
-        CASE
-            WHEN cantidad >= 1000 THEN FORMAT(cantidad / 1000, 2) 
-            ELSE FORMAT(cantidad, 2) 
-        END AS cantidad,
-        CASE
-            WHEN cantidad >= 1000 THEN 'Toneladas' 
-            ELSE 'KG' 
-        END AS unidad,
-        descripcion
-    FROM insumos
-    WHERE estado = '1'
-    ORDER BY idinsumo DESC;
+	SELECT idinsumo, insumo, cantidad, unidad,
+	descripcion
+	FROM insumos
+	WHERE estado = '1'
+	ORDER BY idinsumo DESC;
 END $$
 
 DELIMITER ;
@@ -250,6 +232,11 @@ END $$
 
 CALL spu_insumos_register('CARBONATO GRANO','KG',500 ,'');
 
+INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
+		('HINT','KG', 400 ,'Proteica, vegetal, versátil, nutricional');
+
+SELECT * FROM insumos;
+
 -- ACTUALIZAR INSUMOS
 
 DELIMITER $$
@@ -288,6 +275,8 @@ BEGIN
 END $$
 
 CALL spu_get_insumo(3);
+
+
 
 
 
@@ -485,18 +474,14 @@ DELIMITER $$
 
 CREATE PROCEDURE spu_listar_detalleF(IN _idformula INT)
 BEGIN 
-    SELECT
-        I.insumo,
-        CASE
-            WHEN DI.cantidad = 1000 THEN '1'
-            ELSE FORMAT(DI.cantidad, 2) -- Muestra la cantidad con 2 decimales
-        END AS cantidad,
-        (DI.cantidad * 0.05) AS gkgU
-    FROM detalle_insumos DI
-    INNER JOIN formulas F ON F.idformula = DI.idformula
-    INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
-    WHERE F.idformula = _idformula;
-
+	SELECT  I.insumo, 
+	DI.cantidad,
+	(Di.cantidad * 0.05) AS gkgU
+	FROM detalle_insumos DI
+	INNER JOIN  formulas F ON F.idformula = DI.idformula
+	INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
+	WHERE F.idformula = _idformula;
+	
 END $$
 
 CALL spu_listar_detalleF(1)
@@ -507,11 +492,61 @@ DELIMITER $$
 CREATE PROCEDURE spu_getFormula()
 BEGIN 
 	SELECT idformula, nombreformula
-	FROM formulas;
+	FROM formulas
+	WHERE estado = 1;
 END $$
 
 CALL spu_getFormula();
 
+-- ELIMINAR FORMULA 
+DELIMITER $$
+CREATE PROCEDURE spu_formulaDelete(IN _idformula INT)
+BEGIN 
+	UPDATE formulas SET 
+	estado = 0
+	WHERE idformula = _idformula;
+	
+END $$
+
+CALL spu_formulaDelete (10)
+
+
+
+
+
+-- ACTUALIZAR UNA FORMULA
+DELIMITER $$
+CREATE PROCEDURE spu_detalleInsumo_update
+(
+IN _iddetalle_insumo	INT,
+IN _idinsumo 	INT,
+IN _cantidad	SMALLINT,
+IN _unidad	VARCHAR(20)
+)
+BEGIN 
+	UPDATE detalle_insumos SET
+	idinsumo = _idinsumo,
+	cantidad = _cantidad,
+	unidad = _unidad
+	WHERE iddetalle_insumo = _iddetalle_insumo; 
+END $$
+
+CALL spu_detalleInsumo_update(14, 3 , 31, 'KG');
+
+
+-- GET DETALLE
+
+DELIMITER $$
+CREATE PROCEDURE spu_getdetalleI(IN _iddetalle_insumo INT)
+BEGIN 
+	SELECT idinsumo, unidad, cantidad
+	FROM  detalle_insumos
+	WHERE iddetalle_insumo = _iddetalle_insumo;
+END $$
+
+CALL spu_getdetalleI(1);
+
+ 
 
 -- FIN PROCEDIMIENTOS ALMACEN
 
@@ -1316,11 +1351,10 @@ BEGIN
 	    WHERE c.idcliente = _idcliente;
 END $$
 
-CALL spu_listar_detallesclientes(2);
+CALL spu_listar_detallesclientes(4);
 
 
 
- 
 DELIMITER $$
 CREATE PROCEDURE spu_ventas_mostrar()
 BEGIN
@@ -1333,7 +1367,7 @@ BEGIN
         SUM(p.pago) AS pago_total,
         (SUM(v.deuda) - COALESCE(SUM(p.pago), 0)) AS saldo,
         CASE
-            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) = 0 THEN 'Cancelado'
+            WHEN (v.deuda - COALESCE(SUM(p.pago), 0)) <= 0 THEN 'Cancelado'
             ELSE 'Pendiente'
         END AS estado
     FROM ventas v
@@ -1342,14 +1376,11 @@ BEGIN
     INNER JOIN personas cl ON c.idpersona = cl.idpersona
     GROUP BY v.idventa
     ORDER BY p.fechapago DESC;
- END $$
+
+END $$
  
  SELECT * FROM pagos
  
-
-
- 
-
  CALL spu_ventas_mostrar();
  
  

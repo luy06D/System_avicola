@@ -369,7 +369,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     }
 
                     $(document).ready(function(){                                   
-                        $('#table-report').DataTable({
+                       const table = $('#table-report').DataTable({
                             responsive: true ,
                             lengthMenu:[10,5],
                             language: {
@@ -396,6 +396,18 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             ],
                             
                         });
+
+                        const nuevosDatos = data.map(element => [
+                            element.idventa,
+                            element.clientes,
+                            element.kilos,
+                            element.cantidad,
+                            element.precio,
+                            element.fechaventa,
+                            element.totalPago,
+                            `<a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a>`
+                        ]);
+                        table.clear().rows.add(nuevosDatos).draw();
                     })
 
                     }           
@@ -447,7 +459,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         }
 
                         $(document).ready(function(){                                    
-                        $('#table-report').DataTable({
+                        const table = $('#table-report').DataTable({
                             responsive: true ,
                             lengthMenu:[10,5],
                             language: {
@@ -473,6 +485,19 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 }
                             ],
                         });
+
+                        const nuevosDatos = data.map(element => [
+                            element.idventa,
+                            element.clientes,
+                            element.kilos,
+                            element.cantidad,
+                            element.precio,
+                            element.fechaventa,
+                            element.totalPago,
+                            `<a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a>`
+                        ]);
+                        table.clear().rows.add(nuevosDatos).draw();
+                    
                     })
                     }
                     
@@ -515,15 +540,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             `;
                             cuerpoTabla.innerHTML += rows;
                         });
-
-                        // Destruir la instancia actual de DataTables
-                        if ($.fn.DataTable.isDataTable('#table-report')) {
-                            $('#table-report').DataTable().destroy();
-                        }
+                
+                            if ($.fn.DataTable.isDataTable('#table-report')) {
+                                $('#table-report').DataTable().destroy();
+                            }
 
                         $(document).ready(function(){                      
                                        
-                        $('#table-report').DataTable({
+                        const table = $('#table-report').DataTable({
                             responsive: true ,
                             lengthMenu:[10,5],
                             language: {
@@ -548,7 +572,23 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     exportOptions:{ columns: [1,2,3,4,5,6,7] }
                                 }
                             ],
+
+
                         });
+
+                          // Actualizar la tabla DataTable con los nuevos datos
+                        const nuevosDatos = data.map(element => [
+                            element.idventa,
+                            element.clientes,
+                            element.kilos,
+                            element.cantidad,
+                            element.precio,
+                            element.fechaventa,
+                            element.totalPago,
+                            `<a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a>`
+                        ]);
+                        table.clear().rows.add(nuevosDatos).draw();
+
                     })
                     }
                     

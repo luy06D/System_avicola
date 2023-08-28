@@ -49,12 +49,42 @@ if(isset($_POST['operacion'])){
         echo json_encode($data);
     }
 
+    
+    if ($_POST['operacion'] == 'formula_eliminar'){
+        $formulas->formula_delete($_POST['idformula']);
+    }
 
 
 
 
+    if($_POST['operacion'] == 'detalle_update'){
+        
+        $dataSave =[
+            "iddetalle_insumo" => $_POST['iddetalle_insumo'],
+            "idinsumo" => $_POST['idinsumo'],
+            "cantidad" => $_POST['cantidad'],
+            "unidad"   => $_POST['unidad'],
+
+        ];
+
+        $response = $formulas->detalleInsumo_update($dataSave);
+        echo json_encode($response);
+    }
+
+}
 
 
+if(isset($_GET['operacion'])){
+
+    $formulas = new Formula();
+
+                
+    if($_GET['operacion'] == 'obtener_detalleI'){
+        $data = $formulas->get_detalleI($_GET['iddetalle_insumo']);
+        echo json_encode($data);
+    }
+
+    
 }
 
 

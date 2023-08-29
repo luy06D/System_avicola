@@ -370,27 +370,38 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             language: {
                                 url: '../js/Spanish.json'
                             },
-                            dom: 'Bfrtip',
-                            buttons: [
-                                {
-                                    extend: 'excel',
-                                    text: '<i class="bi bi-file-excel"></i>',
-                                    titleAttr:'Exportar a excel',
-                                    title:'REPORTES VENTAS',
-                                    className:'btn btn-success',
-                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
-                                },                            
-                                {
-                                    extend: 'print',
-                                    text: '<i class="bi bi-printer"></i>',
-                                    titleAttr:'imprimir',
-                                    title:'REPORTES VENTAS',
-                                    className:'btn btn-secondary',
-                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
-                                }
-                            ],
+                            // dom: 'Bfrtip',
+                            // buttons: [
+                            //     {
+                            //         extend: 'excel',
+                            //         text: '<i class="bi bi-file-excel"></i>',
+                            //         titleAttr:'Exportar a excel',
+                            //         title:'REPORTES VENTAS',
+                            //         className:'btn btn-success',
+                            //         exportOptions:{ columns: [1,2,3,4,5,6,7] }
+                            //     },                            
+                            //     {
+                            //         extend: 'print',
+                            //         text: '<i class="bi bi-printer"></i>',
+                            //         titleAttr:'imprimir',
+                            //         title:'REPORTES VENTAS',
+                            //         className:'btn btn-secondary',
+                            //         exportOptions:{ columns: [1,2,3,4,5,6,7] }
+                            //     }
+                            // ],
                             
                         });
+
+                           // Actualizar la tabla DataTable con los nuevos datos
+                           const nuevosDatos = data.map(element => [
+                       
+                       element.insumo,
+                       element.cantidad_entrada,
+                       element.precio,
+                       element.fecha_entrada,
+            
+                       ]);
+                       table.clear().rows.add(nuevosDatos).draw();
                     })
 
                     }           
@@ -439,32 +450,42 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         }
 
                         $(document).ready(function(){                                    
-                        const table = $('#table-report').DataTable({
-                            responsive: true ,
-                            lengthMenu:[10,5],
-                            language: {
-                                url: '../js/Spanish.json'
-                            },
-                            dom: 'Bfrtip',
-                            buttons: [
-                                {
-                                    extend: 'excel',
-                                    text: '<i class="bi bi-file-excel"></i>',
-                                    titleAttr:'Exportar a excel',
-                                    title:'REPORTES VENTAS',
-                                    className:'btn btn-success',
-                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
-                                },                            
-                                {
-                                    extend: 'print',
-                                    text: '<i class="bi bi-printer"></i>',
-                                    titleAttr:'imprimir',
-                                    title:'REPORTES VENTAS',
-                                    className:'btn btn-secondary',
-                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
-                                }
-                            ],
+                            const table = $('#table-report').DataTable({
+                                responsive: true ,
+                                lengthMenu:[10,5],
+                                language: {
+                                    url: '../js/Spanish.json'
+                                },
+                                // dom: 'Bfrtip',
+                                // buttons: [
+                                //     {
+                                //         extend: 'excel',
+                                //         text: '<i class="bi bi-file-excel"></i>',
+                                //         titleAttr:'Exportar a excel',
+                                //         title:'REPORTES VENTAS',
+                                //         className:'btn btn-success',
+                                //         exportOptions:{ columns: [1,2,3,4,5,6,7] }
+                                //     },                            
+                                //     {
+                                //         extend: 'print',
+                                //         text: '<i class="bi bi-printer"></i>',
+                                //         titleAttr:'imprimir',
+                                //         title:'REPORTES VENTAS',
+                                //         className:'btn btn-secondary',
+                                //         exportOptions:{ columns: [1,2,3,4,5,6,7] }
+                                //     }
+                                // ],
                         });
+                                 // Actualizar la tabla DataTable con los nuevos datos
+                           const nuevosDatos = data.map(element => [
+                       
+                       element.insumo,
+                       element.cantidad_entrada,
+                       element.precio,
+                       element.fecha_entrada,
+            
+                       ]);
+                       table.clear().rows.add(nuevosDatos).draw();
 
                     })
                     }
@@ -518,28 +539,39 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             language: {
                                 url: '../js/Spanish.json'
                             },
-                            dom: 'Bfrtip',
-                            buttons: [
-                                {
-                                    extend: 'excel',
-                                    text: '<i class="bi bi-file-excel"></i>',
-                                    titleAttr:'Exportar a excel',
-                                    title:'REPORTES VENTAS',
-                                    className:'btn btn-success',
-                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
-                                },                            
-                                {
-                                    extend: 'print',
-                                    text: '<i class="bi bi-printer"></i>',
-                                    titleAttr:'imprimir',
-                                    title:'REPORTES VENTAS',
-                                    className:'btn btn-secondary',
-                                    exportOptions:{ columns: [1,2,3,4,5,6,7] }
-                                }
-                            ],
+                            // dom: 'Bfrtip',
+                            // buttons: [
+                            //     {
+                            //         extend: 'excel',
+                            //         text: '<i class="bi bi-file-excel"></i>',
+                            //         titleAttr:'Exportar a excel',
+                            //         title:'REPORTES VENTAS',
+                            //         className:'btn btn-success',
+                            //         exportOptions:{ columns: [1,2,3,4,5,6,7] }
+                            //     },                            
+                            //     {
+                            //         extend: 'print',
+                            //         text: '<i class="bi bi-printer"></i>',
+                            //         titleAttr:'imprimir',
+                            //         title:'REPORTES VENTAS',
+                            //         className:'btn btn-secondary',
+                            //         exportOptions:{ columns: [1,2,3,4,5,6,7] }
+                            //     }
+                            // ],
 
 
                         });
+
+                             // Actualizar la tabla DataTable con los nuevos datos
+                             const nuevosDatos = data.map(element => [
+                       
+                       element.insumo,
+                       element.cantidad_entrada,
+                       element.precio,
+                       element.fecha_entrada,
+            
+                       ]);
+                       table.clear().rows.add(nuevosDatos).draw();
                     })
                     }
                     

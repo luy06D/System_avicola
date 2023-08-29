@@ -121,65 +121,82 @@ $(document).ready(function () {
 
 
 
-    $('#descontar').click(function() {
-        // Crear un array para almacenar los datos de la tabla
-        var datosTabla = [];
-      
-        var idformula = $('#lista-formula').val();
-        var unidadPorDefecto = 'KG'; // Establecer la unidad por defecto como 'KG'
-      
-        // Iterar a través de las filas de la tabla (excluyendo la primera fila de encabezado)
-        $('#tabla-formula tbody tr').each(function() {
-          var fila = $(this);
-          var idinsumos = fila.find('td:eq(1)').text();
-          var cantidad = fila.find('td:eq(3)').text();
-          
-          // Utilizar la unidad por defecto 'KG'
-          var unidad = unidadPorDefecto;
-      
-          // Agregar los datos de la fila al array
-          datosTabla.push({
-            idformula: idformula,
-            idinsumo: idinsumos,
-            cantidad: cantidad,
-            unidad: unidad,
-          });
-        });
-      
-        // Enviar los datos al servidor utilizando AJAX
-        $.ajax({
-          url: '../controllers/formulas.controller.php',
-          method: 'POST',
-          Type: 'JSON',
-          data: JSON.stringify(datosTabla),
-          success: function(response) {
-            console.log(datosTabla)
-            // Manejar la respuesta del servidor si es necesario
-            if (response.success) {
-              // Mostrar una alerta SweetAlert2 de éxito
-              Swal.fire({
-                icon: 'success',
-                title: 'Registro exitoso',
-                text: 'Los datos se han registrado correctamente.',
-              });
+$('#descontar').click(function() {
+    // Mostrar una ventana de confirmación SweetAlert2
+    Swal.fire({
+        title: '¿Desea utilizar la fórmula?',
+        text: 'Está a punto de aplicar la fórmula a los insumos.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, Utilizar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // El usuario confirmó, procede a enviar los datos al servidor
 
-              let resultado = JSON.parse(response);
+            // Crear un array para almacenar los datos de la tabla
+            var datosTabla = [];
 
-            } else {
-              // Mostrar una alerta SweetAlert2 de error si el registro falla
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Hubo un problema al registrar los datos.',
-              });
-            }
-          },
-          error: function(error) {
-            console.error('Error:', error);
-          }
-        });
-      });
-      
+            var idformula = $('#lista-formula').val();
+            var unidadPorDefecto = 'KG'; // Establecer la unidad por defecto como 'KG'
+
+            // Iterar a través de las filas de la tabla (excluyendo la primera fila de encabezado)
+            $('#tabla-formula tbody tr').each(function() {
+                var fila = $(this);
+                var idinsumos = fila.find('td:eq(1)').text();
+                var cantidad = fila.find('td:eq(3)').text();
+
+                // Utilizar la unidad por defecto 'KG'
+                var unidad = unidadPorDefecto;
+
+                // Agregar los datos de la fila al array
+                datosTabla.push({
+                    idformula: idformula,
+                    idinsumo: idinsumos,
+                    cantidad: cantidad,
+                    unidad: unidad,
+                });
+            });
+
+            // Construir el objeto a enviar con la operación y los datos
+            var datosAEnviar = {
+                operacion: 'descontar_insumos', // Especifica la operación en el controlador
+                datos: datosTabla, // Los datos de la tabla
+            };
+
+            // Enviar los datos al servidor utilizando AJAX
+            $.ajax({
+                url: '../controllers/formulas.controller.php',
+                method: 'POST',
+                dataType: 'json',
+                data: { operacion: datosAEnviar.operacion, datos: JSON.stringify(datosAEnviar.datos) }, // Envía la operación y los datos
+                success: function(response) {
+                    console.log(response); // Manejar la respuesta del servidor si es necesario
+
+                    // Mostrar una alerta SweetAlert2 de éxito
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registro exitoso',
+                        text: 'Los datos se han registrado correctamente.'
+                    });
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                    // Mostrar una alerta SweetAlert2 de error si el registro falla
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema al registrar los datos.'
+                    });
+                }
+            });
+        } else {
+            // El usuario canceló, no hagas nada
+        }
+    });
+});
+
+
       
       
 

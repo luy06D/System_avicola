@@ -41,19 +41,32 @@ if(isset($_POST['operacion'])){
         $response = $formulas->detalle_registrar($dataSave);
         echo json_encode($response);
     }
+   
 
+    // ... Otras configuraciones y código ...
+    
     if ($_POST['operacion'] == 'descontar_insumos') {
         $data = json_decode($_POST['datos'], true); // Decodificar el array de objetos
     
         $responses = array(); // Almacenar las respuestas de registro
     
         foreach ($data as $dataSave) {
-            $response = $formulas->detalle_registrar($dataSave); // Supongamos que esta función registra un objeto
-            $responses[] = $response;
+            try {
+                $response = $formulas->descontar_detalle($dataSave); // Supongamos que esta función registra un objeto
+                $responses[] = $response;
+            } catch (Exception $e) {
+                // Manejo de errores
+                $responses[] = array(
+                    "status" => false,
+                    "message" => "No se pudo completar la operación. Código de error: " . $e->getCode(),
+                );
+                error_log("Error en detalle_registrar: " . $e->getMessage());
+            }
         }
     
         echo json_encode($responses); // Devolver las respuestas de registro
     }
+
     
 
 

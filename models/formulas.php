@@ -72,8 +72,8 @@ class Formula extends Conexion{
             "status" => false,
             "message" => ""
         ];
-
-        try{
+    
+        try {
             $consulta = $this->access->prepare("CALL spu_detalleInsumo_registrar(?,?,?,?)");
             $respuesta["status"] = $consulta->execute(array(
                 
@@ -83,11 +83,36 @@ class Formula extends Conexion{
                 $datos["unidad"]
             
             ));
+        } catch (Exception $e) {
+            $respuesta["message"] = "No se pudo completar la operación. Código de error: " . $e->getCode();
+            error_log("Error en detalle_registrar: " . $e->getMessage());
         }
-        catch(Exception $e){
-            $respuesta["message"] = "No se pudo completar la operacion Codigo error:" .$e->getCode();
-        }
+    
+        return $respuesta;
+    }
 
+    public function descontar_detalle($datos = []){
+
+        $respuesta = [
+            "status" => false,
+            "message" => ""
+        ];
+    
+        try {
+            $consulta = $this->access->prepare("CALL spu_descontar_insumo(?,?,?,?)");
+            $respuesta["status"] = $consulta->execute(array(
+                
+                $datos["idformula"],
+                $datos["idinsumo"],
+                $datos["cantidad"],
+                $datos["unidad"]
+            
+            ));
+        } catch (Exception $e) {
+            $respuesta["message"] = "No se pudo completar la operación. Código de error: " . $e->getCode();
+            error_log("Error en detalle_registrar: " . $e->getMessage());
+        }
+    
         return $respuesta;
     }
 

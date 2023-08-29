@@ -1565,8 +1565,7 @@ CALL spu_getInsumo();
 
 
 DELIMITER $$
-
-CREATE PROCEDURE spu_detalleInsumo_registrar
+CREATE PROCEDURE spu_descontar_insumo
 (
 IN _idformula INT,
 IN _idinsumo INT,
@@ -1593,16 +1592,8 @@ BEGIN
     SET insumo_cantidad = insumo_cantidad - (_cantidad * @conversion_factor);
     UPDATE insumos SET cantidad = insumo_cantidad WHERE idinsumo = _idinsumo;
     
-    -- Intentar actualizar la cantidad en detalle_insumos
-    UPDATE detalle_insumos
-    SET cantidad = cantidad + (_cantidad * @conversion_factor)
-    WHERE idinsumo = _idinsumo AND idformula = _idformula;
-
-    -- Verificar si se actualizó alguna fila en detalle_insumos
-    IF ROW_COUNT() = 0 THEN
-      -- No se actualizó ninguna fila en detalle_insumos, agregar un nuevo registro
-      INSERT INTO detalle_insumos (idformula, idinsumo, cantidad, unidad) VALUES (_idformula, _idinsumo, (_cantidad * @conversion_factor), 'kg');
-    END IF;
+    -- No se actualizará la tabla detalle_insumos
+    
   ELSE
     -- No hay suficiente cantidad disponible en insumos, hacer rollback y generar una señal de error
     ROLLBACK;
@@ -1612,6 +1603,41 @@ BEGIN
   -- Confirmar la transacción
   COMMIT;
 END $$
+
+DELIMITER $$
+CREATE  PROCEDURE spu_detalleinsumo_registrar(
+IN _idformula INT,
+IN _idinsumo INT,
+IN _cantidad DECIMAL(10, 3),
+IN _unidad VARCHAR(20)
+)
+BEGIN
+  -- Variable para almacenar la cantidad actual
+  DECLARE cantidad_actual DECIMAL(10, 3);
+  
+  -- Obtener la cantidad actual en detalle_insumos si existe un registro con los mismos valores de idformula e idinsumo
+  SELECT cantidad INTO cantidad_actual
+  FROM detalle_insumos
+  WHERE idformula = _idformula AND idinsumo = _idinsumo;
+  
+  -- Verificar si se encontró un registro en detalle_insumos
+  IF cantidad_actual IS NOT NULL THEN
+    -- Si existe un registro, actualizar la cantidad sumando _cantidad
+    UPDATE detalle_insumos
+    SET cantidad = cantidad_actual + _cantidad
+    WHERE idformula = _idformula AND idinsumo = _idinsumo;
+  ELSE
+    -- Si no existe un registro, insertar un nuevo registro en detalle_insumos
+    INSERT INTO detalle_insumos(idformula, idinsumo, cantidad, unidad)
+    VALUES (_idformula, _idinsumo, _cantidad, _unidad);
+  END IF;
+  
+END$$
+DELIMITER ;
+
+
+
+
 
 
 
@@ -1656,7 +1682,7 @@ BEGIN
 	
 END $$
 
-CALL spu_listar_detalleF(6)
+CALL spu_listar_detalleF(10)
 
 -- MOSTRAR FORMULA 
 

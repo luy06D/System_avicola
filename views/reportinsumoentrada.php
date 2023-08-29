@@ -152,7 +152,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         <div class="container mt-5 col-12">
             <div class="card">
                 <div class="card-header bg-light-subtle text-black">
-                    <h4 class="text-center">FILTRADO DE VENTAS</h4>
+                    <h4 class="text-center">FILTRO DE INSUMOS(entradas)</h4>
                 </div>
                 <div class="card-body" >
                     <form action="" id="form-filtro">
@@ -160,7 +160,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
                             <div class=" col-lg-3">
                                 <div>   
-                                    <label for="cliente" class="form-label">Cliente:</label>                                 
+                                    <label for="cliente" class="form-label">Insumo:</label>                                 
                                     <select  id="cliente" class="js-example-responsive" style="width: 100%;" >
                                     <option value=""></option>
                                     </select>
@@ -205,15 +205,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <table class="table display nowrap" style="width: 100%;"  id="table-report">
                         <thead class="table-success text-center">
                             <tr>
-                                <th>Código</th>
-                                <th>Cliente</th>
-                                <th>Kilos</th>
-                                <th>Paquetes</th>
-                                <th>Precio</th>                                
-                                <th>Fecha Venta</th>
-                                <th>Total Venta</th>
-                                <th>PDF</th>      
-
+                                <th>Insumo</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>                              
+                                <th>Fecha Entrada</th>
+                        
                             </tr>
                         </thead>
                         <tbody>
@@ -304,32 +300,32 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             const modal = new bootstrap.Modal(document.querySelector("#modalId"));
 
             
-            function recuperarCliente(){
-            const parameters = new URLSearchParams();
-            parameters.append("operacion", "recuperarCliente");
+            function mostrarInsumosUp(){
+                const parameters = new URLSearchParams();
+                parameters.append("operacion", "getInsumo");
 
-            fetch("../controllers/reportes.controller.php", {
+                fetch("../controllers/formulas.controller.php", {
                 method: 'POST',
                 body: parameters
-            })
-            .then(response => response.json())
-            .then(data => {
+                })
+                .then(response => response.json())
+                .then(data => {
                 lsCliente.innerHTML = "<option value=''>Seleccione</option>";
                 data.forEach(element => {
-                const optionTag = document.createElement("option");
-                optionTag.value = element.idcliente
-                optionTag.text = element.clientes;
-                lsCliente.appendChild(optionTag);
-                
+                    const optionTag = document.createElement("option");
+                    optionTag.value = element.idinsumo
+                    optionTag.text = element.insumo;
+                    lsCliente.appendChild(optionTag);
+                    
                 });
-            });
-            }
+                });
+      }
 
 
 
             function filtro2Ventas(){
                 const parameters = new URLSearchParams();
-                parameters.append("operacion", "filtra2Ventas");
+                parameters.append("operacion", "filtroinsumofecha");
                 parameters.append("fechainicio", document.querySelector("#fechainicio").value);
                 parameters.append("fechafin", document.querySelector("#fechafin").value);
 
@@ -352,14 +348,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     data.forEach(element => {
                         const rows = `
                         <tr>
-                            <td>${element.idventa}</td>
-                            <td>${element.clientes}</td>
-                            <td>${element.kilos}</td>
-                            <td>${element.cantidad}</td>
+                            <td>${element.insumo}</td>
+                            <td>${element.cantidad_entrada}</td>
                             <td>${element.precio}</td>                            
-                            <td>${element.fechaventa}</td>
-                            <td>${element.totalPago}</td>       
-                            <td><a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a></td>                                                                                                                                
+                            <td>${element.fecha_entrada}</td>
+                                                                                                                                                             
                         </tr>
                         `;
                         cuerpoTabla.innerHTML += rows;                        
@@ -398,18 +391,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             ],
                             
                         });
-
-                        const nuevosDatos = data.map(element => [
-                            element.idventa,
-                            element.clientes,
-                            element.kilos,
-                            element.cantidad,
-                            element.precio,
-                            element.fechaventa,
-                            element.totalPago,
-                            `<a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a>`
-                        ]);
-                        table.clear().rows.add(nuevosDatos).draw();
                     })
 
                     }           
@@ -419,10 +400,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
             function filtro3Ventas(){
                 const parameters = new URLSearchParams();
-                parameters.append("operacion", "filtra3Ventas");
+                parameters.append("operacion", "filtrofechasid");
                 parameters.append("fechainicio", document.querySelector("#fechainicio").value);
                 parameters.append("fechafin", document.querySelector("#fechafin").value);
-                parameters.append("idcliente", parseInt(lsCliente.value));
+                parameters.append("idinsumo", parseInt(lsCliente.value));
 
                 fetch(`../controllers/reportes.controller.php`, {
                     method: 'POST',
@@ -442,15 +423,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
-                                <td>${element.idventa}</td>
-                                <td>${element.clientes}</td>
-                                <td>${element.kilos}</td>
-                                <td>${element.cantidad}</td>
-                                <td>${element.precio}</td>                                
-                                <td>${element.fechaventa}</td>
-                                <td>${element.totalPago}</td>  
-                                <td><a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a></td>                                                                                                             
-                            </tr>                            
+                                <td>${element.insumo}</td>
+                                <td>${element.cantidad_entrada}</td>
+                                <td>${element.precio}</td>                            
+                                <td>${element.fecha_entrada}</td>
+                                                                                                                                                                
+                            </tr>                  
                             `;
                             cuerpoTabla.innerHTML += rows;
                         });
@@ -488,18 +466,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             ],
                         });
 
-                        const nuevosDatos = data.map(element => [
-                            element.idventa,
-                            element.clientes,
-                            element.kilos,
-                            element.cantidad,
-                            element.precio,
-                            element.fechaventa,
-                            element.totalPago,
-                            `<a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a>`
-                        ]);
-                        table.clear().rows.add(nuevosDatos).draw();
-                    
                     })
                     }
                     
@@ -509,8 +475,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             
             function filtro1Ventas(){
                 const parameters = new URLSearchParams();
-                parameters.append("operacion", "filtra1Ventas");              
-                parameters.append("idcliente", parseInt(lsCliente.value));
+                parameters.append("operacion", "filtrainsumo");              
+                parameters.append("idinsumo", parseInt(lsCliente.value));
 
                 fetch(`../controllers/reportes.controller.php`, {
                     method: 'POST',
@@ -530,15 +496,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
-                                <td>${element.idventa}</td>
-                                <td>${element.clientes}</td>
-                                <td>${element.kilos}</td>
-                                <td>${element.cantidad}</td>
-                                <td>${element.precio}</td>                                
-                                <td>${element.fechaventa}</td>
-                                <td>${element.totalPago}</td> 
-                                <td><a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a></td>                                                                                        
-                            </tr>                            
+                                <td>${element.insumo}</td>
+                                <td>${element.cantidad_entrada}</td>
+                                <td>${element.precio}</td>                            
+                                <td>${element.fecha_entrada}</td>
+                                                                                                                                                                
+                            </tr>                        
                             `;
                             cuerpoTabla.innerHTML += rows;
                         });
@@ -577,20 +540,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
 
                         });
-
-                          // Actualizar la tabla DataTable con los nuevos datos
-                        const nuevosDatos = data.map(element => [
-                            element.idventa,
-                            element.clientes,
-                            element.kilos,
-                            element.cantidad,
-                            element.precio,
-                            element.fechaventa,
-                            element.totalPago,
-                            `<a href='#'id="detalle_venta" class='mostrar btn btn-danger btn-sm' data-idventa='${element.idventa}'><i class="bi bi-file-earmark-pdf"></i></a>`
-                        ]);
-                        table.clear().rows.add(nuevosDatos).draw();
-
                     })
                     }
                     
@@ -603,17 +552,17 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             function createPDF(){
                 const fechaI = document.querySelector("#fechainicio").value;
                 const fechaF = document.querySelector("#fechafin").value;
-                const cliente = document.querySelector("#cliente").value;
+                const insumo = document.querySelector("#cliente").value;
 
                 const parameters = new URLSearchParams();
                 parameters.append("fechainicio", document.querySelector("#fechainicio").value);
                 parameters.append("fechafin", document.querySelector("#fechafin").value);
-                parameters.append("idcliente", parseInt(lsCliente.value));
+                parameters.append("idinsumo", parseInt(lsCliente.value));
 
                 parameters.append("fechaI", document.querySelector("#fechainicio").value);
                 parameters.append("fechaF", document.querySelector("#fechafin").value);
                 
-                if(fechaI === '' && fechaF === '' && cliente === ''){
+                if(fechaI === '' && fechaF === '' && insumo === ''){
                     Swal.fire({
                         title: "No hay datos para exportar",
                         icon: "warning",
@@ -624,29 +573,29 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     
             
                 }else{
-                    window.open(`../reports/filtro.report.php?${parameters}`,`_blank`);
+                    window.open(`../reports/filtroentrada.report.php?${parameters}`,`_blank`);
                 }
                 
 
             }
 
 
-            recuperarCliente();
+            mostrarInsumosUp();
             
             btnfiltro.addEventListener("click", function(){
                 const fechaI = document.querySelector("#fechainicio").value;
                 const fechaF = document.querySelector("#fechafin").value;
-                const idcliente = parseInt(lsCliente.value);
+                const idinsumo = parseInt(lsCliente.value);
 
-                if(!isNaN(idcliente) && idcliente !== 0 && fechaI && fechaF){
-                    filtro3Ventas(idcliente, fechaI, fechaF);
+                if(!isNaN(idinsumo) && idinsumo!== 0 && fechaI && fechaF){
+                    filtro3Ventas(idinsumo, fechaI, fechaF);
                     
 
                 }else if(fechaI && fechaF){
                     filtro2Ventas(fechaI, fechaF);
 
-                }else if(!isNaN(idcliente) && idcliente !==0){
-                    filtro1Ventas(idcliente)
+                }else if(!isNaN(idinsumo) && idinsumo !==0){
+                    filtro1Ventas(idinsumo)
                 }
 
             });

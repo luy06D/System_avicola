@@ -29,6 +29,36 @@ if(isset($_POST['operacion'])){
         $data = $reporte->jsonMostrar($_POST['idventa']);
         echo json_encode($data);
     }
+
+    if($_POST['operacion'] == 'filtroinsumofecha'){
+        $data = $reporte->filtroinsumofechas($_POST['fechainicio'], $_POST['fechafin']);
+        echo json_encode($data);
+    }
+
+    if($_POST['operacion'] == 'filtrofechasid'){
+        $data = $reporte->filtroinsumoid($_POST['idinsumo'],$_POST['fechainicio'], $_POST['fechafin']);
+        echo json_encode($data);
+    }
+
+    if($_POST['operacion'] == 'filtrainsumo'){
+        $data = $reporte->filtroinsumo($_POST['idinsumo']);
+        echo json_encode($data);
+    }
+
+    if($_POST['operacion'] == 'filtrosalidafecha'){
+        $data = $reporte->filtrosalidafecha($_POST['fechainicio'], $_POST['fechafin']);
+        echo json_encode($data);
+    }
+
+    if($_POST['operacion'] == 'filtrosalidafechasid'){
+        $data = $reporte->filtrosalidaidfech($_POST['idinsumo'],$_POST['fechainicio'], $_POST['fechafin']);
+        echo json_encode($data);
+    }
+
+    if($_POST['operacion'] == 'filtrosalidainsumo'){
+        $data = $reporte->filtrosalidaidinsu($_POST['idinsumo']);
+        echo json_encode($data);
+    }
 }
 
 ?>

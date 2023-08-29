@@ -95,7 +95,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 </a>
                     <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="./insumos.php"><h5><i class="bi bi-truck"></i> Insumos</a></h5></li>
-                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Formulas</h5></a></li> 
+                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Formulas</h5></a></li>
+                    <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Entradas</h5></a></li>  
+                    <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Salidas</h5></a></li> 
 
                     </ul>
                 </li>  
@@ -154,6 +156,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <div class="">
                                     <button id="" class="btn btn-warning btn-md " type="button" data-bs-toggle="modal" data-bs-target="#modal-addInsumo"><i class="bi bi-plus-circle"></i> Agregar insumo</button>                    
                                 </div>
+
                             </div>
                             
                             <div class=" col-lg-3">
@@ -165,6 +168,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
 
                             
+
+                            </div> 
+      
+
                         </div>
                     </form>
           

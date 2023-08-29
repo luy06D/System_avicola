@@ -161,12 +161,15 @@ idformula		INT 		NOT NULL,
 idinsumo		INT 		NOT NULL,
 cantidad		SMALLINT	NOT NULL,
 unidad			VARCHAR(20)	NOT NULL,
+fecha_entrada		DATE 	NOT NULL DEFAULT NOW(),
 CONSTRAINT fk_idf_det FOREIGN KEY (idformula) REFERENCES formulas(idformula),
 CONSTRAINT fk_idi_det FOREIGN KEY (idinsumo) REFERENCES insumos(idinsumo)
 )
 ENGINE = INNODB;
 
+ALTER TABLE detalle_insumos ADD COLUMN fecha_entrada	DATE 	NOT NULL DEFAULT NOW();
 SELECT * FROM insumos
+
 
 -- PROCEDIMIENTOS ALMACEN
 
@@ -250,11 +253,17 @@ CREATE PROCEDURE spu_get_insumo(IN _idinsumo INT)
 BEGIN
 	SELECT	insumo, unidad , cantidad, descripcion
 	FROM insumos
-	WHERE idinsumo = _idinsumo;
+	WHERE estado = '1' AND
+	idinsumo = _idinsumo;
+	
 
 END $$
 
+<<<<<<< HEAD
 CALL spu_get_insumo(2);
+=======
+CALL spu_get_insumo(10);
+>>>>>>> jeanluis
 
 
 DELIMITER $$
@@ -324,6 +333,132 @@ CALL sp_registrar_entrada (5,700,600)
 -- FIN PROCEDIMIENTOS ALMACEN
 
 
+
+-- FILTRO DE INSUMOS ENTRADAS
+
+DELIMITER $$
+CREATE PROCEDURE sp_filtro_fech(
+    IN p_fecha_inicio DATE,
+    IN p_fecha_fin DATE
+)
+BEGIN
+    SELECT
+    
+        i.insumo,
+        de.cantidad AS cantidad_entrada,
+        de.precio,
+        de.fecha_entrada
+    FROM insumos i
+    LEFT JOIN detalle_entradas de ON i.idinsumo = de.idinsumo
+    WHERE de.fecha_entrada BETWEEN p_fecha_inicio AND p_fecha_fin
+    ORDER BY de.fecha_entrada;
+END $$
+CALL sp_filtro_fech('2023-08-01','2023-08-28')
+
+
+DELIMITER $$
+CREATE PROCEDURE sp_filtro_insumofechid(
+    IN p_idinsumo INT,
+    IN p_fecha_inicio DATE,
+    IN p_fecha_fin DATE
+)
+BEGIN
+    SELECT 
+        i.insumo,
+        de.cantidad AS cantidad_entrada,
+        de.precio,
+        de.fecha_entrada
+    FROM insumos i
+    LEFT JOIN detalle_entradas de ON i.idinsumo = de.idinsumo
+    WHERE i.idinsumo = p_idinsumo AND de.fecha_entrada BETWEEN p_fecha_inicio AND p_fecha_fin
+    ORDER BY de.fecha_entrada;
+END $$
+CALL sp_filtro_insumofechid(1,'2023-08-01','2023-08-28')
+
+
+DELIMITER $$
+CREATE PROCEDURE sp_filtro_insumo(
+    IN p_idinsumo INT
+)
+BEGIN
+    SELECT
+        i.insumo,
+        de.cantidad AS cantidad_entrada,
+        de.precio,
+        de.fecha_entrada
+    FROM detalle_entradas de
+    INNER JOIN insumos i ON de.idinsumo = i.idinsumo
+    WHERE i.idinsumo = p_idinsumo
+    ORDER BY de.fecha_entrada;
+END $$
+
+CALL sp_filtro_insumo(1)
+
+
+
+-- FILTRO DE INSUMOS SALIDAS
+
+DELIMITER $$
+CREATE PROCEDURE sp_filtro_salidafecha(
+    IN _fecha_inicio DATE,
+    IN _fecha_fin DATE
+)
+BEGIN
+    SELECT
+        
+        i.insumo,
+        d.cantidad,
+        d.unidad,
+        d.fecha_entrada
+    FROM detalle_insumos d
+    INNER JOIN insumos i ON d.idinsumo = i.idinsumo
+    WHERE d.fecha_entrada BETWEEN _fecha_inicio AND _fecha_fin
+    ORDER BY d.fecha_entrada;
+END $$
+DELIMITER $$
+
+CALL sp_filtro_salidafecha('2023-08-01','2023-08-28')
+
+DELIMITER $$
+CREATE PROCEDURE sp_filtro_salidafechid(
+    IN _idinsumo INT,
+    IN _fecha_inicio DATE,
+    IN _fecha_fin DATE
+)
+BEGIN
+    SELECT
+       
+        i.insumo,
+        d.cantidad,
+        d.unidad,
+        d.fecha_entrada
+    FROM detalle_insumos d
+    INNER JOIN insumos i ON d.idinsumo = i.idinsumo
+    WHERE d.idinsumo = _idinsumo
+    AND d.fecha_entrada BETWEEN _fecha_inicio AND _fecha_fin
+    ORDER BY d.fecha_entrada;
+END $$
+
+CALL sp_filtro_salidafechid(,'2023-08-01','2023-08-28')
+
+DELIMITER $$
+CREATE PROCEDURE sp_filtro_salidaidinsumo(
+    IN _idinsumo INT
+)
+BEGIN
+    SELECT
+     
+        i.insumo,
+        d.cantidad,
+        d.unidad,
+        d.fecha_entrada
+    FROM detalle_insumos d
+    INNER JOIN insumos i ON d.idinsumo = i.idinsumo
+    WHERE d.idinsumo = _idinsumo
+    ORDER BY d.fecha_entrada;
+END $$
+
+CALL sp_filtro_salidaidinsumo(1)
 
 			   /*Procedimientos*/
 
@@ -933,13 +1068,6 @@ END$$
 
 
 
- 
-
-
-
-
-
-
 
 
 			-- Filtrar-------------------
@@ -1169,7 +1297,6 @@ END $$
 
 
  
-=======
 
 CREATE DATABASE avicola;
 
@@ -1604,6 +1731,7 @@ BEGIN
   COMMIT;
 END $$
 
+<<<<<<< HEAD
 DELIMITER $$
 CREATE  PROCEDURE spu_detalleinsumo_registrar(
 IN _idformula INT,
@@ -1633,11 +1761,14 @@ BEGIN
   END IF;
   
 END$$
-DELIMITER ;
 
 
 
 
+
+
+
+SELECT * FROM detalle_insumos
 
 
 
@@ -2586,6 +2717,7 @@ END $$
 
 
 
+<<<<<<< HEAD
  SELECT * FROM formulas
 DELIMITER $$
 CREATE PROCEDURE spu_descontar_insumos(IN  _idformula INT, IN _idinsumo INT, IN _cantidad SMALLINT, IN _unidad VARCHAR(20))
@@ -2602,3 +2734,5 @@ END$$
 
 
 
+=======
+>>>>>>> jeanluis

@@ -251,19 +251,28 @@ BEGIN
 	WHERE idinsumo = _idinsumo;
 	
 END $$
+SELECT * FROM detalle_entradas
 
 DELIMITER $$
 CREATE PROCEDURE spu_mostrar_insumos()
 BEGIN
-	SELECT idinsumo,
-		insumo,
-		cantidad,
-		descripcion
-	FROM insumos
-	WHERE estado = '1'
-	GROUP BY idinsumo 
-	ORDER BY insumo ASC ;
+    SELECT i.idinsumo,
+        i.insumo,
+        i.cantidad,
+        (
+            SELECT de.detalle
+            FROM detalle_entradas de
+            WHERE de.idinsumo = i.idinsumo
+            ORDER BY de.detalle DESC
+            LIMIT 1
+        ) AS detalle
+    FROM insumos i
+    WHERE estado = '1'
+    GROUP BY idinsumo 
+    ORDER BY insumo ASC;
 END $$
+
+
 
 CALL spu_mostrar_insumos;
 
@@ -502,22 +511,20 @@ CALL spu_formulaDelete (10)
 
 -- ACTUALIZAR UNA FORMULA
 DELIMITER $$
-CREATE PROCEDURE spu_detalleInsumo_update
+CREATE  PROCEDURE spu_detalleInsumo_update
 (
 IN _iddetalle_insumo	INT,
 IN _idinsumo 	INT,
-IN _cantidad	SMALLINT,
-IN _unidad	VARCHAR(20)
+IN _cantidad	DECIMAL(10,2)
 )
 BEGIN 
 	UPDATE detalle_insumos SET
 	idinsumo = _idinsumo,
-	cantidad = _cantidad,
-	unidad = _unidad
+	cantidad = _cantidad
 	WHERE iddetalle_insumo = _iddetalle_insumo; 
-END $$
-
-CALL spu_detalleInsumo_update(14, 3 , 31, 'KG');
+ END $$
+SELECT * FROM detalle_insumos
+CALL spu_detalleInsumo_update(1, 1 , 150);
 
 
 -- REGISTRAR DETALLE INSUMO
@@ -566,7 +573,7 @@ END $$
 DELIMITER $$
 CREATE PROCEDURE spu_getdetalleI(IN _iddetalle_insumo INT)
 BEGIN 
-	SELECT idinsumo, unidad, cantidad
+	SELECT idinsumo,  cantidad
 	FROM  detalle_insumos
 	WHERE iddetalle_insumo = _iddetalle_insumo;
 END $$
@@ -574,7 +581,7 @@ END $$
 CALL spu_getdetalleI(1);
 
  
-
+SELECT * FROM usuarios
 
 
 

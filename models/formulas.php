@@ -164,14 +164,13 @@ class Formula extends Conexion{
         ];
 
         try{
-            $consulta = $this->access->prepare("CALL spu_detalleInsumo_update(?,?,?,?)");
+            $consulta = $this->access->prepare("CALL spu_detalleInsumo_update(?,?,?)");
             $respuesta["status"] = $consulta->execute(array(
                 
                 $datos["iddetalle_insumo"],
                 $datos["idinsumo"],
                 $datos["cantidad"],
-                $datos["unidad"]
-            
+
             ));
         }
         catch(Exception $e){

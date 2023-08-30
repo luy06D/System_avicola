@@ -157,9 +157,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                     </div> 
 
                                 </div>
-
+                                <div class="col-lg-6 img-column">
+                                <div class="container img-salida">
+                                    <img src="../img/salida.png" alt="" class="img-fluid" style="height: 300px;">
+                                </div>
+                                </div>
                             </form>           
-                                          
+                                   
                         </div>
                     </form>
           
@@ -269,7 +273,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                      
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class="bi bi-boxes"></i></span>
-                          <input type="number" class="form-control" placeholder="Cantidad"  id="cantidadUp" disabled>
+                          <input type="number" class="form-control" placeholder="Cantidad"  id="cantidadUp">
                         </div>
         
                     </form>   

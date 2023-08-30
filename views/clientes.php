@@ -269,8 +269,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
                 }).then((result) => {
                     if(result.isConfirmed) {
-                        if(nombres === '' || apellidos === '' ||
-                            dni === '' || telefono === ''){
+                        if(nombres === '' || apellidos === '' 
+                        // ||
+                            // dni === '' || telefono === ''
+                            ){
                                 Swal.fire({
                                 title: "Por favor, complete los campos",
                                 icon: "warning",

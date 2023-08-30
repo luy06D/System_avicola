@@ -1,6 +1,6 @@
 /*
-SQLyog Community v12.5.1 (64 bit)
-MySQL - 10.4.28-MariaDB : Database - avicola
+SQLyog Ultimate v12.5.1 (64 bit)
+MySQL - 10.4.25-MariaDB : Database - avicola
 *********************************************************************
 */
 
@@ -12,7 +12,7 @@ MySQL - 10.4.28-MariaDB : Database - avicola
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`avicola` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`avicola` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
 USE `avicola`;
 
@@ -27,21 +27,12 @@ CREATE TABLE `clientes` (
   PRIMARY KEY (`idcliente`),
   UNIQUE KEY `uk_clien_cli` (`idpersona`),
   CONSTRAINT `fk_idper_cli` FOREIGN KEY (`idpersona`) REFERENCES `personas` (`idpersona`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `clientes` */
 
 insert  into `clientes`(`idcliente`,`idpersona`,`estado`) values 
-(1,2,'1'),
-(2,3,'1'),
-(3,4,'1'),
-(4,5,'1'),
-(5,7,'1'),
-(6,8,'1'),
-(7,9,'1'),
-(8,10,'1'),
-(9,11,'0'),
-(10,12,'0');
+(1,1,'1');
 
 /*Table structure for table `detalle_entradas` */
 
@@ -50,23 +41,29 @@ DROP TABLE IF EXISTS `detalle_entradas`;
 CREATE TABLE `detalle_entradas` (
   `identrada` int(11) NOT NULL AUTO_INCREMENT,
   `idinsumo` int(11) NOT NULL,
-  `cantidad` smallint(6) NOT NULL,
-  `precio` decimal(7,2) NOT NULL,
-  `fecha_entrada` date NOT NULL DEFAULT current_timestamp(),
+  `cantidadtn` smallint(6) NOT NULL,
+  `cantidadsaco` smallint(6) DEFAULT NULL,
+  `precio` decimal(7,2) DEFAULT NULL,
+  `fecha_entrada` date NOT NULL,
+  `detalle` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`identrada`),
   KEY `fk_idi_ent` (`idinsumo`),
   CONSTRAINT `fk_idi_ent` FOREIGN KEY (`idinsumo`) REFERENCES `insumos` (`idinsumo`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `detalle_entradas` */
 
-insert  into `detalle_entradas`(`identrada`,`idinsumo`,`cantidad`,`precio`,`fecha_entrada`) values 
-(20,13,10000,1.00,'2023-08-28'),
-(21,14,10000,1.00,'2023-08-28'),
-(22,15,10000,1.00,'2023-08-28'),
-(23,13,32767,1.00,'2023-08-28'),
-(24,15,9000,1.00,'2023-08-28'),
-(25,14,32767,1.00,'2023-08-28');
+insert  into `detalle_entradas`(`identrada`,`idinsumo`,`cantidadtn`,`cantidadsaco`,`precio`,`fecha_entrada`,`detalle`) values 
+(1,1,1000,100,2500.00,'2023-08-26','Entrada prueba'),
+(2,1,1000,100,2500.00,'2023-08-26','Entrada prueba'),
+(3,2,1000,NULL,0.00,'2023-08-23',''),
+(4,2,2000,150,0.00,'2023-08-06',''),
+(5,3,3000,NULL,0.00,'2023-08-22',''),
+(6,3,3000,NULL,0.00,'2023-08-22','hola'),
+(7,3,3000,NULL,0.00,'2023-08-22','hola'),
+(8,3,2000,NULL,1230.00,'2023-08-21','hola'),
+(9,3,1000,250,0.00,'2023-08-28',''),
+(10,4,2000,150,0.00,'2023-08-20','');
 
 /*Table structure for table `detalle_insumos` */
 
@@ -77,31 +74,16 @@ CREATE TABLE `detalle_insumos` (
   `idformula` int(11) NOT NULL,
   `idinsumo` int(11) NOT NULL,
   `cantidad` smallint(6) NOT NULL,
-  `unidad` varchar(20) NOT NULL,
+  `fecha_salida` date NOT NULL DEFAULT current_timestamp(),
+  `detalle` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`iddetalle_insumo`),
   KEY `fk_idf_det` (`idformula`),
   KEY `fk_idi_det` (`idinsumo`),
   CONSTRAINT `fk_idf_det` FOREIGN KEY (`idformula`) REFERENCES `formulas` (`idformula`),
   CONSTRAINT `fk_idi_det` FOREIGN KEY (`idinsumo`) REFERENCES `insumos` (`idinsumo`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `detalle_insumos` */
-
-insert  into `detalle_insumos`(`iddetalle_insumo`,`idformula`,`idinsumo`,`cantidad`,`unidad`) values 
-(10,6,14,5550,'kg'),
-(11,6,13,2000,'kg'),
-(12,7,13,7200,'kg'),
-(13,7,15,7200,'kg'),
-(14,10,14,1000,'kg'),
-(15,10,13,1000,'kg'),
-(16,10,14,1000,'kg'),
-(17,10,13,1000,'kg'),
-(18,11,15,500,'kg'),
-(19,11,13,500,'KG'),
-(20,11,13,500,'KG'),
-(21,11,15,500,'KG'),
-(22,12,13,1600,'KG'),
-(23,12,15,800,'KG');
 
 /*Table structure for table `detalle_ventas` */
 
@@ -115,40 +97,13 @@ CREATE TABLE `detalle_ventas` (
   KEY `fk_idp_det` (`idproducto`),
   CONSTRAINT `fk_idp_det` FOREIGN KEY (`idproducto`) REFERENCES `productos` (`idproducto`),
   CONSTRAINT `ck_can_det` CHECK (`cantidad` > 0)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `detalle_ventas` */
 
 insert  into `detalle_ventas`(`iddetalle_venta`,`idproducto`,`cantidad`) values 
-(1,1,5),
-(2,2,6),
-(3,3,10),
-(4,1,3),
-(5,1,2),
-(6,3,5),
-(7,1,5),
-(8,3,7),
-(9,3,2),
-(10,2,5),
-(11,2,10),
-(12,2,10),
-(13,3,10),
-(14,2,5),
-(15,1,10),
-(16,2,5),
-(17,3,10),
-(18,1,10),
-(19,1,5),
-(20,1,10),
-(21,3,15),
-(22,2,10),
-(23,2,86),
-(24,2,10),
-(25,1,5),
-(26,3,3),
-(27,1,5),
-(28,3,6),
-(29,1,6);
+(1,1,15),
+(2,1,10);
 
 /*Table structure for table `formulas` */
 
@@ -157,19 +112,11 @@ DROP TABLE IF EXISTS `formulas`;
 CREATE TABLE `formulas` (
   `idformula` int(11) NOT NULL AUTO_INCREMENT,
   `nombreformula` varchar(40) NOT NULL,
-  `estado` char(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`idformula`),
   UNIQUE KEY `uk_nom_for` (`nombreformula`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `formulas` */
-
-insert  into `formulas`(`idformula`,`nombreformula`,`estado`) values 
-(6,'ALIMENTO','1'),
-(7,'Engorde','0'),
-(10,'COMPOSTA','0'),
-(11,'X','0'),
-(12,'Y','1');
 
 /*Table structure for table `insumos` */
 
@@ -178,20 +125,37 @@ DROP TABLE IF EXISTS `insumos`;
 CREATE TABLE `insumos` (
   `idinsumo` int(11) NOT NULL AUTO_INCREMENT,
   `insumo` varchar(30) NOT NULL,
-  `unidad` varchar(20) DEFAULT NULL,
-  `cantidad` smallint(6) DEFAULT NULL,
+  `unidad` varchar(20) DEFAULT 'KG',
+  `cantidad` int(11) DEFAULT NULL,
   `descripcion` varchar(80) DEFAULT NULL,
   `estado` char(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`idinsumo`),
   UNIQUE KEY `uk_ins_ins` (`insumo`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `insumos` */
 
 insert  into `insumos`(`idinsumo`,`insumo`,`unidad`,`cantidad`,`descripcion`,`estado`) values 
-(13,'MAIZ','Seleccione',25067,NULL,'1'),
-(14,'AFRECHO','Seleccione',29767,NULL,'1'),
-(15,'SAL','Seleccione',6200,NULL,'1');
+(1,'SOYA','KG',NULL,'Proteica, vegetal, versátil, nutricional','1'),
+(2,'AFRECHO','KG',NULL,'Fibroso, salvado, integral, nutritivo.','1'),
+(3,'MAIZ','KG',NULL,'Cereal, amarillo, versátil, nutritivo.','1'),
+(4,'SAL','KG',NULL,'Mineral, condimento, saborizante, conservante','1'),
+(5,'ACHOTE','KG',NULL,'','1'),
+(6,'METHIONINE','KG',NULL,'','1'),
+(7,'COLINA','KG',NULL,'','1'),
+(8,'PREMEZCLA','KG',NULL,'','1'),
+(9,'CARBONATO POLVO','KG',NULL,'','1'),
+(10,'CARBONATO GR','KG',NULL,'','1'),
+(11,'FOSTHY','KG',NULL,'','1'),
+(12,'HITEX','KG',NULL,'','1'),
+(13,'ACEITE','KG',NULL,'','1'),
+(14,'PALMISTE','KG',NULL,'','1'),
+(15,'MAGNET','KG',NULL,'','1'),
+(16,'BICARBONATO','KG',NULL,'','1'),
+(17,'LISINA','KG',NULL,'','1'),
+(18,'TREONINA','KG',NULL,'','1'),
+(19,'MAYCOFIX FOCUS','KG',NULL,'','1'),
+(20,'MINAZEL PLUS','KG',NULL,'','1');
 
 /*Table structure for table `pagos` */
 
@@ -210,15 +174,14 @@ CREATE TABLE `pagos` (
   KEY `fk_idv_pa` (`idventa`),
   CONSTRAINT `fk_idv_pa` FOREIGN KEY (`idventa`) REFERENCES `ventas` (`idventa`),
   CONSTRAINT `ck_pa_pa` CHECK (`pago` > 0)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `pagos` */
 
 insert  into `pagos`(`idpago`,`idventa`,`fechapago`,`banco`,`numoperacion`,`pago`,`estado`) values 
-(1,1,'2023-08-28','BCP',556677,1000.00,''),
-(2,1,'2023-08-28','BCP',12345678,300.00,''),
-(4,3,'2023-08-28','SCOTIABANK',53365225,664.50,''),
-(5,1,'2023-08-28','BCP',78523694,96.50,'');
+(1,2,'2023-08-29','BCP',12457893,1000.00,''),
+(2,2,'2023-08-29','BCP',32657894,200.00,''),
+(4,2,'2023-08-29','BCP',65987412,32.00,'');
 
 /*Table structure for table `personas` */
 
@@ -233,22 +196,14 @@ CREATE TABLE `personas` (
   `estado` char(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`idpersona`),
   UNIQUE KEY `uk_dni_per` (`dni`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `personas` */
 
 insert  into `personas`(`idpersona`,`nombres`,`apellidos`,`dni`,`telefono`,`estado`) values 
-(1,'Jean','Mateo',NULL,NULL,'1'),
-(2,'Luis','Ramirez','78451296','963258741','1'),
-(3,'Fermando','Porres','21546985','953687422','1'),
-(4,'Rocio','Feijo','21596387','965478122','1'),
-(5,'Renato','Fuentes','21896355','953684266','1'),
-(7,'Roberto ','Ramirez','24569871','936544855','1'),
-(8,'Hugo','Magallanes','25369874','956847213','1'),
-(9,'Nora','Napa','54966338','963235523','1'),
-(10,'Keyla','Yauca','21639696','963255456','1'),
-(11,'Clientes','Nuevos','78562316','953623366','1'),
-(12,'Pier','Quispe','21569837','953684217','1');
+(1,'Juan Hugo','Perez Ramos','21563987','953684215','1'),
+(2,'Avicola','Vania',NULL,NULL,'1'),
+(3,'adm','adm','','','1');
 
 /*Table structure for table `productos` */
 
@@ -260,14 +215,14 @@ CREATE TABLE `productos` (
   `descripcion` varchar(100) DEFAULT NULL,
   `estado` char(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`idproducto`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `productos` */
 
 insert  into `productos`(`idproducto`,`nombre`,`descripcion`,`estado`) values 
 (1,'Huevos Pardos','','1'),
 (2,'Huevos Rosados','','1'),
-(3,'Huevos Yumbo','','1');
+(3,'Huevos Jumbo','','1');
 
 /*Table structure for table `usuarios` */
 
@@ -283,12 +238,13 @@ CREATE TABLE `usuarios` (
   UNIQUE KEY `uk_nom_usu` (`nombreusuario`),
   KEY `fk_idp_usu` (`idpersona`),
   CONSTRAINT `fk_idp_usu` FOREIGN KEY (`idpersona`) REFERENCES `personas` (`idpersona`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `usuarios` */
 
 insert  into `usuarios`(`idusuario`,`idpersona`,`nombreusuario`,`claveacceso`,`estado`) values 
-(1,1,'jean','$2y$10$nPtSi9cUGXfJ6MdDGhGJresLGzZNo4nHXcmDepRZeQ5R/BDHNjMiK','1');
+(1,2,'vania','$2y$10$FRCgyugtCZD7DFAsqm3ZCu.Bsv3DtXk1zhHW/A5Kiih8FgwoBPsEO','1'),
+(2,3,'adm','$2y$10$3yNnHkQiScPws7FgC6lqBOHEosXs0aUNdmzLkZKH2HiCAooOQmB7i','0');
 
 /*Table structure for table `ventas` */
 
@@ -315,14 +271,12 @@ CREATE TABLE `ventas` (
   CONSTRAINT `fk_idu_ven` FOREIGN KEY (`idusuario`) REFERENCES `usuarios` (`idusuario`),
   CONSTRAINT `ck_pre_ven` CHECK (`precio` > 0),
   CONSTRAINT `ck_kil_ven` CHECK (`kilos` > 0)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `ventas` */
 
 insert  into `ventas`(`idventa`,`iddetalle_venta`,`idusuario`,`idcliente`,`kilos`,`precio`,`flete`,`deuda`,`fechaventa`,`estado`,`paquetes`) values 
-(1,27,1,1,75,9.30,1.3,691.00,'2023-08-28','1','{\"Paquete 1\":\"15\",\"Paquete 2\":\"15\",\"Paquete 3\":\"15\",\"Paquete 4\":\"15\",\"Paquete 5\":\"15\"}'),
-(2,28,1,1,85,8.30,0.0,705.50,'2023-08-28','1','{\"Paquete 1\":\"14\",\"Paquete 2\":\"14\",\"Paquete 3\":\"14\",\"Paquete 4\":\"14\",\"Paquete 5\":\"14\",\"Paquete 6\":\"15\"}'),
-(3,29,1,2,81,8.30,1.3,664.50,'2023-08-28','1','{\"Paquete 1\":\"15\",\"Paquete 2\":\"15\",\"Paquete 3\":\"12\",\"Paquete 4\":\"13\",\"Paquete 5\":\"12\",\"Paquete 6\":\"14\"}');
+(2,2,1,1,150,8.30,1.3,1232.00,'2023-08-29','1','{\"Paquete 1\":\"15\",\"Paquete 2\":\"15\",\"Paquete 3\":\"15\",\"Paquete 4\":\"15\",\"Paquete 5\":\"15\",\"Paquete 6\":\"15\",\"Paquete 7\":\"15\",\"Paquete 8\":\"15\",\"Paquete 9\":\"15\",\"Paquete 10\":\"15\"}');
 
 /* Procedure structure for procedure `spu_clientes_recuperar` */
 
@@ -368,6 +322,7 @@ SELECT
 	personas.`apellidos`,
 	personas.`dni`,
 	personas.`telefono`
+
 FROM clientes
 	INNER JOIN personas ON personas.`idpersona` = clientes.`idpersona`
 	WHERE clientes.`estado`= '1'
@@ -405,6 +360,7 @@ DELIMITER ;
 DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_cliente_register`(
+
 IN _nombres 	VARCHAR(30),
 IN _apellidos 	VARCHAR(30),
 IN _dni		CHAR(8),
@@ -428,6 +384,7 @@ BEGIN
 	
 	INSERT INTO clientes (idpersona) VALUES
 			(g_idcliente);	
+
 END */$$
 DELIMITER ;
 
@@ -452,6 +409,7 @@ BEGIN
 			apellidos = _apellidos,
 			dni 	  = _dni,
 			telefono  = _telefono
+
 	WHERE idcliente = _idcliente;
 END */$$
 DELIMITER ;
@@ -472,108 +430,6 @@ BEGIN
 END */$$
 DELIMITER ;
 
-/* Procedure structure for procedure `spu_descontar_insumo` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_descontar_insumo` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_descontar_insumo`(
-IN _idformula INT,
-IN _idinsumo INT,
-IN _cantidad DECIMAL(10, 3),
-IN _unidad VARCHAR(20)
-)
-BEGIN
-  DECLARE insumo_cantidad DECIMAL(10, 3);
-  SET @conversion_factor = 1;
-  
-  IF _unidad = 'TN' THEN
-    SET @conversion_factor = 1000;
-  END IF;
-
-  -- Iniciar la transacción
-  START TRANSACTION;
-
-  -- Obtener la cantidad actual del insumo
-  SELECT cantidad INTO insumo_cantidad FROM insumos WHERE idinsumo = _idinsumo;
-
-  -- Verificar si hay suficiente cantidad disponible en insumos
-  IF insumo_cantidad >= (_cantidad * @conversion_factor) THEN
-    -- Si hay suficiente cantidad disponible, actualizar la cantidad en insumos
-    SET insumo_cantidad = insumo_cantidad - (_cantidad * @conversion_factor);
-    UPDATE insumos SET cantidad = insumo_cantidad WHERE idinsumo = _idinsumo;
-    
-    -- No se actualizará la tabla detalle_insumos
-    
-  ELSE
-    -- No hay suficiente cantidad disponible en insumos, hacer rollback y generar una señal de error
-    ROLLBACK;
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No hay suficiente cantidad de este insumo para la fórmula.';
-  END IF;
-
-  -- Confirmar la transacción
-  COMMIT;
-END */$$
-DELIMITER ;
-
-/* Procedure structure for procedure `spu_detalleinsumo_registrar` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_detalleinsumo_registrar` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_detalleinsumo_registrar`(
-IN _idformula INT,
-IN _idinsumo INT,
-IN _cantidad DECIMAL(10, 3),
-IN _unidad VARCHAR(20)
-)
-BEGIN
-  -- Variable para almacenar la cantidad actual
-  DECLARE cantidad_actual DECIMAL(10, 3);
-  
-  -- Obtener la cantidad actual en detalle_insumos si existe un registro con los mismos valores de idformula e idinsumo
-  SELECT cantidad INTO cantidad_actual
-  FROM detalle_insumos
-  WHERE idformula = _idformula AND idinsumo = _idinsumo;
-  
-  -- Verificar si se encontró un registro en detalle_insumos
-  IF cantidad_actual IS NOT NULL THEN
-    -- Si existe un registro, actualizar la cantidad sumando _cantidad
-    UPDATE detalle_insumos
-    SET cantidad = cantidad_actual + _cantidad
-    WHERE idformula = _idformula AND idinsumo = _idinsumo;
-  ELSE
-    -- Si no existe un registro, insertar un nuevo registro en detalle_insumos
-    INSERT INTO detalle_insumos(idformula, idinsumo, cantidad, unidad)
-    VALUES (_idformula, _idinsumo, _cantidad, _unidad);
-  END IF;
-  
-END */$$
-DELIMITER ;
-
-/* Procedure structure for procedure `spu_detalleInsumo_update` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_detalleInsumo_update` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_detalleInsumo_update`(
-IN _iddetalle_insumo	INT,
-IN _idinsumo 	INT,
-IN _cantidad	SMALLINT,
-IN _unidad	VARCHAR(20)
-)
-BEGIN 
-	UPDATE detalle_insumos SET
-	idinsumo = _idinsumo,
-	cantidad = _cantidad,
-	unidad = _unidad
-	WHERE iddetalle_insumo = _iddetalle_insumo; 
-END */$$
-DELIMITER ;
-
 /* Procedure structure for procedure `spu_filtro1_ventas` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `spu_filtro1_ventas` */;
@@ -582,8 +438,9 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_filtro1_ventas`(IN _idcliente INT)
 BEGIN
+
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes  ON clientes.`idcliente` = VE.idcliente
@@ -605,9 +462,10 @@ IN _fechainicio DATE,
 IN _fechafin	DATE
 )
 BEGIN
+
 	SELECT 	VE.idventa,
 		CONCAT(CL.nombres,' ',CL.apellidos) AS clientes,
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -630,8 +488,9 @@ IN _fechafin	DATE,
 IN _idcliente	INT
 )
 BEGIN
+
 	SELECT 	VE.idventa, CONCAT(cl.nombres,' ', cl.apellidos) AS clientes,  
-		VE.kilos, DV.cantidad, VE.paquetes, VE.precio, VE.flete, VE.fechaventa,
+		VE.kilos, DV.cantidad, VE.precio, VE.fechaventa,
 		(VE.kilos * VE.precio)-(DV.cantidad * flete) AS totalPago
 	FROM ventas VE
 	INNER JOIN clientes ON clientes.`idcliente` = VE.`idcliente`
@@ -743,78 +602,6 @@ BEGIN
 END */$$
 DELIMITER ;
 
-/* Procedure structure for procedure `spu_formulaDelete` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_formulaDelete` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_formulaDelete`(IN _idformula INT)
-BEGIN 
-	UPDATE formulas SET 
-	estado = 0
-	WHERE idformula = _idformula;
-	
-END */$$
-DELIMITER ;
-
-/* Procedure structure for procedure `spu_formula_registrar` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_formula_registrar` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_formula_registrar`(
-IN _nombreformula VARCHAR(40)
-)
-BEGIN 
-	INSERT INTO formulas (nombreformula) VALUES
-			(_nombreformula);
-END */$$
-DELIMITER ;
-
-/* Procedure structure for procedure `spu_getdetalleI` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_getdetalleI` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_getdetalleI`(IN _iddetalle_insumo INT)
-BEGIN 
-	SELECT idinsumo, unidad, cantidad
-	FROM  detalle_insumos
-	WHERE iddetalle_insumo = _iddetalle_insumo;
-END */$$
-DELIMITER ;
-
-/* Procedure structure for procedure `spu_getFormula` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_getFormula` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_getFormula`()
-BEGIN 
-	SELECT idformula, nombreformula
-	FROM formulas
-	WHERE estado = 1;
-END */$$
-DELIMITER ;
-
-/* Procedure structure for procedure `spu_getInsumo` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_getInsumo` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_getInsumo`()
-BEGIN 
-	SELECT idinsumo, insumo
-	FROM insumos
-	ORDER BY idinsumo;
-END */$$
-DELIMITER ;
-
 /* Procedure structure for procedure `spu_get_insumo` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `spu_get_insumo` */;
@@ -825,7 +612,10 @@ DELIMITER $$
 BEGIN
 	SELECT	insumo, unidad , cantidad, descripcion
 	FROM insumos
-	WHERE idinsumo = _idinsumo;
+	WHERE estado = '1' AND
+	idinsumo = _idinsumo;
+	
+
 END */$$
 DELIMITER ;
 
@@ -837,22 +627,20 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_insumos_listar`()
 BEGIN 
+
     SELECT
-        idinsumo,
-        insumo,
-        CASE
-            WHEN cantidad >= 1000 THEN FORMAT(cantidad / 1000, 2) 
-            ELSE FORMAT(cantidad, 2) 
-        END AS cantidad,
-        CASE
-            WHEN cantidad >= 1000 THEN 'TN' 
-            ELSE 'KG' 
-        END AS unidad,
-        descripcion
-    FROM insumos
-    WHERE estado = '1'
-    ORDER BY idinsumo DESC;
-END */$$
+        i.idinsumo,
+        i.insumo,
+        i.descripcion,
+        sum((dt.cantidadtn + dt.cantidadsaco)) AS cantidad
+
+    FROM insumos i
+    left join detalle_entradas dt on i.idinsumo = dt.idinsumo
+    WHERE i.estado = '1'
+    group by idinsumo
+    ORDER BY i.idinsumo DESC;
+
+ END */$$
 DELIMITER ;
 
 /* Procedure structure for procedure `spu_insumos_register` */
@@ -873,6 +661,7 @@ BEGIN
 	
 	INSERT INTO insumos (insumo, unidad, cantidad, descripcion) VALUES
 		(_insumo, _unidad, _cantidad, _descripcion);
+
 END */$$
 DELIMITER ;
 
@@ -899,25 +688,7 @@ BEGIN
 	cantidad = _cantidad,
 	descripcion = _descripcion
 	WHERE idinsumo = _idinsumo;
-END */$$
-DELIMITER ;
 
-/* Procedure structure for procedure `spu_listar_detalleF` */
-
-/*!50003 DROP PROCEDURE IF EXISTS  `spu_listar_detalleF` */;
-
-DELIMITER $$
-
-/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_detalleF`(IN _idformula INT)
-BEGIN 
-	SELECT DI.iddetalle_insumo, I.idinsumo, I.insumo, 
-	DI.cantidad,
-	(Di.cantidad * 0.05) AS gkgU
-	FROM detalle_insumos DI
-	INNER JOIN  formulas F ON F.idformula = DI.idformula
-	INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
-	WHERE F.idformula = _idformula;
-	
 END */$$
 DELIMITER ;
 
@@ -981,15 +752,15 @@ DELIMITER ;
 DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_mostrar_insumos`()
-begin
-	select idinsumo,
+BEGIN
+	SELECT idinsumo,
 		insumo,
 		unidad,
 		cantidad
-	from insumos
+	FROM insumos
 	WHERE estado = '1'
 	ORDER BY idinsumo DESC;
-end */$$
+END */$$
 DELIMITER ;
 
 /* Procedure structure for procedure `spu_obtener_detalleV` */
@@ -1000,6 +771,7 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_obtener_detalleV`(IN _idventa INT)
 BEGIN 
+
     SELECT CONCAT(PE.nombres,' ',PE.apellidos) AS clientes,
         PRO.nombre, DV.cantidad, VE.paquetes, VE.kilos,
         VE.precio, VE.flete,(VE.kilos * VE.precio) AS monto,
@@ -1011,6 +783,7 @@ BEGIN
     INNER JOIN detalle_ventas DV ON DV.iddetalle_venta = VE.iddetalle_venta
     INNER JOIN productos PRO ON PRO.idproducto = DV.idproducto
     WHERE VE.idventa = _idventa;
+
 END */$$
 DELIMITER ;
 
@@ -1035,7 +808,9 @@ DELIMITER $$
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_obtener_ultimaV`()
 BEGIN
 	    DECLARE last_sale_id INT;
+
     SELECT MAX(idventa) INTO last_sale_id FROM ventas;
+
     SELECT CONCAT(PE.nombres,' ',PE.apellidos) AS clientes,
         PRO.nombre, DV.cantidad, VE.paquetes, VE.kilos,
         VE.precio, VE.flete,(VE.kilos * VE.precio) AS monto,
@@ -1083,7 +858,6 @@ BEGIN
 	INSERT INTO pagos (idventa, banco, numoperacion, pago)VALUES
 	(_idventa, _banco, _numoperacion, _pago);
 	
-	
 END */$$
 DELIMITER ;
 
@@ -1128,6 +902,7 @@ SELECT
 	productos.`idproducto`,
 	productos.`nombre`,
 	productos.`descripcion`
+
 FROM productos
 	WHERE productos.estado = '1'
 	ORDER BY idproducto DESC;
@@ -1179,6 +954,7 @@ BEGIN
 	UPDATE productos SET
 		nombre 		= _producto,
 		descripcion	= _descripcion
+
 	WHERE idproducto = _idproducto;
 END */$$
 DELIMITER ;
@@ -1191,8 +967,7 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_resume_ventas`()
 BEGIN
- SELECT 
- COUNT(*) AS Ventas, MONTHNAME(fechaventa) AS MONTH, SUM(ventas.kilos) AS Kilos_Vendidos2
+ SELECT COUNT(*) AS Ventas, MONTHNAME(fechaventa) AS MONTH, SUM(ventas.kilos) AS Kilos_Vendidos2
  FROM ventas
  WHERE fechaventa >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
  ORDER BY fechaventa;
@@ -1231,6 +1006,7 @@ BEGIN
 		claveacceso
 		FROM usuarios
 		INNER JOIN personas PE ON PE.idpersona = usuarios.`idpersona`
+
 		WHERE usuarios.estado = '1'
 		ORDER BY idusuario DESC;
 END */$$
@@ -1244,9 +1020,11 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_user_login`(IN _nombreusuario VARCHAR(40))
 BEGIN 
+
 	SELECT 	usuarios.idusuario, 
 		personas.apellidos, personas.nombres,
 		usuarios.nombreusuario, usuarios.claveacceso
+
 	FROM usuarios
 	INNER JOIN personas ON personas.idpersona = usuarios.idpersona
 	WHERE nombreusuario = _nombreusuario;
@@ -1303,6 +1081,7 @@ BEGIN
 			telefono  = _telefono,
 			nombreusuario = _nombreusuario,
 			claveacceso = _claveacceso
+
 	WHERE idusuario = _idusuario;
 END */$$
 DELIMITER ;
@@ -1314,12 +1093,14 @@ DELIMITER ;
 DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_usuario_registar`(
+
 IN _nombres 	VARCHAR(30),
 IN _apellidos 	VARCHAR(30),
 IN _dni		CHAR(8),
 IN _telefono 	CHAR(9),
 IN _nombreusuario VARCHAR(40),
 IN _claveacceso	  VARCHAR(100)
+
 )
 BEGIN 
 	DECLARE g_idpersona INT;
@@ -1339,6 +1120,7 @@ BEGIN
 	
 	INSERT INTO usuarios (idpersona , nombreusuario, claveacceso) VALUES
 			(g_idpersona, _nombreusuario, _claveacceso);	
+
 END */$$
 DELIMITER ;
 
@@ -1444,8 +1226,12 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_registrar_entrada`(
     IN p_idinsumo INT,
-    IN p_cantidad SMALLINT,
-    IN _precio DECIMAL(7,2)
+    IN p_cantidadtn SMALLINT,
+    IN _cantidadsaco SMALLINT,
+    IN _precio DECIMAL(7,2),
+    IN _fecha_entrada DATE,
+    IN _detalle VARCHAR(200)
+    
 )
 BEGIN
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -1454,16 +1240,37 @@ BEGIN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error durante la operación.';
     END;
+
+ 
+
     START TRANSACTION;
+
+ 
+
+    -- Ajustar las cantidades según la lógica requerida
+    SET p_cantidadtn = p_cantidadtn * 1000;
+    SET _cantidadsaco = _cantidadsaco * 50;
+
+ 
+
     -- Registrar el detalle de entrada
-    INSERT INTO detalle_entradas (idinsumo, cantidad, precio)
-    VALUES (p_idinsumo, p_cantidad, _precio);
+    INSERT INTO detalle_entradas (idinsumo, cantidadtn,cantidadsaco, precio, fecha_entrada, detalle)
+    VALUES (p_idinsumo, p_cantidadtn,_cantidadsaco, _precio, _fecha_entrada, _detalle);
+
+ 
+
     -- Actualizar la cantidad en la tabla de insumos
     UPDATE insumos
-    SET cantidad = cantidad + p_cantidad,
-        unidad = CASE WHEN (cantidad + p_cantidad) > 1000 AND unidad = 'KG' THEN 'TN' ELSE unidad END
+    SET cantidad = cantidad + p_cantidadtn,
+        unidad = CASE WHEN (cantidad + p_cantidadtn) > 1000 AND unidad = 'KG' THEN 'TN' ELSE unidad END
     WHERE idinsumo = p_idinsumo;
+
+ 
+
     COMMIT;
+
+ 
+
     SELECT 'Entrada registrada y stock actualizado correctamente' AS mensaje;
 END */$$
 DELIMITER ;

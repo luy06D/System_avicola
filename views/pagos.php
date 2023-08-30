@@ -169,6 +169,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         </option>
                         <option value="BCP">BCP</option>
                         <option value="SCOTIABANK">SCOTIABANK</option>
+                        <option value="BANCO LA NACION">BANCO LA NACION</option>
+                        <option value="BBVA">BBVA</option>
+                        <option value="BANBIF">BANBIF</option>
+                        <option value="PICHINCHA">PICHINCHA</option>
+                        <option value="INTERBANK">INTERBANK</option>
+                        <option value="YAPE">YAPE</option>
+                        <option value="PLIN">PLIN</option>
+                        <option value="Otros">Otros</option>
                     </select>
                         </div>
                         <div class="input-group mb-3">
@@ -302,7 +310,7 @@ function mostrar(){
                             $("#modal-registrar").modal('hide');
                         } else {
                             Swal.fire({
-                                title: "Numero de operacion duplicado",
+                                title: "Número de operación duplicado",
                                 icon: "error",
                                 showConfirmButton: false,
                                 timer: 1500

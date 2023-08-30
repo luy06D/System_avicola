@@ -87,12 +87,15 @@ class Insumo extends Conexion{
         ];
 
         try{
-            $consulta = $this->access->prepare("CALL sp_registrar_entrada(?,?,?)");
+            $consulta = $this->access->prepare("call sp_registrar_entrada(?,?,?,?,?,?)");
             $respuesta["status"] = $consulta->execute(array(
                 
                 $datos["idinsumo"],
-                $datos["cantidad"],
-                $datos["precio"]
+                $datos["cantidadtn"],
+                $datos["cantidadsaco"],
+                $datos["precio"],
+                $datos["fecha_entrada"],
+                $datos["detalle"]
            
             ));
     

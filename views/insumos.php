@@ -128,7 +128,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         <th>Código</th>
                         <th>Insumo</th>
                         <th>Cantidad</th>
-                        <th>Unidad</th>
                         <th>Descripcion</th>
                         <th>Operaciones</th>
                         </tr>
@@ -184,7 +183,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                       <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
                         <span class="input-group-text"><i class="bi bi-text-left"></i></span>
-                        <textarea class="form-control" id="descripcion" placeholder="Descripcion" aria-label="With textarea"></textarea>
+                        <input class="form-control" id="descripcion" placeholder="Descripcion" aria-label="With textarea"></input>
                         </div>                      
                       </div>
                     </div>
@@ -216,11 +215,23 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         </div> -->
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
-                          <input type="number" class="form-control" placeholder="Cantidad" maxlength="50" id="md-cantidad">
+                          <input type="number" class="form-control" placeholder="Ingrese número de toneladas" maxlength="50" id="md-cantidad">
+                        </div>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-pencil-square"></i></span>
+                          <input type="number" class="form-control" placeholder="Ingrese número de sacos" maxlength="50" id="md-sacos">
                         </div>
                         <div class="input-group mb-3">
                           <span class="input-group-text" id="basic-addon1"><i class="bi bi-coin"></i></span>
                           <input type="number" class="form-control" placeholder="S/00.00" maxlength="50" id="md-precio">
+                        </div>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-calendar-event"></i></span>
+                          <input type="date" class="form-control"  id="md-fecha">
+                        </div>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1"><i class="bi bi-chat-left-text"></i></span>
+                          <input class="form-control"  rows="3" id="md-detalle"></input>
                         </div>
               
                     </form>    
@@ -271,7 +282,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         $("#tabla-insumos tbody").html(result);
                         $("#tabla-insumos").DataTable({
                             responsive: true,
-                            lengthMenu:[5,10],
+                            lengthMenu:[10,5],
                             language: {
                                 url: '../js/Spanish.json'
                             }
@@ -304,9 +315,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     confirmButtonColor: '#65BB3B',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        const cantidad = $("#md-cantidad").val().trim();
-                        const precio = $("#md-precio").val().trim();
-                        if (cantidad === "" || precio === "" ) {
+                        const cantidadtn = $("#md-cantidad").val();
+                        const cantidadsaco = $("#md-sacos").val();
+                        const precio = $("#md-precio").val();
+                        const fecha = $("#md-fecha").val();
+                        const detalle = $("#md-detalle").val();
+
+                        if (cantidad === "" || fecha ==="") {
                             Swal.fire({
                                 title: "Por favor, complete los campos y asegúrese de que la cantidad no esté vacía.",
                                 icon: "warning",
@@ -316,8 +331,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             let datosEnviar = {
                                 'operacion': 'actualizar_stock',
                                 'idinsumo': idinsumo,
-                                'cantidad': cantidad,
-                                'precio': precio
+                                'cantidadtn': cantidadtn,
+                                'cantidadsaco': cantidadsaco,
+                                'precio': precio,
+                                'fecha_entrada': fecha,
+                                'detalle': detalle,
                             };
 
                             $.ajax({
@@ -325,6 +343,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 type: 'POST',
                                 data: datosEnviar,
                                 success: function (result) {
+                                    console.log("relsutado", result)
                                     if (result.status === true) {
                                         Swal.fire({
                                             title: "Operación exitosa",

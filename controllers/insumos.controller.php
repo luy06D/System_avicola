@@ -15,7 +15,6 @@ if(isset($_GET['operacion'])){
                     <td>{$registro['idinsumo']}</td>
                     <td>{$registro['insumo']}</td>
                     <td>{$registro['cantidad']}</td>
-                    <td>{$registro['unidad']}</td>
                     <td>{$registro['descripcion']}</td>                    
                     <td>
                         <a href='#' class='editar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idinsumo ='{$registro['idinsumo']}'><i class='bi bi-pencil-square'></i></a>
@@ -74,9 +73,11 @@ if(isset($_POST['operacion'])){
     if ($_POST['operacion'] == 'actualizar_stock') {
         $saveData = [
             "idinsumo"      => $_POST['idinsumo'],  
-            "cantidad"      => $_POST['cantidad'],
-            "precio"        => $_POST['precio']
-      
+            "cantidadtn"    => $_POST['cantidadtn'],
+            "cantidadsaco"  => $_POST['cantidadsaco'],
+            "precio"        => $_POST['precio'],
+            "fecha_entrada" => $_POST['fecha_entrada'],
+            "detalle"       => $_POST['detalle']
             
         ];
         $resultado = $insumos->insumo_add($saveData);

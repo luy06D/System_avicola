@@ -42,7 +42,6 @@ class Formula extends Conexion{
     }
 
 
-
     
     public function formula_registrar($datos = []){
 

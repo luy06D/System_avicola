@@ -140,9 +140,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             </div>
         </div> 
 
-        <div>
-            <label id="total-cantidad">Sumatoria de cantidad: 0</label>
-        </div>
+   
     </div>
 
 
@@ -167,9 +165,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                       <div class="mb-3 col-lg-6">
                         <div class="input-group mb-3">
                                 <select class="form-select" id="unidad" disabled>
-                                <option selected>Seleccione</option>    
+                                <option value="">Seleccione</option>    
                                 <option value="KG">KILOS</option>    
-                                <option value="TN">TONELADAS</option>                 
+                                <option selected value="TN">TONELADAS</option>                 
                                 </select>                
                                 <label class="input-group-text" for="inputGroupSelect02"><i class='bx bx-cart-add' ></i></label>
                         </div>                     
@@ -288,15 +286,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             }
 
                         });
-            
-            let totalCantidad = 0;
-            $("#tabla-insumos tbody tr").each(function() {
-                const cantidad = parseFloat($(this).find("td:nth-child(3)").text());
-                totalCantidad += cantidad;
-            });
-
- 
-            $("#total-cantidad").text("Total GKG/TN: " + totalCantidad.toFixed(2)); // Mostrar con 2 decimales
 
                     }
                 });

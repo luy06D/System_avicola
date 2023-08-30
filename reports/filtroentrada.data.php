@@ -6,19 +6,26 @@
 <table class="table table-border text-center">
     <colgroup>
 
-        <col style="width: 50%;">
+        <col style="width: 12%;">
+        <col style="width: 19%;">
+        <col style="width: 19%;">
         <col style="width: 10%;">
         <col style="width: 10%;">
-        <col style="width: 30%;">
-
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
     </colgroup>
     <thead class="table-cabez">
         <tr>
         
+        <th>Fecha</th>
+        <th>Detalle</th>
         <th>Insumo</th>
-        <th>Cantidad</th>
+        <th>U.</th>
+        <th>Cant/Kg</th>
+        <th>Saco/Kg</th>
         <th>Precio</th>
-        <th>Fecha Salida</th>
+        <th>A Stock</th>
         </tr>            
     </thead>
     <tbody>
@@ -26,10 +33,14 @@
     <?php foreach($data as $registro): ?>
         <tr>
       
-            <td><?=$registro['insumo']?></td>
-            <td><?=$registro['cantidad_entrada']?></td>
-            <td><?=$registro['precio']?></td>
             <td><?=$registro['fecha_entrada']?></td>
+            <td><?=$registro['detalle']?></td>
+            <td><?=$registro['insumo']?></td>
+            <td><?=$registro['unidad']?></td>
+            <td><?=$registro['cantidadtn']?></td>
+            <td><?=$registro['cantidadsaco']?></td>
+            <td><?=$registro['precio']?></td>
+            <td><?=$registro['stock']?></td>
 
       
         </tr>

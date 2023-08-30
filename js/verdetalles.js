@@ -30,8 +30,21 @@ $(document).ready(function (){
                     cuerpoTabla2.innerHTML += row; 
                     
                 });
+
+                $(document).ready(function(){                                   
+                    $('#table-detalles').DataTable({
+                        responsive: true ,
+                        lengthMenu:[5],
+                        language: {
+                            url: '../js/Spanish.json'
+                        },   
+                    });
+                })
             }
         });
+
+        
+
 
     }
 

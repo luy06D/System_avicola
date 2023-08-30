@@ -198,10 +198,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <table class="table display nowrap" style="width: 100%;"  id="table-report">
                         <thead class="table-success text-center">
                             <tr>
+                                <th>Fecha</th>
+                                <th>Fórmula</th>
                                 <th>Insumo</th>
-                                <th>Cantidad</th> 
                                 <th>Unidad</th>                           
-                                <th>Fecha Salida</th>
+                                <th>Cantidad</th> 
+                                <th>De Stock</th>
                         
                             </tr>
                         </thead>
@@ -341,10 +343,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     data.forEach(element => {
                         const rows = `
                         <tr>
+                            <td>${element.fecha_salida}</td>
+                            <td>${element.formula}</td>
                             <td>${element.insumo}</td>
-                            <td>${element.cantidad}</td>
                             <td>${element.unidad}</td>       
-                            <td>${element.fecha_entrada}</td>
+                            <td>${element.cantidad}</td>
+                            <td>${element.stock}</td>
+                            
                                                                                                                                                              
                         </tr>
                         `;
@@ -387,11 +392,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
                         // Actualizar la tabla DataTable con los nuevos datos
                         const nuevosDatos = data.map(element => [
-                       
+                        element.fecha_salida,
+                        element.formula,
                         element.insumo,
-                        element.cantidad,
                         element.unidad,
-                        element.fecha_entrada,
+                        element.cantidad,
+                        element.stock,
              
                         ]);
                         table.clear().rows.add(nuevosDatos).draw();
@@ -427,10 +433,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
+                                <td>${element.fecha_salida}</td>
+                                <td>${element.formula}</td>
                                 <td>${element.insumo}</td>
-                                <td>${element.cantidad}</td>  
-                                <td>${element.unidad}</td>                           
-                                <td>${element.fecha_entrada}</td>
+                                <td>${element.unidad}</td>       
+                                <td>${element.cantidad}</td>
+                                <td>${element.stock}</td>
                                                                                                                                                                 
                             </tr>                  
                             `;
@@ -474,10 +482,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                // Actualizar la tabla DataTable con los nuevos datos
                         const nuevosDatos = data.map(element => [
                        
-                       element.insumo,
-                       element.cantidad,
-                       element.unidad,
-                       element.fecha_entrada,
+                        element.fecha_salida,
+                        element.formula,
+                        element.insumo,
+                        element.unidad,
+                        element.cantidad,
+                        element.stock,
             
                        ]);
                        table.clear().rows.add(nuevosDatos).draw();
@@ -511,10 +521,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
+                                <td>${element.fecha_salida}</td>
+                                <td>${element.formula}</td>
                                 <td>${element.insumo}</td>
+                                <td>${element.unidad}</td>       
                                 <td>${element.cantidad}</td>
-                                <td>${element.unidad}</td> 
-                                <td>${element.fecha_entrada}</td>
+                                <td>${element.stock}</td>
                                                                                                                                                                 
                             </tr>                        
                             `;
@@ -559,10 +571,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                            // Actualizar la tabla DataTable con los nuevos datos
                            const nuevosDatos = data.map(element => [
                        
-                       element.insumo,
-                       element.cantidad,
-                       element.unidad,
-                       element.fecha_entrada,
+                        element.fecha_salida,
+                        element.formula,
+                        element.insumo,
+                        element.unidad,
+                        element.cantidad,
+                        element.stock,
             
                        ]);
                        table.clear().rows.add(nuevosDatos).draw();

@@ -205,10 +205,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <table class="table display nowrap" style="width: 100%;"  id="table-report">
                         <thead class="table-success text-center">
                             <tr>
+                                <th>Fecha</th>
+                                <th>Detalle</th>
                                 <th>Insumo</th>
-                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Cantidad/kg</th>
+                                <th>Sacos/kg</th>
                                 <th>Precio</th>                              
-                                <th>Fecha Entrada</th>
+                                <th>A Stock</th>
                         
                             </tr>
                         </thead>
@@ -318,7 +322,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     lsCliente.appendChild(optionTag);
                     
                 });
-                });
+            });
       }
 
 
@@ -348,10 +352,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     data.forEach(element => {
                         const rows = `
                         <tr>
-                            <td>${element.insumo}</td>
-                            <td>${element.cantidad_entrada}</td>
-                            <td>${element.precio}</td>                            
                             <td>${element.fecha_entrada}</td>
+                            <td>${element.detalle}</td>
+                            <td>${element.insumo}</td>
+                            <td>${element.unidad}</td>
+                            <td>${element.cantidadtn}</td>
+                            <td>${element.cantidadsaco}</td>
+                            <td>${element.precio}</td>  
+                            <td>${element.stock}</td>                          
                                                                                                                                                              
                         </tr>
                         `;
@@ -394,12 +402,16 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
                            // Actualizar la tabla DataTable con los nuevos datos
                            const nuevosDatos = data.map(element => [
-                       
-                       element.insumo,
-                       element.cantidad_entrada,
-                       element.precio,
+
                        element.fecha_entrada,
-            
+                       element.detalle,
+                       element.insumo,
+                       element.unidad,
+                       element.cantidadtn,
+                       element.cantidadsaco,
+                       element.precio,
+                       element.stock,
+                       
                        ]);
                        table.clear().rows.add(nuevosDatos).draw();
                     })
@@ -434,10 +446,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
-                                <td>${element.insumo}</td>
-                                <td>${element.cantidad_entrada}</td>
-                                <td>${element.precio}</td>                            
                                 <td>${element.fecha_entrada}</td>
+                                <td>${element.detalle}</td>
+                                <td>${element.insumo}</td>
+                                <td>${element.unidad}</td>
+                                <td>${element.cantidadtn}</td>
+                                <td>${element.cantidadsaco}</td>
+                                <td>${element.precio}</td>  
+                                <td>${element.stock}</td>      
                                                                                                                                                                 
                             </tr>                  
                             `;
@@ -479,10 +495,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                  // Actualizar la tabla DataTable con los nuevos datos
                            const nuevosDatos = data.map(element => [
                        
-                       element.insumo,
-                       element.cantidad_entrada,
-                       element.precio,
                        element.fecha_entrada,
+                       element.detalle,
+                       element.insumo,
+                       element.unidad,
+                       element.cantidadtn,
+                       element.cantidadsaco,
+                       element.precio,
+                       element.stock,
             
                        ]);
                        table.clear().rows.add(nuevosDatos).draw();
@@ -517,10 +537,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                         data.forEach(element =>{
                             const rows = `
                             <tr>
-                                <td>${element.insumo}</td>
-                                <td>${element.cantidad_entrada}</td>
-                                <td>${element.precio}</td>                            
                                 <td>${element.fecha_entrada}</td>
+                                <td>${element.detalle}</td>
+                                <td>${element.insumo}</td>
+                                <td>${element.unidad}</td>
+                                <td>${element.cantidadtn}</td>
+                                <td>${element.cantidadsaco}</td>
+                                <td>${element.precio}</td>  
+                                <td>${element.stock}</td>      
                                                                                                                                                                 
                             </tr>                        
                             `;
@@ -565,10 +589,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                              // Actualizar la tabla DataTable con los nuevos datos
                              const nuevosDatos = data.map(element => [
                        
+                    element.fecha_entrada,
+                       element.detalle,
                        element.insumo,
-                       element.cantidad_entrada,
+                       element.unidad,
+                       element.cantidadtn,
+                       element.cantidadsaco,
                        element.precio,
-                       element.fecha_entrada,
+                       element.stock,
             
                        ]);
                        table.clear().rows.add(nuevosDatos).draw();

@@ -11,6 +11,8 @@ if(isset($_POST['operacion'])){
         echo json_encode($formulas->getFormulas());
     }
 
+    
+
     if($_POST['operacion'] == 'getInsumo'){
         echo json_encode($formulas->getInsumos());
     }
@@ -34,7 +36,6 @@ if(isset($_POST['operacion'])){
             "idformula" => $_POST['idformula'],
             "idinsumo" => $_POST['idinsumo'],
             "cantidad" => $_POST['cantidad'],
-            "unidad"   => $_POST['unidad'],
 
         ];
 
@@ -72,7 +73,7 @@ if(isset($_POST['operacion'])){
 
         
     if($_POST['operacion'] == 'obtener_formula'){
-        $data = $formulas->obtener_formula($_POST['idformula']);
+        $data = $formulas->obtener_formula($_POST['idformula'],$_POST['cantidadtn'],$_POST['cantidadsacos']);
         echo json_encode($data);
     }
 

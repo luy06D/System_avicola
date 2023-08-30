@@ -13,7 +13,7 @@ class Insumo extends Conexion{
 
     public function show_Insumos(){
         try{
-            $consulta = $this->access->prepare("CALL spu_insumos_listar()");
+            $consulta = $this->access->prepare("CALL spu_mostrar_insumos()");
             $consulta->execute();
 
             $datosObtenidos = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -92,7 +92,7 @@ class Insumo extends Conexion{
                 
                 $datos["idinsumo"],
                 $datos["cantidadtn"],
-                $datos["cantidadsaco"],
+                $datos["cantidadsacos"],
                 $datos["precio"],
                 $datos["fecha_entrada"],
                 $datos["detalle"]

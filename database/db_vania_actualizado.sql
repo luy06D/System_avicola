@@ -110,7 +110,7 @@ CREATE TABLE insumos
 idinsumo	INT AUTO_INCREMENT PRIMARY KEY,
 insumo		VARCHAR(30) 	NOT NULL,
 unidad		VARCHAR(20) 	NULL DEFAULT 'KG', -- TONELADA , KILOS
-cantidad	INT		NULL,
+cantidad	INT    		NULL,
 descripcion	VARCHAR(80)	NULL,
 estado		CHAR(1)		NOT NULL DEFAULT '1',
 CONSTRAINT uk_ins_ins UNIQUE(insumo)
@@ -138,7 +138,8 @@ INSERT INTO insumos (insumo, descripcion) VALUES
 		('TREONINA',''),
 		('MAYCOFIX FOCUS',''),
 		('MINAZEL PLUS' ,'');
-		
+
+
 CREATE TABLE detalle_entradas
 (
 identrada	INT AUTO_INCREMENT PRIMARY KEY,
@@ -161,47 +162,24 @@ CONSTRAINT uk_nom_for UNIQUE(nombreformula)
 )
 ENGINE = INNODB;
 
+ALTER TABLE formulas ADD estado CHAR(1)NOT NULL DEFAULT '1';
+
 CREATE TABLE detalle_insumos
 (
 iddetalle_insumo	INT AUTO_INCREMENT PRIMARY KEY,
 idformula		INT 		NOT NULL,
 idinsumo		INT 		NOT NULL,
-cantidad		SMALLINT	NOT NULL,
+cantidad		DECIMAL(10,2) 	NOT NULL,  -- porque al registrar detalle necesita la cantidad inicial
+cantidadtn		DECIMAL(7,2)	NULL,
+cantidadsacos		DECIMAL(7,2)	NULL,
 fecha_salida		DATE 		NOT NULL DEFAULT NOW(),
-detalle 		VARCHAR(200) 	NULL,
 CONSTRAINT fk_idf_det FOREIGN KEY (idformula) REFERENCES formulas(idformula),
 CONSTRAINT fk_idi_det FOREIGN KEY (idinsumo) REFERENCES insumos(idinsumo)
 )
 ENGINE = INNODB;
 
--- ALTER TABLE detalle_insumos ADD COLUMN fecha_entrada	DATE 	NOT NULL DEFAULT NOW();
--- SELECT * FROM insumos 
-
 
 -- PROCEDIMIENTOS ALMACEN
-
--- LISTAR INSUMOS
-DELIMITER $$
-CREATE PROCEDURE spu_insumos_listar()
-
-BEGIN 
-
-    SELECT
-        i.idinsumo,
-        i.insumo,
-        i.descripcion,
-        SUM((dt.cantidadtn + dt.cantidadsaco)) AS cantidad
-
-    FROM insumos i
-    LEFT JOIN detalle_entradas dt ON i.idinsumo = dt.idinsumo
-    WHERE i.estado = '1'
-    GROUP BY idinsumo
-    ORDER BY i.idinsumo DESC;
-
- END $$
-
- 
-CALL spu_insumos_listar()
 
 
 -- REGISTRAR INSUMOS
@@ -279,85 +257,89 @@ CREATE PROCEDURE spu_mostrar_insumos()
 BEGIN
 	SELECT idinsumo,
 		insumo,
-		unidad,
-		cantidad
+		cantidad,
+		descripcion
 	FROM insumos
 	WHERE estado = '1'
-	ORDER BY idinsumo DESC;
+	GROUP BY idinsumo 
+	ORDER BY insumo ASC ;
 END $$
 
+CALL spu_mostrar_insumos;
+
+CALL spu_insumos_listar;
+
+SELECT * FROM insumos
 
 
--- Registrar entrdas de insumos --
+-- Registrar entrdas de insumos 
 
 DELIMITER $$
 CREATE PROCEDURE sp_registrar_entrada(
-    IN p_idinsumo INT,
-    IN p_cantidadtn SMALLINT,
-    IN _cantidadsaco SMALLINT,
+    IN _idinsumo INT,
+    IN _cantidadtn SMALLINT,
+    IN _cantidadsacos SMALLINT,
     IN _precio DECIMAL(7,2),
     IN _fecha_entrada DATE,
     IN _detalle VARCHAR(200)
-    
 )
 BEGIN
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
-    BEGIN
-        ROLLBACK;
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Error durante la operación.';
-    END;
+  -- Validar que las cantidades no sean negativas
+  IF _cantidadtn < 0 OR _cantidadsacos < 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'Las cantidades no pueden ser negativas';
+  ELSE
+    -- Calcular la cantidad total en kilos sumando cantidadtn y cantidadsacos
+    SET @cantidad_total_kilos = (_cantidadtn * 1000) + (_cantidadsacos * 50);
 
- 
-
+    -- Iniciar la transacción
     START TRANSACTION;
 
- 
 
-    -- Ajustar las cantidades según la lógica requerida
-    SET p_cantidadtn = p_cantidadtn * 1000;
-    SET _cantidadsaco = _cantidadsaco * 50;
+    -- Actualizar la cantidad en insumos sumando la cantidad total en kilos
+    UPDATE insumos 
+    SET cantidad = IFNULL(cantidad, 0) + @cantidad_total_kilos
+    WHERE idinsumo = _idinsumo;
 
- 
 
-    -- Registrar el detalle de entrada
-    INSERT INTO detalle_entradas (idinsumo, cantidadtn,cantidadsaco, precio, fecha_entrada, detalle)
-    VALUES (p_idinsumo, p_cantidadtn,_cantidadsaco, _precio, _fecha_entrada, _detalle);
-
- 
-
-    -- Actualizar la cantidad en la tabla de insumos
-    UPDATE insumos
-    SET cantidad = cantidad + p_cantidadtn,
-        unidad = CASE WHEN (cantidad + p_cantidadtn) > 1000 AND unidad = 'KG' THEN 'TN' ELSE unidad END
-    WHERE idinsumo = p_idinsumo;
-
- 
-
+    -- Registrar la entrada en una tabla de registros (ejemplo)
+    INSERT INTO detalle_entradas (idinsumo, cantidadtn, cantidadsaco, precio, fecha_entrada, detalle)
+    VALUES (_idinsumo, _cantidadtn, _cantidadsacos, _precio, _fecha_entrada, _detalle);
+    -- Confirmar la transacción
     COMMIT;
 
- 
-
-    SELECT 'Entrada registrada y stock actualizado correctamente' AS mensaje;
+    -- Manejo de errores
+    BEGIN
+      DECLARE EXIT HANDLER FOR SQLEXCEPTION
+      BEGIN
+        ROLLBACK;
+        RESIGNAL;
+      END;
+    END;
+  END IF;
 END $$
 
 
 CALL sp_registrar_entrada(1,1,2,2500,'2023-08-26','Entrada prueba');
 
-SELECT * FROM insumos
+SELECT * FROM detalle_entradas;
 
--- Registrar Salidas
+SELECT * FROM insumos;
+
+
+-- DESCONTAR CANTIDAD INSUMOS
 DELIMITER $$
 CREATE PROCEDURE spu_descontar_insumo
 (
 IN _idformula INT,
 IN _idinsumo INT,
-IN _cantidad DECIMAL(10, 3)
+IN _cantidadtn DECIMAL(7,2),
+IN _cantidadsacos DECIMAL(7,2)
 )
 BEGIN
+
   DECLARE insumo_cantidad DECIMAL(10, 3);
   SET @conversion_factor = 1;
-  
 
   -- Iniciar la transacción
   START TRANSACTION;
@@ -365,10 +347,13 @@ BEGIN
   -- Obtener la cantidad actual del insumo
   SELECT cantidad INTO insumo_cantidad FROM insumos WHERE idinsumo = _idinsumo;
 
+  -- Calcular la cantidad total basada en cantidadtn y cantidadsacos
+  SET @cantidad_total = (_cantidadtn * @conversion_factor) + _cantidadsacos;
+
   -- Verificar si hay suficiente cantidad disponible en insumos
-  IF insumo_cantidad >= (_cantidad * @conversion_factor) THEN
+  IF insumo_cantidad >= @cantidad_total THEN
     -- Si hay suficiente cantidad disponible, actualizar la cantidad en insumos
-    SET insumo_cantidad = insumo_cantidad - (_cantidad * @conversion_factor);
+    SET insumo_cantidad = insumo_cantidad - @cantidad_total;
     UPDATE insumos SET cantidad = insumo_cantidad WHERE idinsumo = _idinsumo;
     
     -- No se actualizará la tabla detalle_insumos
@@ -384,16 +369,23 @@ BEGIN
 END $$
 
 
+CALL spu_descontar_insumo(3, 19, 100 , 50);
+
+SELECT * FROM formulas;
+SELECT * FROM insumos;
+
+
+
 DELIMITER $$
-CREATE  PROCEDURE spu_detalleinsumo_registrar(
+CREATE PROCEDURE spu_detalleinsumo_registrar(
 IN _idformula INT,
 IN _idinsumo INT,
-IN _cantidad DECIMAL(10, 3),
+IN _cantidad DECIMAL(10, 2),
 IN _unidad VARCHAR(20)
 )
 BEGIN
   -- Variable para almacenar la cantidad actual
-  DECLARE cantidad_actual DECIMAL(10, 3);
+  DECLARE cantidad_actual DECIMAL(10, 2);
   
   -- Obtener la cantidad actual en detalle_insumos si existe un registro con los mismos valores de idformula e idinsumo
   SELECT cantidad INTO cantidad_actual
@@ -441,12 +433,19 @@ CALL sp_filtro_fech('2023-08-01','2023-08-28')
 
 -- DETALLE DE FORMULAS POR ID
 DELIMITER $$
-
-CREATE PROCEDURE spu_listar_detalleF(IN _idformula INT)
+CREATE PROCEDURE spu_listar_detalleF
+(
+IN _idformula INT,
+IN _cantidadtn DECIMAL(7,2),
+IN _cantidadsacos DECIMAL(7,2)
+)
 BEGIN 
+	SET _cantidadsacos = _cantidadsacos * 50;
+
 	SELECT DI.iddetalle_insumo, I.idinsumo, I.insumo, 
 	DI.cantidad,
-	(Di.cantidad * 0.05) AS gkgU
+	(DI.cantidad * _cantidadtn) AS proporcion,
+	(_cantidadsacos) AS sacos
 	FROM detalle_insumos DI
 	INNER JOIN  formulas F ON F.idformula = DI.idformula
 	INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
@@ -454,7 +453,27 @@ BEGIN
 	
 END $$
 
-CALL spu_listar_detalleF(10)
+
+CALL spu_listar_detalleF(1, 2, 3);
+
+SELECT * FROM detalle_insumos
+
+INSERT INTO detalle_insumos (idformula, idinsumo, cantidad) VALUES
+	(1, 1, 200)
+
+-- REGISTRAR FORMULA
+
+DELIMITER $$
+CREATE PROCEDURE spu_formula_registrar
+(
+IN _nombreformula VARCHAR(40)
+)
+BEGIN
+    INSERT INTO formulas (nombreformula) VALUES
+            (_nombreformula);
+END $$
+
+
 
 -- MOSTRAR FORMULA 
 
@@ -482,8 +501,6 @@ CALL spu_formulaDelete (10)
 
 
 
-
-
 -- ACTUALIZAR UNA FORMULA
 DELIMITER $$
 CREATE PROCEDURE spu_detalleInsumo_update
@@ -503,6 +520,47 @@ END $$
 
 CALL spu_detalleInsumo_update(14, 3 , 31, 'KG');
 
+
+-- REGISTRAR DETALLE INSUMO
+
+DELIMITER $$
+CREATE  PROCEDURE spu_detalleinsumo_registrar(
+IN _idformula INT,
+IN _idinsumo INT,
+IN _cantidad DECIMAL(10,3)
+)
+BEGIN
+  -- Variable para almacenar la cantidad actual
+  DECLARE cantidad_actual DECIMAL(10, 3);
+
+  -- Obtener la cantidad actual en detalle_insumos si existe un registro con los mismos valores de idformula e idinsumo
+  SELECT cantidad INTO cantidad_actual
+  FROM detalle_insumos
+  WHERE idformula = _idformula AND idinsumo = _idinsumo;
+
+  -- Verificar si se encontró un registro en detalle_insumos
+  IF cantidad_actual IS NOT NULL THEN
+    -- Si existe un registro, actualizar la cantidad sumando _cantidad
+    UPDATE detalle_insumos
+    SET cantidad = cantidad_actual + _cantidad
+    WHERE idformula = _idformula AND idinsumo = _idinsumo;
+  ELSE
+    -- Si no existe un registro, insertar un nuevo registro en detalle_insumos
+    INSERT INTO detalle_insumos(idformula, idinsumo, cantidad)
+    VALUES (_idformula, _idinsumo, _cantidad);
+  END IF;
+
+END$$
+
+SELECT * FROM detalle_insumos
+
+-- GET INSUMOS PARA DETALLE
+DELIMITER $$
+CREATE PROCEDURE spu_getInsumo()
+BEGIN 
+	SELECT idinsumo, insumo
+	FROM insumos;
+END $$
 
 -- GET DETALLE
 

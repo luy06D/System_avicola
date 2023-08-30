@@ -74,13 +74,13 @@ class Formula extends Conexion{
         ];
     
         try {
-            $consulta = $this->access->prepare("CALL spu_detalleInsumo_registrar(?,?,?,?)");
+            $consulta = $this->access->prepare("CALL spu_detalleInsumo_registrar(?,?,?)");
             $respuesta["status"] = $consulta->execute(array(
                 
                 $datos["idformula"],
                 $datos["idinsumo"],
-                $datos["cantidad"],
-                $datos["unidad"]
+                $datos["cantidad"]
+
             
             ));
         } catch (Exception $e) {
@@ -104,8 +104,8 @@ class Formula extends Conexion{
                 
                 $datos["idformula"],
                 $datos["idinsumo"],
-                $datos["cantidad"],
-                $datos["unidad"]
+                $datos["cantidadtn"],
+                $datos["cantidadsacos"]
             
             ));
         } catch (Exception $e) {
@@ -117,13 +117,13 @@ class Formula extends Conexion{
     }
 
 
-    public function obtener_formula($idformula = 0){
+    public function obtener_formula($idformula = 0, $cantidadtn = 0, $cantidadsacos = 0){
         $respuesta = [
             "message" => ""
         ];
         try{
-          $consulta = $this->access->prepare("CALL spu_listar_detalleF(?)");
-          $consulta->execute(array($idformula));
+          $consulta = $this->access->prepare("CALL spu_listar_detalleF(?,?,?)");
+          $consulta->execute(array($idformula, $cantidadtn, $cantidadsacos));
           return $consulta->fetchAll(PDO::FETCH_ASSOC);
         }
         catch(Exception $e){

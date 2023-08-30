@@ -138,23 +138,21 @@ $('#descontar').click(function() {
             var datosTabla = [];
 
             var idformula = $('#lista-formula').val();
-            var unidadPorDefecto = 'KG'; // Establecer la unidad por defecto como 'KG'
 
             // Iterar a través de las filas de la tabla (excluyendo la primera fila de encabezado)
             $('#tabla-formula tbody tr').each(function() {
                 var fila = $(this);
-                var idinsumos = fila.find('td:eq(1)').text();
-                var cantidad = fila.find('td:eq(3)').text();
+                var idinsumo = fila.find('td:eq(1)').text();
+                var cantidadtn = fila.find('td:eq(4)').text();
+                var cantidadsacos = fila.find('td:eq(5)').text();
 
-                // Utilizar la unidad por defecto 'KG'
-                var unidad = unidadPorDefecto;
 
                 // Agregar los datos de la fila al array
                 datosTabla.push({
                     idformula: idformula,
-                    idinsumo: idinsumos,
-                    cantidad: cantidad,
-                    unidad: unidad,
+                    idinsumo: idinsumo,
+                    cantidadtn: cantidadtn,
+                    cantidadsacos: cantidadsacos,
                 });
             });
 

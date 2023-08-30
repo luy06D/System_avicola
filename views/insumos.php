@@ -314,7 +314,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     cancelButtonText: 'Cancelar',
                     confirmButtonColor: '#65BB3B',
                 }).then((result) => {
-                    if (result.isConfirmed) {
+                    if (result.isConfirmed) {                        
                         const cantidadtn = $("#md-cantidad").val();
                         const cantidadsaco = $("#md-sacos").val();
                         const precio = $("#md-precio").val();
@@ -332,7 +332,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 'operacion': 'actualizar_stock',
                                 'idinsumo': idinsumo,
                                 'cantidadtn': cantidadtn,
-                                'cantidadsaco': cantidadsaco,
+                                'cantidadsacos': cantidadsaco,
                                 'precio': precio,
                                 'fecha_entrada': fecha,
                                 'detalle': detalle,

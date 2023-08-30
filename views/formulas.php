@@ -127,10 +127,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <form action="" id="form-formula">
                         <div class="row">
 
-                        <div class="card " style="width: 40rem">
-                        <div class="card-body">
-                            <h5 class="card-title text-center" style="color: #9C9C9C;">Calcular cantidad de TN/Sacos</h5>
-                            <form action="" id="form-calcular">
+                        <form action="" id="form-calcular">
                                 <div class="col-lg-6">
 
                                     
@@ -161,56 +158,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
                                 </div>
 
-                            </form>
-                            
-                        </div>
-                        </div>
-
-                        <div class="card " style="width: 40rem">
-                        <div class="card-body">
-                            <h5 class="card-title text-center" style="color: #9C9C9C;">Generar formula</h5>
-                            <form action="" id="form-formula">
-                                <div class="col-lg-6">                                                
-                                    <div class="mb-4 mt-4">
-                                        <div class="input-group  mt-4">
-                                            <input type="text" class="form-control"  id="formula"  autocomplete="off" placeholder="Formula">
-                                            <button id="registrarFormula" class="btn btn-success" type="button"><i class="bi bi-plus-circle"></i> Agregar</button>
-                                        </div> 
-                                                                    
-                                    </div>                                    
-                                    <div class="mb-4 mt-4">
-                                        <div>   
-                                            <label for="listaF" class="form-label">Seleccione la formula:</label>                                 
-                                            <select  id="listaF" class="js-example-placeholder " style="width: 100%">
-                                            <option value=""></option>
-                                            </select>
-                                        </div>                               
-                                    </div>                        
-                                    <div class="  mt-4">
-                                    <div class="col-md-3 mt-4">
-                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                            <button id="btmostrar" class="btn btn-success btn-md " type="button">Mostrar</button>    
-                                            <button id="btnDelete" class="btn btn-danger btn-md " type="button"><i class='bi bi-trash'></i> Eliminar</button> 
-                                            <button id="" class="btn btn-warning btn-md " type="button" data-bs-toggle="modal" data-bs-target="#modal-addInsumo"><i class="bi bi-plus-circle"></i> Agregar insumo</button>                                       
-                                        </div>
-                                    </div>  
-                                    <div class="col-md-3 mt-4">
-                                        <div class="">
-                                           
-                                        </div>
-
-                                    </div>
-                                                                                        
-                                    </div> 
-
-                                </div>
-
-                                </form>
-                                
-                            </div>
-                            </div>
+                            </form>           
                                           
-
                         </div>
                     </form>
           
@@ -364,11 +313,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 allowClear: true,                
              });
 
-             $("#listaF").select2();
-            $(".js-example-placeholder").select2({
-                placeholder: "Seleccione",
-                allowClear: true,                
-             });
 
 
             const lsFormula = document.querySelector("#lista-formula");
@@ -404,26 +348,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 });
       }
 
-      function mostrarFormulaG(){
-                const parameters = new URLSearchParams();
-                parameters.append("operacion", "getformula");
-
-                fetch("../controllers/formulas.controller.php", {
-                method: 'POST',
-                body: parameters
-                })
-                .then(response => response.json())
-                .then(data => {
-                lsFormulaG.innerHTML = "<option value=''>Seleccione formula</option>";
-                data.forEach(element => {
-                    const optionTag = document.createElement("option");
-                    optionTag.value = element.idformula
-                    optionTag.text = element.nombreformula;
-                    lsFormulaG.appendChild(optionTag);
-                    
-                });
-                });
-      }
 
       
       function mostrarInsumosUp(){
@@ -613,86 +537,6 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 }
 
 
-function filtrarFormula2(){
-        const parameter = new URLSearchParams();
-        parameter.append("operacion", "obtener_formula");
-        parameter.append("idformula", document.querySelector("#lista-formula").value);
-        parameter.append("cantidadtn", document.querySelector("#toneladas").value);
-        parameter.append("cantidadsacos", document.querySelector("#sacos").value);
-
-        fetch(`../controllers/formulas.controller.php`,{
-            method: 'POST',
-            body: parameter
-        })
-        .then(response => response.json())
-        .then(data => {
-            cuerpoTabla.innerHTML = ``;
-            data.forEach(element => {  
-                console.log("AWRG")                          
-                const rows =  `
-                <tr>
-                    <td>${element.iddetalle_insumo}</td>  
-                    <td>${element.idinsumo}</td> 
-                    <td>${element.insumo}</td>    
-                    <td>${element.cantidad}</td>
-                    <td>${element.proporcion}</td>
-                    <td>${element.sacos}</td>
-                    <td><a href='#' class='detalle_insumo btn btn-outline-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modal-updateInsumo"
-                      data-iddetalle_insumo='${element.iddetalle_insumo}'><i class='bi bi-pencil-square'></i></a></td>                                                                                                                                
-                </tr>
-                `;
-                cuerpoTabla.innerHTML += rows;
-
-            });
-
-
-
-            // Destruir la instancia DataTable existente
-            if ($.fn.DataTable.isDataTable('#tabla-formula')) {
-                $('#tabla-formula').DataTable().destroy();
-            }
-
-            // Reinicializar la tabla DataTable
-            $(document).ready(function(){                                   
-                const table2 = $('#tabla-formula').DataTable({
-                    responsive: true ,
-                    lengthMenu:[10,5],
-                    language: {
-                        url: '../js/Spanish.json'
-                    },
-                    dom: 'Bfrtip'                            
-                });
-
-
-                let totalCantidad = 0;
-
-                $("#tabla-formula tbody tr").each(function() {
-                    const cantidad = parseFloat($(this).find("td:nth-child(3)").text());
-                    totalCantidad += cantidad;
-                });
-
-                // Actualizar el contenido del label
-                $("#total-cantidad").text("Total GKG/TN: " + totalCantidad.toFixed(2)); // Mostrar con 2 decimales
-
- 
-
-                // Actualizar la tabla DataTable con los nuevos datos
-                const nuevosDatos = data.map(element => [
-                    element.iddetalle_insumo,
-                    element.idinsumo,
-                    element.insumo,
-                    element.cantidad,
-                    element.proporcion,
-                    element.sacos,
-                    `<a href='#' class='detalle_insumo btn btn-outline-warning btn-sm' data-bs-toggle="modal" data-bs-target="#modal-updateInsumo"
-                      data-iddetalle_insumo='${element.iddetalle_insumo}'><i class='bi bi-pencil-square'></i></a>`
-                ]);
-                table2.clear().rows.add(nuevosDatos).draw();
-            });
-
-
-        })
-}
 
 
 
@@ -768,23 +612,22 @@ function filtrarFormula2(){
 
 
 
-      var formulaR = document.querySelector("#formula");
-      formulaR.addEventListener("keydown", function(event){
-        if (event.keyCode === 13) {
-          event.preventDefault(); 
-          formulaRegistrar();
-        }
-      })
+    //   var formulaR = document.querySelector("#formula");
+    //   formulaR.addEventListener("keydown", function(event){
+    //     if (event.keyCode === 13) {
+    //       event.preventDefault(); 
+    //       formulaRegistrar();
+    //     }
+    //   })
 
 
 
       mostrarFormula();
       mostrarInsumosUp();
-      mostrarInsumos();
-      mostrarFormulaG();
-      btnFormulaR.addEventListener("click", formulaRegistrar);
+      mostrarInsumos();      
+      
       btCalcular.addEventListener("click", filtrarFormula);
-      btmostrar.addEventListener("click", filtrarFormula2);
+      
       btnAddInsumo.addEventListener("click", detalleF_Registrar);
 
 

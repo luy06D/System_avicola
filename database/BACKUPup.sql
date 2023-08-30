@@ -79,9 +79,15 @@ CREATE TABLE `detalle_insumos` (
   KEY `fk_idi_det` (`idinsumo`),
   CONSTRAINT `fk_idf_det` FOREIGN KEY (`idformula`) REFERENCES `formulas` (`idformula`),
   CONSTRAINT `fk_idi_det` FOREIGN KEY (`idinsumo`) REFERENCES `insumos` (`idinsumo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `detalle_insumos` */
+
+insert  into `detalle_insumos`(`iddetalle_insumo`,`idformula`,`idinsumo`,`cantidad`,`cantidadtn`,`cantidadsacos`,`fecha_salida`) values 
+(1,1,1,30.50,NULL,NULL,'2023-08-30'),
+(2,1,2,500.00,NULL,NULL,'2023-08-30'),
+(3,1,4,70.00,NULL,NULL,'2023-08-30'),
+(4,3,6,700.00,NULL,NULL,'2023-08-30');
 
 /*Table structure for table `detalle_ventas` */
 
@@ -141,10 +147,10 @@ CREATE TABLE `insumos` (
 /*Data for the table `insumos` */
 
 insert  into `insumos`(`idinsumo`,`insumo`,`unidad`,`cantidad`,`descripcion`,`estado`) values 
-(1,'SOYA','KG',2950,'Proteica, vegetal, versátil, nutricional','1'),
-(2,'AFRECHO','KG',4400,'Fibroso, salvado, integral, nutritivo.','1'),
+(1,'SOYA','KG',2739,'Proteica, vegetal, versátil, nutricional','1'),
+(2,'AFRECHO','KG',3250,'Fibroso, salvado, integral, nutritivo.','1'),
 (3,'MAIZ','KG',3098,'Cereal, amarillo, versátil, nutritivo.','1'),
-(4,'SAL','KG',3700,'Mineral, condimento, saborizante, conservante','1'),
+(4,'SAL','KG',3410,'Mineral, condimento, saborizante, conservante','1'),
 (5,'ACHOTE','KG',6150,'','1'),
 (6,'METHIONINE','KG',NULL,'','1'),
 (7,'COLINA','KG',NULL,'','1'),
@@ -447,38 +453,27 @@ DELIMITER $$
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_descontar_insumo`(
 IN _idformula INT,
 IN _idinsumo INT,
-IN _cantidadtn decimal(7,2),
+IN _cantidadtn DECIMAL(7,2),
 IN _cantidadsacos DECIMAL(7,2)
 )
 BEGIN
-
   DECLARE insumo_cantidad DECIMAL(10, 3);
   SET @conversion_factor = 1;
 
-  -- Iniciar la transacción
   START TRANSACTION;
 
-  -- Obtener la cantidad actual del insumo
   SELECT cantidad INTO insumo_cantidad FROM insumos WHERE idinsumo = _idinsumo;
 
-  -- Calcular la cantidad total basada en cantidadtn y cantidadsacos
-  SET @cantidad_total = (_cantidadtn * @conversion_factor) + _cantidadsacos;
+  SET @cantidad_total = _cantidadtn + (_cantidadsacos / @conversion_factor);
 
-  -- Verificar si hay suficiente cantidad disponible en insumos
   IF insumo_cantidad >= @cantidad_total THEN
-    -- Si hay suficiente cantidad disponible, actualizar la cantidad en insumos
     SET insumo_cantidad = insumo_cantidad - @cantidad_total;
     UPDATE insumos SET cantidad = insumo_cantidad WHERE idinsumo = _idinsumo;
-    
-    -- No se actualizará la tabla detalle_insumos
-    
   ELSE
-    -- No hay suficiente cantidad disponible en insumos, hacer rollback y generar una señal de error
     ROLLBACK;
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No hay suficiente cantidad de este insumo para la fórmula.';
   END IF;
 
-  -- Confirmar la transacción
   COMMIT;
 END */$$
 DELIMITER ;
@@ -492,8 +487,7 @@ DELIMITER $$
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_detalleinsumo_registrar`(
 IN _idformula INT,
 IN _idinsumo INT,
-IN _cantidad DECIMAL(10, 2),
-IN _unidad VARCHAR(20)
+IN _cantidad DECIMAL(10, 2)
 )
 BEGIN
   -- Variable para almacenar la cantidad actual
@@ -512,8 +506,8 @@ BEGIN
     WHERE idformula = _idformula AND idinsumo = _idinsumo;
   ELSE
     -- Si no existe un registro, insertar un nuevo registro en detalle_insumos
-    INSERT INTO detalle_insumos(idformula, idinsumo, cantidad, unidad)
-    VALUES (_idformula, _idinsumo, _cantidad, _unidad);
+    INSERT INTO detalle_insumos(idformula, idinsumo, cantidad)
+    VALUES (_idformula, _idinsumo, _cantidad);
   END IF;
   
 END */$$
@@ -857,21 +851,21 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `spu_listar_detalleF`(
 IN _idformula INT,
-IN _cantidadtn decimal(7,2),
-IN _cantidadsacos decimal(7,2)
+IN _cantidadtn DECIMAL(7,2),
+IN _cantidadsacos DECIMAL(7,2)
 )
 BEGIN 
-	SET _cantidadsacos = _cantidadsacos * 50;
+    SET _cantidadsacos = _cantidadsacos * 50;
 
-	SELECT DI.iddetalle_insumo, I.idinsumo, I.insumo, 
-	DI.cantidad,
-	(DI.cantidad * _cantidadtn) AS proporcion,
-	(_cantidadsacos) AS sacos
-	FROM detalle_insumos DI
-	INNER JOIN  formulas F ON F.idformula = DI.idformula
-	INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
-	WHERE F.idformula = _idformula;
-	
+    SELECT DI.iddetalle_insumo, I.idinsumo, I.insumo, 
+    DI.cantidad,
+    TRUNCATE(DI.cantidad * _cantidadtn, 2) AS proporcion,
+    TRUNCATE(_cantidadsacos, 2) AS sacos
+    FROM detalle_insumos DI
+    INNER JOIN  formulas F ON F.idformula = DI.idformula
+    INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
+    WHERE F.idformula = _idformula;
+    
 END */$$
 DELIMITER ;
 

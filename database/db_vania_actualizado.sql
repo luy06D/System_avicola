@@ -337,42 +337,32 @@ IN _cantidadtn DECIMAL(7,2),
 IN _cantidadsacos DECIMAL(7,2)
 )
 BEGIN
-
   DECLARE insumo_cantidad DECIMAL(10, 3);
   SET @conversion_factor = 1;
 
-  -- Iniciar la transacción
   START TRANSACTION;
 
-  -- Obtener la cantidad actual del insumo
   SELECT cantidad INTO insumo_cantidad FROM insumos WHERE idinsumo = _idinsumo;
 
-  -- Calcular la cantidad total basada en cantidadtn y cantidadsacos
-  SET @cantidad_total = (_cantidadtn * @conversion_factor) + _cantidadsacos;
+  SET @cantidad_total = _cantidadtn + (_cantidadsacos / @conversion_factor);
 
-  -- Verificar si hay suficiente cantidad disponible en insumos
   IF insumo_cantidad >= @cantidad_total THEN
-    -- Si hay suficiente cantidad disponible, actualizar la cantidad en insumos
     SET insumo_cantidad = insumo_cantidad - @cantidad_total;
     UPDATE insumos SET cantidad = insumo_cantidad WHERE idinsumo = _idinsumo;
-    
-    -- No se actualizará la tabla detalle_insumos
-    
   ELSE
-    -- No hay suficiente cantidad disponible en insumos, hacer rollback y generar una señal de error
     ROLLBACK;
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No hay suficiente cantidad de este insumo para la fórmula.';
   END IF;
 
-  -- Confirmar la transacción
   COMMIT;
 END $$
+DELIMITER ;
 
 
 CALL spu_descontar_insumo(3, 19, 100 , 50);
 
-SELECT * FROM formulas;
-SELECT * FROM insumos;
+SELECT * FROM detalle_insumos;
+
 
 
 
@@ -380,8 +370,7 @@ DELIMITER $$
 CREATE PROCEDURE spu_detalleinsumo_registrar(
 IN _idformula INT,
 IN _idinsumo INT,
-IN _cantidad DECIMAL(10, 2),
-IN _unidad VARCHAR(20)
+IN _cantidad DECIMAL(10, 2)
 )
 BEGIN
   -- Variable para almacenar la cantidad actual
@@ -400,11 +389,17 @@ BEGIN
     WHERE idformula = _idformula AND idinsumo = _idinsumo;
   ELSE
     -- Si no existe un registro, insertar un nuevo registro en detalle_insumos
-    INSERT INTO detalle_insumos(idformula, idinsumo, cantidad, unidad)
-    VALUES (_idformula, _idinsumo, _cantidad, _unidad);
+    INSERT INTO detalle_insumos(idformula, idinsumo, cantidad)
+    VALUES (_idformula, _idinsumo, _cantidad);
   END IF;
   
 END$$
+
+CALL spu_detalleinsumo_registrar (3, 6, 700);
+
+SELECT *FROM formulas
+SELECT * FROM detalle_insumos
+
 
 
 -- FILTRO DE INSUMOS ENTRADAS
@@ -431,7 +426,11 @@ BEGIN
 END $$
 CALL sp_filtro_fech('2023-08-01','2023-08-28')
 
+
+
 -- DETALLE DE FORMULAS POR ID
+
+
 DELIMITER $$
 CREATE PROCEDURE spu_listar_detalleF
 (
@@ -440,17 +439,17 @@ IN _cantidadtn DECIMAL(7,2),
 IN _cantidadsacos DECIMAL(7,2)
 )
 BEGIN 
-	SET _cantidadsacos = _cantidadsacos * 50;
+    SET _cantidadsacos = _cantidadsacos * 50;
 
-	SELECT DI.iddetalle_insumo, I.idinsumo, I.insumo, 
-	DI.cantidad,
-	(DI.cantidad * _cantidadtn) AS proporcion,
-	(_cantidadsacos) AS sacos
-	FROM detalle_insumos DI
-	INNER JOIN  formulas F ON F.idformula = DI.idformula
-	INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
-	WHERE F.idformula = _idformula;
-	
+    SELECT DI.iddetalle_insumo, I.idinsumo, I.insumo, 
+    DI.cantidad,
+    TRUNCATE(DI.cantidad * _cantidadtn, 2) AS proporcion,
+    TRUNCATE(_cantidadsacos, 2) AS sacos
+    FROM detalle_insumos DI
+    INNER JOIN  formulas F ON F.idformula = DI.idformula
+    INNER JOIN insumos I ON I.idinsumo = DI.idinsumo
+    WHERE F.idformula = _idformula;
+    
 END $$
 
 

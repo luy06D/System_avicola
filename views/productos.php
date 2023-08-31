@@ -118,8 +118,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
 
         <h4 class="text-center">PRODUCTOS</h4>
         <hr>
-        <button type="button" id="abrir-modal-registro" class="btn btn-primary btn-md mb-3" data-bs-toggle="modal" data-bs-target="#modal-registrar">
-        Nuevo
+        <button type="button" id="abrir-modal-registro" class="btn btn-success btn-md mb-3" data-bs-toggle="modal" data-bs-target="#modal-registrar">
+        <i class="bi bi-plus-circle"></i>  Nuevo
         </button>
         
                 
@@ -174,7 +174,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     </form>    
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="guardar">Guardar</button>
+                    <button type="button" class="" id="guardar">Guardar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -251,7 +251,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     showCancelButton: true,
                     confirmButtonText: 'Sí',
                     cancelButtonText: 'Cancelar',
-                    confirmButtonColor: '#65BB3B',
+                    confirmButtonColor: '#3F974F',
+                    cancelButtonColor: '#3085d6',
 
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -337,9 +338,11 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     }
                 });
 
-                $("#modal-titulo").html("Actualización de Producto");
+                $("#modal-titulo").html("Actualización de productos"); 
+                $("#modal-titulo").removeClass("text-white");                
                 $("#modal-registro-header").removeClass("bg-primary");
-                $("#modal-registro-header").addClass("bg-success-subtle");
+                $("#modal-registro-header").addClass("bg-warning");
+                 $("#guardar").addClass("btn btn-outline-warning");
                 $("#guardar").html("Actualizar");
                 datosNuevos = false;
                 $("#modal-registrar").modal("show")
@@ -347,10 +350,13 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
             }
 
             function abrirModalRegistro(){
-                $("#modal-titulo").html("Registro de Producto");
-                $("#modal-registro-header").removeClass("bg-primary");
-                $("#modal-registro-header").addClass("bg-success-subtle");
+                $("#modal-titulo").html("Registro de productos");
+                $("#modal-titulo").addClass("text-white");
+                $("#modal-registro-header").removeClass("bg-warning");
+                $("#modal-registro-header").addClass("bg-success");
                 $("#guardar").html("Guardar");
+                $("#guardar").removeClass("btn btn-outline-warning");
+                $("#guardar").addClass("btn btn-outline-success");
                 $("#form-productos")[0].reset();
                 datosNuevos =true;
             }

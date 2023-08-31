@@ -265,7 +265,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     showCancelButton: true,
                     confirmButtonText: 'Sí',
                     cancelButtonText: 'Cancelar',
-                    confirmButtonColor: '#65BB3B',
+                    confirmButtonColor: '#3F974F',
+                    cancelButtonColor: '#3085d6',
 
                 }).then((result) => {
                     if(result.isConfirmed) {

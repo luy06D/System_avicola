@@ -200,8 +200,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <div class="modal fade" id="modal-registrar-insu" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header" id="modal-registro-header">
-                    <h5 class="modal-title" id="modal-titulo">Agregar a Stock</h5>
+                <div class="modal-header bg-success" id="modal-registro-header">
+                    <h5 class="modal-title text-white" id="modal-titulo">Agregar a Stock</h5>
                 </div>
                 <div class="modal-body">
                     <form action="" id="form-pagos">
@@ -237,7 +237,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     </form>    
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="guardarinsu">Guardar</button>
+                    <button type="button" class="btn btn-outline-success" id="guardarinsu">Guardar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -312,7 +312,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     showCancelButton: true,
                     confirmButtonText: 'Sí',
                     cancelButtonText: 'Cancelar',
-                    confirmButtonColor: '#65BB3B',
+                    confirmButtonColor: '#3F974F',
+                    cancelButtonColor: '#3085d6',
                 }).then((result) => {
                     if (result.isConfirmed) {                        
                         const cantidadtn = $("#md-cantidad").val();
@@ -407,7 +408,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     showCancelButton: true,
                     confirmButtonText: 'Sí',
                     cancelButtonText: 'Cancelar',
-                    confirmButtonColor: '#65BB3B',
+                    confirmButtonColor: '#3F974F',
+                    cancelButtonColor: '#3085d6',
                 }).then((result) => {
                     if (result.isConfirmed) {
                         if(nombre === ''){

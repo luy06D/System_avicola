@@ -21,7 +21,7 @@ if(isset($_GET['operacion'])){
                         <td>{$registro['saldo']}</td>
                         <td>{$registro['estado']}</td>
                         <td>
-                            <a href='#'  class='abonar btn btn-outline-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idventa='{$registro['idventa']}'><i class='bi bi-pencil-square'></i></a>
+                            <a href='#'  class='abonar btn btn-outline-success btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idventa='{$registro['idventa']}'><i class='bi bi-pencil-square'></i></a>
                         </td>
                     </tr>
                 ";

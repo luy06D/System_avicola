@@ -22,7 +22,8 @@ $(document).ready(function () {
             showCancelButton: true,
             confirmButtonText: 'Sí',
             cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#65BB3B',
+            confirmButtonColor: '#3F974F',
+            cancelButtonColor: '#3085d6',
 
         }).then((result) => {
             if (result.isConfirmed) {
@@ -126,7 +127,9 @@ $(document).ready(function () {
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Sí, Utilizar',
-            cancelButtonText: 'Cancelar'
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3F974F',
+            cancelButtonColor: '#3085d6',
         }).then((result) => {
             if (result.isConfirmed) {
                 // El usuario confirmó, procede a enviar los datos al servidor
@@ -195,8 +198,9 @@ $(document).ready(function () {
                             } else {
                                 // Mostrar una alerta SweetAlert2 de error
                                 Swal.fire({
-                                    icon: 'error',
+                                    icon: 'warning',
                                     title: 'Error',
+                                    confirmButtonColor: "#E43D2C",
                                     text: response.message
                                 });
                             }
@@ -205,8 +209,9 @@ $(document).ready(function () {
                             console.error('Error:', error);
                             // Mostrar una alerta SweetAlert2 de error si el registro falla
                             Swal.fire({
-                                icon: 'error',
+                                icon: 'warning',
                                 title: 'Error',
+                                confirmButtonColor: "#E43D2C",
                                 text: 'No hay insumos suficientes.'
                             });
                         }

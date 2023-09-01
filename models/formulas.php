@@ -183,9 +183,7 @@ class Formula extends Conexion{
                 
                 $datos["iddetalle_insumo"],
                 $datos["idinsumo"],
-                $datos["cantidad"]
 
-            
             ));
         }
         catch(Exception $e){

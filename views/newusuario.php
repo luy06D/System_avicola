@@ -115,8 +115,8 @@
                title: "¿Desea registrar un nuevo usuario?",                    
                icon: "question",
                showCancelButton: true,
-               confirmButtonColor: "#28B463",
-               cancelButtonColor: "#5DADE2",
+               confirmButtonColor: '#3F974F',
+               cancelButtonColor: '#3085d6',
                confirmButtonText: "Confirmar",
                cancelButtonText: "Cancelar",
 

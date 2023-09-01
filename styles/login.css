@@ -285,3 +285,11 @@ a:hover{
     fill: #85CD32;
 }
 
+
+
+@media (max-width: 768px) { 
+    .custom-shape-divider-bottom-1690413515 {
+        display: none; 
+    }
+}
+ 

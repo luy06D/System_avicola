@@ -48,9 +48,9 @@ if(isset($_POST['operacion'])){
     
     if ($_POST['operacion'] == 'descontar_insumos') {
         $data = json_decode($_POST['datos'], true); // Decodificar el array de objetos
-    
+        
         $responses = array(); // Almacenar las respuestas de registro
-    
+        
         foreach ($data as $dataSave) {
             try {
                 $response = $formulas->descontar_detalle($dataSave); // Supongamos que esta función registra un objeto
@@ -65,8 +65,30 @@ if(isset($_POST['operacion'])){
             }
         }
     
-        echo json_encode($responses); // Devolver las respuestas de registro
+        // Verificar si hay respuestas con 'status' false
+        $errorFound = false;
+        foreach ($responses as $response) {
+            if (!$response['status']) {
+                $errorFound = true;
+                break;
+            }
+        }
+    
+        if ($errorFound) {
+            // Mostrar una alerta SweetAlert2 de error si al menos una operación falló
+            echo json_encode(array(
+                "status" => false,
+                "message" => "No se pudo completar la operación. Verifique las cantidades de insumos."
+            ));
+        } else {
+            // Todas las operaciones fueron exitosas
+            echo json_encode(array(
+                "status" => true,
+                "message" => "Los datos se han registrado correctamente."
+            ));
+        }
     }
+    
 
     
 

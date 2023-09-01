@@ -48,36 +48,25 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         background-attachment: fixed; 
         }
 
+        /* Estilos para pantallas pequeñas (celulares) */
+@media (max-width: 767px) {
+    /* Ajustar la fuente del encabezado para que quepa en pantallas pequeñas */
+    .table thead th {
+        font-size: 12px;
+    }
+
+    /* Ajustar el tamaño de las celdas para evitar desbordamientos */
+    .table td,
+    .table th {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+
  
-/* #conten_paquetes ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 10px;
-}
 
-#conten_paquetes li {
-  flex-basis: calc(33.33% - 10px);
-  background-color: #f2f2f2;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-
-@media (max-width: 768px) {
-  #conten_paquetes ul {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    gap: 20px;
-  }
-
-  #conten_paquetes li {
-    flex-basis: calc(33.33% - 10px); 
-  }
-}  */
 
       
   </style>
@@ -126,10 +115,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 </a>
                     <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="./insumos.php"><h5><i class="bi bi-truck"></i> Insumos</a></h5></li>
-                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Formulas</h5></a></li> 
-                    <li><a class="dropdown-item" href="./addformula.php"><h5><i class="bi bi-file-earmark-plus"></i> Agregar Fórmula</h5></a></li>
-                    <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Entradas</h5></a></li>  
-                    <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Salidas</h5></a></li> 
+
+                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Salida</h5></a></li> 
+                    <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Reporte Entradas</h5></a></li>  
+                    <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Reporte Salidas</h5></a></li> 
 
                     </ul>
                 </li>  

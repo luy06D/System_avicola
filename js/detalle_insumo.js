@@ -22,7 +22,8 @@ $(document).ready(function () {
             showCancelButton: true,
             confirmButtonText: 'Sí',
             cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#65BB3B',
+            confirmButtonColor: '#3F974F',
+            cancelButtonColor: '#3085d6',
 
         }).then((result) => {
             if (result.isConfirmed) {
@@ -120,79 +121,111 @@ $(document).ready(function () {
 
 
 
-$('#descontar').click(function() {
-    // Mostrar una ventana de confirmación SweetAlert2
-    Swal.fire({
-        title: '¿Desea utilizar la fórmula?',
-        text: 'Está a punto de aplicar la fórmula a los insumos.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, Utilizar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // El usuario confirmó, procede a enviar los datos al servidor
-
-            // Crear un array para almacenar los datos de la tabla
-            var datosTabla = [];
-
-            var idformula = $('#lista-formula').val();
-
-            // Iterar a través de las filas de la tabla (excluyendo la primera fila de encabezado)
-            $('#tabla-formula tbody tr').each(function() {
-                var fila = $(this);
-                var idinsumo = fila.find('td:eq(1)').text();
-                var cantidadtn = fila.find('td:eq(4)').text();
-                var cantidadsacos = fila.find('td:eq(5)').text();
-
-
-                // Agregar los datos de la fila al array
-                datosTabla.push({
-                    idformula: idformula,
-                    idinsumo: idinsumo,
-                    cantidadtn: cantidadtn,
-                    cantidadsacos: cantidadsacos,
-                });
-            });
-
-            // Construir el objeto a enviar con la operación y los datos
-            var datosAEnviar = {
-                operacion: 'descontar_insumos', // Especifica la operación en el controlador
-                datos: datosTabla, // Los datos de la tabla
-            };
-
-            // Enviar los datos al servidor utilizando AJAX
-            $.ajax({
-                url: '../controllers/formulas.controller.php',
-                method: 'POST',
-                dataType: 'json',
-                data: { operacion: datosAEnviar.operacion, datos: JSON.stringify(datosAEnviar.datos) }, // Envía la operación y los datos
-                success: function(response) {
-                    console.log(response); // Manejar la respuesta del servidor si es necesario
-
-                    // Mostrar una alerta SweetAlert2 de éxito
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Registro exitoso',
-                        text: 'Los datos se han registrado correctamente.'
+    $('#descontar').click(function() {
+        // Mostrar una ventana de confirmación SweetAlert2
+        Swal.fire({
+            title: '¿Desea utilizar la fórmula?',
+            text: 'Está a punto de aplicar la fórmula a los insumos.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, Utilizar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3F974F',
+            cancelButtonColor: '#3085d6',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // El usuario confirmó, procede a enviar los datos al servidor
+    
+                // Crear un array para almacenar los datos de la tabla
+                var datosTabla = [];
+    
+                var idformula = $('#lista-formula').val();
+    
+                // Variable para verificar si se puede registrar
+                var sePuedeRegistrar = true;
+    
+                // Iterar a través de las filas de la tabla (excluyendo la primera fila de encabezado)
+                $('#tabla-formula tbody tr').each(function() {
+                    var fila = $(this);
+                    var idinsumo = fila.find('td:eq(1)').text();
+                    var cantidadtn = parseFloat(fila.find('td:eq(4)').text());
+                    var cantidadsacos = parseFloat(fila.find('td:eq(5)').text());
+    
+                    // Verificar si la cantidad es suficiente
+                    if (isNaN(cantidadtn) || isNaN(cantidadsacos) || cantidadtn < 0 || cantidadsacos < 0) {
+                        sePuedeRegistrar = false;
+                        // Mostrar una alerta de cantidad insuficiente
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Cantidad Incorrecta',
+                            text: 'Por favor, ingrese cantidades válidas para todos los insumos.'
+                        });
+                        // Detener el bucle
+                        return false;
+                    }
+    
+                    // Agregar los datos de la fila al array
+                    datosTabla.push({
+                        idformula: idformula,
+                        idinsumo: idinsumo,
+                        cantidadtn: cantidadtn,
+                        cantidadsacos: cantidadsacos,
                     });
-                },
-                error: function(error) {
-                    console.error('Error:', error);
-                    // Mostrar una alerta SweetAlert2 de error si el registro falla
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Hubo un problema al registrar los datos.'
+                });
+    
+                // Verificar si se puede registrar
+                if (sePuedeRegistrar) {
+                    // Construir el objeto a enviar con la operación y los datos
+                    var datosAEnviar = {
+                        operacion: 'descontar_insumos', // Especifica la operación en el controlador
+                        datos: datosTabla, // Los datos de la tabla
+                    };
+    
+                    // Enviar los datos al servidor utilizando AJAX
+                    $.ajax({
+                        url: '../controllers/formulas.controller.php',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: { operacion: datosAEnviar.operacion, datos: JSON.stringify(datosAEnviar.datos) }, // Envía la operación y los datos
+                        success: function(response) {
+                            console.log(response); // Manejar la respuesta del servidor si es necesario
+    
+                            if (response.status) {
+                                // Mostrar una alerta SweetAlert2 de éxito
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Registro exitoso',
+                                    text: 'Los datos se han registrado correctamente.'
+                                });
+                            } else {
+                                // Mostrar una alerta SweetAlert2 de error
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Error',
+                                    confirmButtonColor: "#E43D2C",
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error:', error);
+                            // Mostrar una alerta SweetAlert2 de error si el registro falla
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Error',
+                                confirmButtonColor: "#E43D2C",
+                                text: 'No hay insumos suficientes.'
+                            });
+                        }
                     });
                 }
-            });
-        } else {
-            // El usuario canceló, no hagas nada
-        }
+            } else {
+                // El usuario canceló, no hagas nada
+            }
+        });
     });
-});
-
+    
+    
 
       
       

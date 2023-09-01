@@ -93,10 +93,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 </a>
                     <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="./insumos.php"><h5><i class="bi bi-truck"></i> Insumos</a></h5></li>
-                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Formulas</h5></a></li> 
-                    <li><a class="dropdown-item" href="./addformula.php"><h5><i class="bi bi-file-earmark-plus"></i> Agregar Fórmula</h5></a></li>
-                    <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Entradas</h5></a></li>  
-                    <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Salidas</h5></a></li> 
+                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Salida</h5></a></li> 
+                    <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Reporte Entradas</h5></a></li>  
+                    <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Reporte Salidas</h5></a></li> 
+
 
                     </ul>
                 </li>  
@@ -157,8 +157,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <div class="modal fade" id="modal-registrar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header" id="modal-registro-header">
-                    <h5 class="modal-title" id="modal-titulo">Registrar pago</h5>
+                <div class="modal-header bg-success" id="modal-registro-header">
+                    <h5 class="modal-title text-white" id="modal-titulo">Registrar pago</h5>
                 </div>
                 <div class="modal-body">
                     <form action="" id="form-pagos">
@@ -196,7 +196,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     </form>    
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="guardar">Guardar</button>
+                    <button type="button" class="btn btn-outline-success" id="guardar">Guardar</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -272,7 +272,8 @@ function mostrar(){
         showCancelButton: true,
         confirmButtonText: 'Sí',
         cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#65BB3B',
+        confirmButtonColor: '#3F974F',
+        cancelButtonColor: '#3085d6',
     }).then((result) => {
         if (result.isConfirmed) {
             const banco = $("#banco").val().trim();

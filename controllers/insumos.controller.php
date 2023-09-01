@@ -15,7 +15,8 @@ if(isset($_GET['operacion'])){
                     <td>{$registro['idinsumo']}</td>
                     <td>{$registro['insumo']}</td>
                     <td>{$registro['cantidad']}</td>
-                    <td>{$registro['descripcion']}</td>                   
+                    <td>{$registro['detalle']}</td>                    
+
                     <td>
                         <a href='#' class='editar btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#modal-registrar' data-idinsumo ='{$registro['idinsumo']}'><i class='bi bi-pencil-square'></i></a>
                         <a href='#' class='eliminar btn btn-danger btn-sm' data-idinsumo='{$registro['idinsumo']}'><i class='bi bi-trash'></i></a>

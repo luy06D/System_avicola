@@ -132,6 +132,21 @@ class Formula extends Conexion{
         return $respuesta;
     }
 
+    public function obtener_formula1($idformula = 0, $idinsumo= 0, ){
+        $respuesta = [
+            "message" => ""
+        ];
+        try{
+          $consulta = $this->access->prepare("CALL spu_listar_detalleF(?,?)");
+          $consulta->execute(array($idformula, $idinsumo));
+          return $consulta->fetchAll(PDO::FETCH_ASSOC);
+        }
+        catch(Exception $e){
+          $respuesta["message"] = "No se pudo completar la operacion Codigo error:" .$e->getCode();
+        }
+        return $respuesta;
+    }
+
     public function get_detalleI($iddetalle_insumo = 0){
         try{
           $consulta = $this->access->prepare("CALL spu_getdetalleI(?)");
@@ -164,13 +179,13 @@ class Formula extends Conexion{
         ];
 
         try{
-            $consulta = $this->access->prepare("CALL spu_detalleInsumo_update(?,?,?,?)");
+            $consulta = $this->access->prepare("CALL spu_detalleInsumo_update(?,?,?)");
             $respuesta["status"] = $consulta->execute(array(
                 
                 $datos["iddetalle_insumo"],
                 $datos["idinsumo"],
-                $datos["cantidad"],
-                $datos["unidad"]
+                $datos["cantidad"]
+
             
             ));
         }
@@ -180,6 +195,22 @@ class Formula extends Conexion{
 
         return $respuesta;
     }
+
+
+    public function filtrosinsumosfor($idformula = 0){
+        try{
+        $query = $this->access->prepare("CALL spu_listar_insumos_por_formula(?)");
+            $query->execute(array($idformula));
+
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+
+        }
+        catch(Exception $err){
+            die($err->getMessage());
+        }
+
+    }
+
 
 
 

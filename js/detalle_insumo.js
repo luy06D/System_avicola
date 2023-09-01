@@ -6,7 +6,6 @@ $(document).ready(function () {
 
     function update_detalleI(){
         const cantidad = document.querySelector("#cantidadUp").value.trim();
-        const unidad = document.querySelector("#unidadUp").value.trim();
         const idinsumo = document.querySelector("#insumoUp").value.trim();
 
 
@@ -15,7 +14,6 @@ $(document).ready(function () {
             'iddetalle_insumo': iddetalle_insumo,
             'idinsumo': $("#insumoUp").val(),
             'cantidad': $("#cantidadUp").val(),
-            'unidad': $("#unidadUp").val(),
         };
 
         Swal.fire({
@@ -28,7 +26,7 @@ $(document).ready(function () {
 
         }).then((result) => {
             if (result.isConfirmed) {
-                if(cantidad === '' || unidad === '' || idinsumo === ''){
+                if(cantidad === '' || idinsumo === ''){
                     Swal.fire({
                         title: "Por favor, complete los campos",
                         icon: "warning",
@@ -48,8 +46,10 @@ $(document).ready(function () {
                     url: '../controllers/formulas.controller.php',
                     type: 'POST',
                     data: datosEnviar,
-                    success: function (result) {                        
+                    success: function (result) { 
                         $("#modal-updateInsumo").modal('hide');
+                        
+                        
                     }
                 });
 
@@ -109,7 +109,6 @@ $(document).ready(function () {
                     var detalleInsumo = result[0]; 
     
                     $("#insumoUp").val(detalleInsumo.idinsumo);
-                    $("#unidadUp").val(detalleInsumo.unidad);
                     $("#cantidadUp").val(detalleInsumo.cantidad); 
                 }
             }

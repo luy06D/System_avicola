@@ -74,7 +74,7 @@ if(isset($_POST['operacion'])){
         $saveData = [
             "idinsumo"      => $_POST['idinsumo'],  
             "cantidadtn"    => $_POST['cantidadtn'],
-            "cantidadsaco"  => $_POST['cantidadsaco'],
+            "cantidadsacos"  => $_POST['cantidadsacos'],
             "precio"        => $_POST['precio'],
             "fecha_entrada" => $_POST['fecha_entrada'],
             "detalle"       => $_POST['detalle']

@@ -11,6 +11,8 @@ if(isset($_POST['operacion'])){
         echo json_encode($formulas->getFormulas());
     }
 
+    
+
     if($_POST['operacion'] == 'getInsumo'){
         echo json_encode($formulas->getInsumos());
     }
@@ -34,7 +36,6 @@ if(isset($_POST['operacion'])){
             "idformula" => $_POST['idformula'],
             "idinsumo" => $_POST['idinsumo'],
             "cantidad" => $_POST['cantidad'],
-            "unidad"   => $_POST['unidad'],
 
         ];
 
@@ -72,7 +73,12 @@ if(isset($_POST['operacion'])){
 
         
     if($_POST['operacion'] == 'obtener_formula'){
-        $data = $formulas->obtener_formula($_POST['idformula']);
+        $data = $formulas->obtener_formula($_POST['idformula'],$_POST['cantidadtn'],$_POST['cantidadsacos']);
+        echo json_encode($data);
+    }
+
+    if($_POST['operacion'] == 'obtener_formula1'){
+        $data = $formulas->obtener_formula1($_POST['idformula'],$_POST['idinsumo']);
         echo json_encode($data);
     }
 
@@ -90,12 +96,16 @@ if(isset($_POST['operacion'])){
             "iddetalle_insumo" => $_POST['iddetalle_insumo'],
             "idinsumo" => $_POST['idinsumo'],
             "cantidad" => $_POST['cantidad'],
-            "unidad"   => $_POST['unidad'],
 
         ];
 
         $response = $formulas->detalleInsumo_update($dataSave);
         echo json_encode($response);
+    }
+
+    if($_POST['operacion'] == 'filtro_formu'){
+        $data = $formulas->filtrosinsumosfor($_POST['idformula']);
+        echo json_encode($data);
     }
 
 }
@@ -113,6 +123,7 @@ if(isset($_GET['operacion'])){
 
     
 }
+
 
 
 

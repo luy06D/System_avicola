@@ -92,6 +92,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="./insumos.php"><h5><i class="bi bi-truck"></i> Insumos</a></h5></li>
                     <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Formulas</h5></a></li> 
+                    <li><a class="dropdown-item" href="./addformula.php"><h5><i class="bi bi-file-earmark-plus"></i> Agregar Fórmula</h5></a></li>
                     <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Entradas</h5></a></li>  
                     <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Salidas</h5></a></li> 
 
@@ -303,7 +304,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                     cancelButtonText: 'Cancelar',
                     confirmButtonColor: '#65BB3B',
                 }).then((result) => {
-                    if (result.isConfirmed) {
+                    if (result.isConfirmed) {                        
                         const cantidadtn = $("#md-cantidad").val();
                         const cantidadsaco = $("#md-sacos").val();
                         const precio = $("#md-precio").val();
@@ -321,7 +322,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 'operacion': 'actualizar_stock',
                                 'idinsumo': idinsumo,
                                 'cantidadtn': cantidadtn,
-                                'cantidadsaco': cantidadsaco,
+                                'cantidadsacos': cantidadsaco,
                                 'precio': precio,
                                 'fecha_entrada': fecha,
                                 'detalle': detalle,

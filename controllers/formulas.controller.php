@@ -50,9 +50,18 @@ if(isset($_POST['operacion'])){
         
         $responses = array(); // Almacenar las respuestas de registro
         
+        $errorFound = false; // Inicializar la variable para errores
+        
         foreach ($data as $dataSave) {
             try {
                 $response = $formulas->descontar_detalle($dataSave); // Supongamos que esta función registra un objeto
+                
+                // Verificar el estado de la respuesta
+                if (!$response['status']) {
+                    $errorFound = true; // Establecer errorFound en true
+                    break; // Detener el bucle inmediatamente al encontrar un error
+                }
+                
                 $responses[] = $response;
             } catch (Exception $e) {
                 // Manejo de errores
@@ -60,19 +69,13 @@ if(isset($_POST['operacion'])){
                     "status" => false,
                     "message" => "No se pudo completar la operación. Código de error: " . $e->getCode(),
                 );
+                $errorFound = true; // Establecer errorFound en true
                 error_log("Error en detalle_registrar: " . $e->getMessage());
+                break; // Detener el bucle inmediatamente al encontrar un error
             }
         }
     
-        // Verificar si hay respuestas con 'status' false
-        $errorFound = false;
-        foreach ($responses as $response) {
-            if (!$response['status']) {
-                $errorFound = true;
-                break;
-            }
-        }
-    
+        // Verificar si se encontraron errores
         if ($errorFound) {
             // Mostrar una alerta SweetAlert2 de error si al menos una operación falló
             echo json_encode(array(
@@ -80,13 +83,14 @@ if(isset($_POST['operacion'])){
                 "message" => "No se pudo completar la operación. Verifique las cantidades de insumos."
             ));
         } else {
-            // Todas las operaciones fueron exitosas
+            // Todas las operaciones se ejecutaron con éxito
             echo json_encode(array(
                 "status" => true,
                 "message" => "Los datos se han registrado correctamente."
             ));
         }
     }
+    
     
 
 

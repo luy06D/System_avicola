@@ -116,11 +116,6 @@ $(document).ready(function () {
         });
     }
 
-
-
-
-
-
     $('#descontar').click(function() {
         // Mostrar una ventana de confirmación SweetAlert2
         Swal.fire({
@@ -227,7 +222,8 @@ $(document).ready(function () {
     
     
 
-      
+    
+
       
 
 

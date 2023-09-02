@@ -124,12 +124,12 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 <a class="nav-link dropdown-toggle" style="font-size: 25px;" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Almacén
                 </a>
-                    <ul class="dropdown-menu">
+                <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="./insumos.php"><h5><i class="bi bi-truck"></i> Insumos</a></h5></li>
-                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Salida</h5></a></li> 
+                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Salida</h5></a></li>
+                    <li><a class="dropdown-item" href="./addformula.php"><h5><i class="bi bi-file-earmark-plus"></i> Agregar Fórmula</h5></a></li>
                     <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Reporte Entradas</h5></a></li>  
                     <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Reporte Salidas</h5></a></li> 
-
                     </ul>
                 </li>  
                 <li class="nav-item mt-2">
@@ -239,11 +239,17 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         </div>
     </div> 
     
-
-    <footer>
-        <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0; background: #B6B9B9  ; opacity:80%"><img src="../img/3plogo.png" style="width: 40px;" alt=""><a href="https://www.facebook.com/3p.ingenieriaytecnologia"> <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/><a href="https://wa.me/962734821"><img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/></a></h6>
+    <footer style="position: fixed; bottom: 0; width: 100%; background: #B6B9B9; opacity: 0.9;">
+        <h6 style="text-align: center; padding: 1em 0;">
+            <img src="../img/3plogo.png" style="width: 40px;" alt="">
+            <a href="https://www.facebook.com/3p.ingenieriaytecnologia">
+                <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/>
+            </a>
+            <a href="https://wa.me/962734821">
+                <img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/>
+            </a>
+        </h6>
     </footer>
-    
     
    
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

@@ -90,6 +90,7 @@ class Formula extends Conexion{
         return $respuesta;
     }
 
+
     public function descontar_detalle($datos = []){
 
         $respuesta = [
@@ -114,6 +115,9 @@ class Formula extends Conexion{
     
         return $respuesta;
     }
+
+
+
 
 
     public function obtener_formula($idformula = 0, $cantidadtn = 0, $cantidadsacos = 0){
@@ -207,6 +211,9 @@ class Formula extends Conexion{
         }
 
     }
+
+
+
 
 
 

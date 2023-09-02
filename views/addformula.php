@@ -95,11 +95,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 </a>
                     <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="./insumos.php"><h5><i class="bi bi-truck"></i> Insumos</a></h5></li>
-                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Formulas</h5></a></li>
+                    <li><a class="dropdown-item" href="./formulas.php"><h5><i class="bi bi-minecart-loaded"></i> Salida</h5></a></li>
                     <li><a class="dropdown-item" href="./addformula.php"><h5><i class="bi bi-file-earmark-plus"></i> Agregar Fórmula</h5></a></li>
-                    <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Entradas</h5></a></li>  
-                    <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Salidas</h5></a></li> 
-
+                    <li><a class="dropdown-item" href="./reportinsumoentrada.php"><h5><i class="bi bi-graph-down-arrow"></i> Reporte Entradas</h5></a></li>  
+                    <li><a class="dropdown-item" href="./reportinsumosalida.php"><h5><i class="bi bi-graph-up-arrow"></i> Reporte Salidas</h5></a></li> 
                     </ul>
                 </li>  
                 <li class="nav-item mt-2">
@@ -140,10 +139,10 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <button id="btnfiltro" class="btn btn-success btn-md " type="button"><i class="bi bi-funnel-fill"></i></button>
                                     <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modal-form">
-                                        Nueva fórmula
+                                    <i class="bi bi-plus-circle"></i>  Nueva fórmula
                                     </button>
-                                    <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#modal-insumos">
-                                    Agregar Insumos
+                                    <button type="button" class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#modal-insumos">
+                                    <i class="bi bi-plus-circle"></i> Agregar Insumos
                                     </button>
                                 </div>
                             </div>
@@ -168,8 +167,9 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                         </form>
                                     </div>
                                     <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-success" id="addform">Agregar</button>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                        <button type="button" class="btn btn-primary" id="addform">Agregar</button>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +190,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                                                 <!-- <select class="form-select" id="formu" aria-label="Default select example">
                                                 <option selected>Seleccione</option>
                                                 </select> -->
-                                                <select  id="formu" class="js-example-responsive" style="width: 100%;" >
+                                                <select  id="formu" class="form-select" style="width: 100%;" >
                                                     <option value=""></option>
                                                     </select>
                                             </div>    
@@ -282,11 +282,17 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
         </div>
     </main>
 
-   
-    <footer>
-        <h6 style="text-align: center; position:absolute; bottom:0; width:100%; padding:1em 0; background: #B6B9B9  ; opacity:90%"><img src="../img/3plogo.png" style="width: 40px;" alt=""><a href="https://www.facebook.com/3p.ingenieriaytecnologia"> <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/><a href="https://wa.me/962734821"><img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/></a></h6>
+    <footer style="position: fixed; bottom: 0; width: 100%; background: #B6B9B9; opacity: 0.9;">
+        <h6 style="text-align: center; padding: 1em 0;">
+            <img src="../img/3plogo.png" style="width: 40px;" alt="">
+            <a href="https://www.facebook.com/3p.ingenieriaytecnologia">
+                <img width="25" height="25" src="https://img.icons8.com/fluency/48/facebook-new.png" alt="facebook-new"/>
+            </a>
+            <a href="https://wa.me/962734821">
+                <img width="30" height="30" src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="whatsapp--v1"/>
+            </a>
+        </h6>
     </footer>
-
     
     
 
@@ -316,7 +322,8 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
     <script>
         document.addEventListener("DOMContentLoaded",() =>{
             $("#selectf").select2();
-            
+
+
 
             const lsFormula = document.querySelector("#selectf");
             const lsFormula1 = document.querySelector("#formu");
@@ -484,14 +491,14 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                 const insumo = document.querySelector("#insumo").value.trim();
                 const cantidad = document.querySelector("#cantidad").value.trim();
 
-                console.log("mostrar", listaFormula)
                 Swal.fire({
                     title: "¿Desea agregar un nuevo insumo?",
                     icon: "question",
                     showCancelButton: true,
                     confirmButtonText: "Sí",
                     cancelButtonText: "Cancelar",
-                    confirmButtonColor: '#65BB3B',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonColor: '#368E5B',
 
                 }).then((result)=>{
                     if(result.isConfirmed){
@@ -517,6 +524,7 @@ if(!isset($_SESSION['segurity']) || $_SESSION['segurity']['login'] == false){
                             })
                             .then(response => response.json())
                             .then(data => {
+                                console.log(data)
                                 if(data.status){
                                     Swal.fire({
                                         position: 'top-end',

@@ -30,6 +30,7 @@ if(isset($_POST['operacion'])){
         echo json_encode($response);
     }
 
+    
     if($_POST['operacion'] == 'detalle_registrar'){
         
         $dataSave =[
@@ -42,10 +43,8 @@ if(isset($_POST['operacion'])){
         $response = $formulas->detalle_registrar($dataSave);
         echo json_encode($response);
     }
-   
-
-    // ... Otras configuraciones y código ...
     
+   
     if ($_POST['operacion'] == 'descontar_insumos') {
         $data = json_decode($_POST['datos'], true); // Decodificar el array de objetos
         
@@ -90,8 +89,9 @@ if(isset($_POST['operacion'])){
     }
     
 
-    
 
+ 
+        
 
         
     if($_POST['operacion'] == 'obtener_formula'){

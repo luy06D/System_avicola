@@ -178,7 +178,6 @@ CONSTRAINT fk_idi_det FOREIGN KEY (idinsumo) REFERENCES insumos(idinsumo)
 )
 ENGINE = INNODB;
 
-
 -- PROCEDIMIENTOS ALMACEN
 
 
@@ -336,6 +335,7 @@ SELECT * FROM detalle_entradas;
 SELECT * FROM insumos;
 
 
+
 -- DESCONTAR CANTIDAD INSUMOS
 DELIMITER $$
 CREATE PROCEDURE spu_descontar_insumo
@@ -368,16 +368,16 @@ END $$
 DELIMITER ;
 
 
-CALL spu_descontar_insumo(3, 19, 100 , 50);
+CALL spu_descontar_insumo(1,1 , 100 , 50);
 
 SELECT * FROM detalle_insumos;
+SELECT * FROM insumos
 
 
 
 
 DELIMITER $$
-CREATE PROCEDURE spu_detalleinsumo_registrar(
-IN _idformula INT,
+CREATE PROCEDURE spu_detalleinsumo_registrar(IN _idformula INT,
 IN _idinsumo INT,
 IN _cantidad DECIMAL(10, 2)
 )
@@ -404,9 +404,10 @@ BEGIN
   
 END$$
 
-CALL spu_detalleinsumo_registrar (3, 6, 700);
+CALL spu_detalleinsumo_registrar (1, 1, 200);
 
 SELECT *FROM formulas
+select * from insumos
 SELECT * FROM detalle_insumos
 
 
@@ -509,7 +510,7 @@ CALL spu_formulaDelete (10)
 
 
 
--- ACTUALIZAR UNA FORMULA
+-- ACTUALIZAR DETALLE INSUMOS
 DELIMITER $$
 CREATE  PROCEDURE spu_detalleInsumo_update
 (
@@ -523,7 +524,7 @@ BEGIN
 	cantidad = _cantidad
 	WHERE iddetalle_insumo = _iddetalle_insumo; 
  END $$
-SELECT * FROM detalle_insumos
+
 CALL spu_detalleInsumo_update(1, 1 , 150);
 
 
@@ -533,32 +534,41 @@ DELIMITER $$
 CREATE  PROCEDURE spu_detalleinsumo_registrar(
 IN _idformula INT,
 IN _idinsumo INT,
-IN _cantidad DECIMAL(10,3)
+IN _cantidad DECIMAL(10,2)
 )
 BEGIN
-  -- Variable para almacenar la cantidad actual
-  DECLARE cantidad_actual DECIMAL(10, 3);
-
-  -- Obtener la cantidad actual en detalle_insumos si existe un registro con los mismos valores de idformula e idinsumo
-  SELECT cantidad INTO cantidad_actual
-  FROM detalle_insumos
-  WHERE idformula = _idformula AND idinsumo = _idinsumo;
-
-  -- Verificar si se encontró un registro en detalle_insumos
-  IF cantidad_actual IS NOT NULL THEN
-    -- Si existe un registro, actualizar la cantidad sumando _cantidad
-    UPDATE detalle_insumos
-    SET cantidad = cantidad_actual + _cantidad
+    -- Verificar si ya existe un registro con la misma fórmula e insumo
+    DECLARE existing_count INT;
+    SELECT COUNT(*) INTO existing_count
+    FROM detalle_insumos
     WHERE idformula = _idformula AND idinsumo = _idinsumo;
-  ELSE
-    -- Si no existe un registro, insertar un nuevo registro en detalle_insumos
-    INSERT INTO detalle_insumos(idformula, idinsumo, cantidad)
-    VALUES (_idformula, _idinsumo, _cantidad);
-  END IF;
+    
+    -- Si no existe, insertar el nuevo registro; de lo contrario, puedes elegir cómo manejarlo
+    IF existing_count = 0 THEN
+        INSERT INTO detalle_insumos(idformula, idinsumo, cantidad)
+        VALUES (_idformula, _idinsumo, _cantidad);
+    ELSE
+        -- Puedes generar un error, actualizar la cantidad existente o realizar otras acciones aquí
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Ya existe un registro con el mismo insumo para esta fórmula';
+    END IF;
+END $$
 
+-- FILTRAR DETALLE_INSUMOS 
+
+DELIMITER $$
+CREATE PROCEDURE spu_listar_insumos_por_formula(IN _idformula INT)
+BEGIN
+    SELECT de.iddetalle_insumo,
+           i.idinsumo,
+           i.insumo,
+           de.cantidad
+    FROM detalle_insumos de
+    INNER JOIN formulas f ON f.idformula = de.idformula
+    INNER JOIN insumos i ON de.idinsumo = i.idinsumo
+    WHERE f.idformula = _idformula
+    ORDER BY f.nombreformula;
 END$$
-
-SELECT * FROM detalle_insumos
 
 -- GET INSUMOS PARA DETALLE
 DELIMITER $$
@@ -583,7 +593,51 @@ CALL spu_getdetalleI(1);
  
 SELECT * FROM usuarios
 
+-- FILTRO DE INSUMOS ENTRADAS
 
+DELIMITER $$
+CREATE PROCEDURE sp_filtro_fech(
+    IN p_fecha_inicio DATE,
+    IN p_fecha_fin DATE
+)
+BEGIN
+    SELECT
+	de.fecha_entrada,
+	de.detalle,
+	i.insumo,
+	i.unidad,
+        (de.cantidadtn * 1000) AS cantidadtn ,  
+        (de.cantidadsaco * 50) AS cantidadsaco,  
+        de.precio,
+        ((de.cantidadtn * 1000) + (de.cantidadsaco * 50)) AS stock
+        
+    FROM insumos i
+    LEFT JOIN detalle_entradas de ON i.idinsumo = de.idinsumo
+    WHERE de.fecha_entrada BETWEEN p_fecha_inicio AND p_fecha_fin
+    ORDER BY de.fecha_entrada DESC;
+END $$
+
+CALL sp_filtro_insumofechid(1,'2023-08-01','2023-08-28')
+
+
+DELIMITER $$
+CREATE PROCEDURE sp_filtro_insumo (IN p_idinsumo INT)
+BEGIN
+  SELECT
+	de.fecha_entrada,
+	de.detalle,
+	i.insumo,
+	i.unidad,
+        (de.cantidadtn * 1000) AS cantidadtn ,  
+        (de.cantidadsaco * 50) AS cantidadsaco,  
+        de.precio,
+        ((de.cantidadtn * 1000) + (de.cantidadsaco * 50)) AS stock
+  FROM
+    detalle_entradas de INNER JOIN insumos i ON de.idinsumo = i.idinsumo
+  WHERE i.idinsumo = p_idinsumo
+  ORDER BY de.fecha_entrada DESC;
+END $$
+CALL sp_filtro_insumo(1)
 
 DELIMITER $$
 CREATE PROCEDURE sp_filtro_insumofechid(
@@ -593,65 +647,46 @@ CREATE PROCEDURE sp_filtro_insumofechid(
 )
 BEGIN
     SELECT 
-        de.fecha_entrada,
+	de.fecha_entrada,
 	de.detalle,
 	i.insumo,
-	de.unidad,
-        de.cantidad AS cantidad_entrada,
+	i.unidad,
+        (de.cantidadtn * 1000) AS cantidadtn ,  
+        (de.cantidadsaco * 50) AS cantidadsaco,  
         de.precio,
-        i.cantidad AS stock,
+        ((de.cantidadtn * 1000) + (de.cantidadsaco * 50)) AS stock
     FROM insumos i
     LEFT JOIN detalle_entradas de ON i.idinsumo = de.idinsumo
     WHERE i.idinsumo = p_idinsumo AND de.fecha_entrada BETWEEN p_fecha_inicio AND p_fecha_fin
-    ORDER BY de.fecha_entrada;
-END $$
-CALL sp_filtro_insumofechid(1,'2023-08-01','2023-08-28')
-
-
-DELIMITER $$
-CREATE PROCEDURE sp_filtro_insumo(
-    IN p_idinsumo INT
-)
-BEGIN
-    SELECT
-        de.fecha_entrada,
-	de.detalle,
-	i.insumo,
-	de.unidad,
-        de.cantidad AS cantidad_entrada,
-        de.precio,
-        i.cantidad AS stock,
-    FROM detalle_entradas de
-    INNER JOIN insumos i ON de.idinsumo = i.idinsumo
-    WHERE i.idinsumo = p_idinsumo
-    ORDER BY de.fecha_entrada;
+    ORDER BY de.fecha_entrada DESC;
 END $$
 
-CALL sp_filtro_insumo(1)
-
-
+-- FIN FILTRO DE ENTRADAS
 
 -- FILTRO DE INSUMOS SALIDAS
 
 DELIMITER $$
-CREATE PROCEDURE sp_filtro_salidafecha(
-    IN _fecha_inicio DATE,
-    IN _fecha_fin DATE
+CREATE PROCEDURE sp_filtro_salidafecha (
+  IN _fecha_inicio DATE,
+  IN _fecha_fin DATE
 )
 BEGIN
-    SELECT
-	d.fecha_salida
-        i.insumo,
-        d.unidad,
-        d.cantidad,
-        i.cantidad AS stock,
-        
-    FROM detalle_insumos d
+  SELECT
+    d.fecha_salida,
+    f.nombreformula AS formula,
+    i.insumo,
+    i.unidad,
+    d.cantidad,
+    (i.cantidad - d.cantidad) AS stock
+  FROM
+    detalle_insumos d
     INNER JOIN insumos i ON d.idinsumo = i.idinsumo
-    WHERE d.fecha_entrada BETWEEN _fecha_inicio AND _fecha_fin
-    ORDER BY d.fecha_entrada;
-END $$
-DELIMITER $$
+    INNER JOIN formulas f ON d.idformula = f.idformula 
+   WHERE d.fecha_salida BETWEEN _fecha_inicio
+    AND _fecha_fin 
+   ORDER BY d.fecha_salida DESC;
+ END $$
+
 
 CALL sp_filtro_salidafecha('2023-08-01','2023-08-28')
 
@@ -663,17 +698,21 @@ CREATE PROCEDURE sp_filtro_salidafechid(
 )
 BEGIN
     SELECT
-       d.fecha_salida
-        i.insumo,
-        d.unidad,
-        d.cantidad,
-        i.cantidad AS stock,
+	d.fecha_salida,
+	f.nombreformula AS formula,
+	i.insumo,
+	i.unidad,
+	d.cantidad,
+	(i.cantidad - d.cantidad) AS stock
     FROM detalle_insumos d
     INNER JOIN insumos i ON d.idinsumo = i.idinsumo
+    INNER JOIN formulas f ON d.idformula = f.idformula 
     WHERE d.idinsumo = _idinsumo
-    AND d.fecha_entrada BETWEEN _fecha_inicio AND _fecha_fin
-    ORDER BY d.fecha_entrada;
+    AND d.fecha_salida BETWEEN _fecha_inicio AND _fecha_fin
+    ORDER BY d.fecha_salida DESC;
 END $$
+
+
 
 CALL sp_filtro_salidafechid(,'2023-08-01','2023-08-28')
 
@@ -683,15 +722,17 @@ CREATE PROCEDURE sp_filtro_salidaidinsumo(
 )
 BEGIN
     SELECT
-	d.fecha_salida
-        i.insumo,
-        d.unidad,
-        d.cantidad,
-        i.cantidad AS stock,
+	d.fecha_salida,
+	f.nombreformula AS formula,
+	i.insumo,
+	i.unidad,
+	d.cantidad,
+	(i.cantidad - d.cantidad) AS stock
     FROM detalle_insumos d
     INNER JOIN insumos i ON d.idinsumo = i.idinsumo
+    INNER JOIN formulas f ON d.idformula = f.idformula 
     WHERE d.idinsumo = _idinsumo
-    ORDER BY d.fecha_entrada;
+    ORDER BY d.fecha_salida DESC;
 END $$
 
 -- FIN PROCEDIMIENTOS ALMACEN

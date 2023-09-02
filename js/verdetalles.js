@@ -31,6 +31,11 @@ $(document).ready(function (){
                     
                 });
 
+                // Destruir la instancia actual de DataTables
+                if ($.fn.DataTable.isDataTable('#table-detalles')) {
+                    $('#table-detalles').DataTable().destroy()
+                }
+
                 $(document).ready(function(){                                   
                     $('#table-detalles').DataTable({
                         responsive: true ,

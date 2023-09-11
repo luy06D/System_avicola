@@ -25,7 +25,7 @@ function crearCajas() {
     for (var i = 0; i < cantidad; i++) {
         var nuevaCaja = document.createElement("input");
         nuevaCaja.type = "number";
-        nuevaCaja.id = "Paquete" +' '+ (i + 1); // Añadir un identificador único para cada input
+        nuevaCaja.id = (i + 1); // Añadir un identificador único para cada input
         nuevaCaja.className = "cajastyle";
         nuevaCaja.addEventListener("input", function() {
             validarNumero(this);

@@ -1,6 +1,5 @@
 CREATE DATABASE avicola;
 
-USE avicola;
 
 
 CREATE TABLE personas

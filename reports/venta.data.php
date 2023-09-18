@@ -1,7 +1,7 @@
-<div class="cabezera">
+<div class="cabezera" style="position: relative;">
     <h1 class="text-center text-md mt-4">Comprobante de venta</h1>
     <h3 class="text-center text-md mt-3">"Avicola vania"</h3>
-    <img src="../img/remove.png" alt="" class="logo mb-5">
+    <img src="../img/remove.png" alt="" class="logo" style="position: absolute; top: 10px; left: 20px;">
 </div>
 
 <ul class="custom-list ">
@@ -13,52 +13,68 @@
 
 <table class="table table-border">
     <colgroup>
-        <col style="width: 20%;">
-        <col style="width: 20%;">
-        <col style="width: 20%;">
-        <col style="width: 20%;">
-        <col style="width: 20%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
     </colgroup>
     <thead class="text-center table-cabez">
         <tr>
-            <th colspan="5">Paquetes</th>
+            <th colspan="10">Paquetes</th>
         </tr>
     </thead>
     <tbody id="conten_paquetes">
         <?php
         $paquetesObj = json_decode($paquetes, true);
+        $maxCount = count($paquetesObj);
+        $numRows = ceil($maxCount / 10);
 
-        $count = 0; // Inicializa el contador de columnas
-        echo '<tr>'; // Inicializa la fila
+        $totalValue = 0; // Inicializamos la variable para calcular la suma
 
-        foreach ($paquetesObj as $key => $value) {
-            if ($count >= 5) {
-                echo '</tr><tr>'; // Cierra la fila anterior y comienza una nueva fila
-                $count = 0; // Reinicia el contador
+        for ($row = 0; $row < $numRows; $row++) {
+            echo '<tr>';
+            
+            for ($col = 1; $col <= 10; $col++) {
+                $index = ($col - 1) * $numRows + $row;
+                if ($index < $maxCount) {
+                    $key = $index + 1;                                    
+                    $value = $paquetesObj[$key];
+                    $decimalValue = number_format($value, 2);
+                    echo '<td>' . $key . ': ' . $decimalValue . '</td>';
+                    
+                    // Sumamos el valor al total
+                    $totalValue += $value;
+                } else {
+                    // Si no hay más datos, muestra celdas vacías
+                    echo '<td></td>';
+                }
             }
-
-            echo '<td>' . $key . ': ' . $value . 'kg' . '</td>';
-            $count++;
+            
+            echo '</tr>';
         }
-
-        // Completa la última fila si es necesario
-        while ($count < 5) {
-            echo '<td></td>';
-            $count++;
-        }
-
-        echo '</tr>'; // Cierra la última fila
         ?>
     </tbody>
 </table>
 
-
+<div style="position: relative;">
 <ul class="custom-listF">
     <li><span class="data-value">Kilos:</span> <?=$kilos?></li>
     <li><span class="data-value">Precio:</span>  <?=$precio?></li>
     <li><span class="data-value">Flete:</span>   <?=$flete?></li>
     <li><span class="data-value">Monto:</span>   <?=$monto?></li>
+    <!-- Calcular y mostrar el promedio de las ventas -->
+    <li><span class="data-value">Promedio general:</span> <?=number_format($totalValue / $maxCount, 2)?></li>
 </ul>
+
+</div>
+
+
 
 
 <label for="" class="fecha total mt-3"><span class="total">Total a pagar:</span> <?=$totalPago?></label>

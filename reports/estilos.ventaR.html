@@ -109,17 +109,32 @@
     text-align: right; /* Alineamos el texto a la derecha */
 }
 
-.custom-listF{
+/* .custom-listF{
   display: flex;
     list-style-type: none; 
     padding: 0; 
+    
+    right: 0px;
+} */
+
+
+.custom-listF {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    position: absolute;
+    left: 540px;
+    z-index: 1; /* Ajusta según sea necesario para evitar superposiciones */
+    top: 30px;
 }
+
 
 .custom-listF li {
 
 padding-bottom: 10px;
 margin-right: 20px;
 font-size: 16px;
+
 
 }
 

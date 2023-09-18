@@ -406,7 +406,7 @@ END$$
 CALL spu_detalleinsumo_registrar (1, 1, 200);
 
 SELECT *FROM formulas
-select * from insumos
+SELECT * FROM insumos
 SELECT * FROM detalle_insumos
 
 
